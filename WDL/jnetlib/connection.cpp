@@ -39,7 +39,7 @@ JNL_Connection::JNL_Connection(JNL_IAsyncDNS *dns, int sendbufsize, int recvbufs
   m_send_len=m_send_pos=0;
   m_host[0]=0;
   m_saddr = new struct sockaddr_in;
-  memset(m_saddr,0,sizeof(m_saddr));
+  memset(m_saddr,0,sizeof(struct sockaddr_in));
 }
 
 void JNL_Connection::connect(int s, struct sockaddr_in *loc)
@@ -49,7 +49,7 @@ void JNL_Connection::connect(int s, struct sockaddr_in *loc)
   m_remote_port=0;
   m_dns=NULL;
   if (loc) *m_saddr=*loc;
-  else memset(m_saddr,0,sizeof(m_saddr));
+  else memset(m_saddr,0,sizeof(struct sockaddr_in));
   if (m_socket != -1)
   {
     SET_SOCK_BLOCK(m_socket,0);
@@ -84,7 +84,7 @@ void JNL_Connection::connect(char *hostname, int port)
     SET_SOCK_BLOCK(m_socket,0);
     strncpy(m_host,hostname,sizeof(m_host)-1);
     m_host[sizeof(m_host)-1]=0;
-    memset(m_saddr,0,sizeof(m_saddr));
+    memset(m_saddr,0,sizeof(struct sockaddr_in));
     if (!m_host[0])
     {
       m_errorstr="empty hostname";
@@ -130,7 +130,7 @@ void JNL_Connection::run(int max_send_bytes, int max_recv_bytes, int *bytes_sent
     case STATE_RESOLVING:
       if (m_saddr->sin_addr.s_addr == INADDR_NONE)
       {
-        int a=m_dns?m_dns->resolve(m_host,(unsigned long int *)&m_saddr->sin_addr.s_addr):-1;
+        int a=m_dns?m_dns->resolve(m_host,(unsigned int *)&m_saddr->sin_addr.s_addr):-1;
         if (!a) { m_state=STATE_CONNECTING; }
         else if (a == 1)
         {
@@ -301,7 +301,7 @@ void JNL_Connection::close(int quick)
     m_recv_len=m_recv_pos=0;
     m_send_len=m_send_pos=0;
     m_host[0]=0;
-    memset(m_saddr,0,sizeof(m_saddr));
+    memset(m_saddr,0,sizeof(struct sockaddr_in));
   }
   else
   {
@@ -458,17 +458,17 @@ void JNL_Connection::set_interface(int useInterface) // call before connect if n
 }
 
 
-unsigned long JNL_Connection::get_interface(void)
+unsigned int JNL_Connection::get_interface(void)
 {
   if (m_socket==-1) return 0;
   struct sockaddr_in sin;
   memset(&sin,0,sizeof(sin));
   socklen_t len=16;
   if (::getsockname(m_socket,(struct sockaddr *)&sin,&len)) return 0;
-  return (unsigned long) sin.sin_addr.s_addr;
+  return (unsigned int) sin.sin_addr.s_addr;
 }
 
-unsigned long JNL_Connection::get_remote()
+unsigned int JNL_Connection::get_remote()
 {
   return m_saddr->sin_addr.s_addr;
 }

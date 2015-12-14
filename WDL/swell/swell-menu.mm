@@ -32,6 +32,21 @@
 #include "swell-internal.h"
 
 
+static void __filtnametobuf(char *out, const char *in, int outsz)
+{
+  while (*in && outsz>1)
+  {
+    if (*in == '\t') break;
+    if (*in == '&')
+    {
+      in++;
+    }
+    *out++=*in++;
+    outsz--;
+  }
+  *out=0;
+}
+
 
 
 bool SetMenuItemText(HMENU hMenu, int idx, int flag, const char *text)
@@ -53,13 +68,15 @@ bool SetMenuItemText(HMENU hMenu, int idx, int flag, const char *text)
         if (item && [item hasSubmenu])
         {
           NSMenu *m=[item submenu];
-          if (m && SetMenuItemText(m,idx,flag,text)) return true;
+          if (m && SetMenuItemText((HMENU)m,idx,flag,text)) return true;
         }
       }
     }
     return false;
   }
-  NSString *label=(NSString *)SWELL_CStringToCFString(text); 
+  char buf[1024];
+  __filtnametobuf(buf,text?text:"",sizeof(buf));
+  NSString *label=(NSString *)SWELL_CStringToCFString(buf);
   
   [item setTitle:label];
   if ([item hasSubmenu] && [item submenu]) [[item submenu] setTitle:label];
@@ -87,7 +104,7 @@ bool EnableMenuItem(HMENU hMenu, int idx, int en)
         if (item && [item hasSubmenu])
         {
           NSMenu *m=[item submenu];
-          if (m && EnableMenuItem(m,idx,en)) return true;
+          if (m && EnableMenuItem((HMENU)m,idx,en)) return true;
         }
       }
     }
@@ -117,7 +134,7 @@ bool CheckMenuItem(HMENU hMenu, int idx, int chk)
         if (item && [item hasSubmenu])
         {
           NSMenu *m=[item submenu];
-          if (m && CheckMenuItem(m,idx,chk)) return true;
+          if (m && CheckMenuItem((HMENU)m,idx,chk)) return true;
         }
       }
     }
@@ -129,13 +146,16 @@ bool CheckMenuItem(HMENU hMenu, int idx, int chk)
 }
 HMENU SWELL_GetCurrentMenu()
 {
-  return [NSApp mainMenu];
+  return (HMENU)[NSApp mainMenu];
 }
+
+extern int g_swell_terminating;
+
 void SWELL_SetCurrentMenu(HMENU hmenu)
 {
   if (hmenu && [(id)hmenu isKindOfClass:[NSMenu class]])
   {
-    [NSApp setMainMenu:(NSMenu *)hmenu];
+    if (!g_swell_terminating) [NSApp setMainMenu:(NSMenu *)hmenu];
   }
 }
 
@@ -144,7 +164,7 @@ HMENU GetSubMenu(HMENU hMenu, int pos)
   NSMenu *menu=(NSMenu *)hMenu;
   
   NSMenuItem *item=menu && pos >=0 && pos < [menu numberOfItems] ? [menu itemAtIndex:pos] : 0; 
-  if (item && [item hasSubmenu]) return [item submenu];
+  if (item && [item hasSubmenu]) return (HMENU)[item submenu];
   return 0;
 }
 
@@ -198,7 +218,7 @@ bool SetMenuItemModifier(HMENU hMenu, int idx, int flag, int code, unsigned int 
         if (item && [item hasSubmenu])
         {
           NSMenu *m=[item submenu];
-          if (m && SetMenuItemModifier(m,idx,flag,code,mask)) return true;
+          if (m && SetMenuItemModifier((HMENU)m,idx,flag,code,mask)) return true;
         }
       }
     }
@@ -210,14 +230,20 @@ bool SetMenuItemModifier(HMENU hMenu, int idx, int flag, int code, unsigned int 
   int codelow = code&127;
   if ((code>='A' && code <='Z') ||
       (code>='0' && code <= '9') ||   
-      ( !(flag&FVIRTKEY) && ( 
+      ( !(mask&FVIRTKEY) && 
+       ( 
          codelow == '\'' ||
+         codelow == '/' ||
+         codelow == '\\' ||
+         codelow == '|' ||
          codelow == '"' || 
          codelow == ',' ||
          codelow == '.' || 
          codelow == '!' ||
-         codelow == '[' || codelow == ']'
-         )))      
+         codelow == '?' ||
+         codelow == '[' || 
+         codelow == ']' 
+        )))      
   {
     arrowKey=codelow;
     if (!(mask & FSHIFT) && arrowKey < 256) arrowKey=tolower(arrowKey);
@@ -236,7 +262,8 @@ bool SetMenuItemModifier(HMENU hMenu, int idx, int flag, int code, unsigned int 
     DEFKP(VK_LEFT,NSLeftArrowFunctionKey)
     DEFKP(VK_RIGHT,NSRightArrowFunctionKey)
     DEFKP(VK_INSERT,NSInsertFunctionKey)
-    DEFKP(VK_DELETE,NSDeleteFunctionKey)
+    DEFKP(VK_DELETE,NSDeleteCharacter)
+    DEFKP(VK_BACK,NSBackspaceCharacter) 
     DEFKP(VK_HOME,NSHomeFunctionKey)
     DEFKP(VK_END,NSEndFunctionKey)
     DEFKP(VK_NEXT,NSPageDownFunctionKey)
@@ -248,25 +275,11 @@ bool SetMenuItemModifier(HMENU hMenu, int idx, int flag, int code, unsigned int 
   if (mask&FALT) mask2|=NSAlternateKeyMask;
   if (!suppressShift) if (mask&FSHIFT) mask2|=NSShiftKeyMask;
   if (mask&FCONTROL) mask2|=NSCommandKeyMask;
+  if (mask&FLWIN) mask2|=NSControlKeyMask;
      
   [item setKeyEquivalentModifierMask:mask2];
   [item setKeyEquivalent:arrowKey?[NSString stringWithCharacters:&arrowKey length:1]:@""];
   return true;
-}
-
-static void __filtnametobuf(char *out, const char *in, int outsz)
-{
-  while (*in && outsz>1)
-  {
-    if (*in == '\t') break;
-    if (*in == '&')
-    {
-      in++;
-    }
-    *out++=*in++;
-    outsz--;
-  }
-  *out=0;
 }
 
 // #define SWELL_MENU_ACCOUNTING
@@ -368,6 +381,7 @@ void DestroyMenu(HMENU hMenu)
 {
   if (hMenu)
   {
+    SWELL_SetMenuDestination(hMenu,NULL);
     NSMenu *m=(NSMenu *)hMenu;
     [m release];
   }
@@ -397,15 +411,30 @@ bool DeleteMenu(HMENU hMenu, int idx, int flag)
   {
     if (idx >=0 && idx < [m numberOfItems])
       item=[m itemAtIndex:idx];
+    if (!item) return false;
   }
   else
   {
     item=[m itemWithTag:idx];
+    if (!item) 
+    {
+      int x,n=[m numberOfItems];
+      for (x=0;x<n;x++)
+      {
+        item=[m itemAtIndex:x];
+        if (item && [item hasSubmenu])
+        {
+          if (DeleteMenu((HMENU)[item submenu],idx,flag)) return true;
+        }
+      }
+      return false;
+    }
   }
-  if (!item) return false;
   
   if ([item hasSubmenu])
   {
+    HMENU sm = (HMENU)[item submenu];
+    if (sm) SWELL_SetMenuDestination(sm,NULL);
     [m setSubmenu:nil forItem:item];
   }
   [m removeItem:item];
@@ -433,7 +462,7 @@ BOOL SetMenuItemInfo(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi)
         if (item && [item hasSubmenu])
         {
           NSMenu *m1=[item submenu];
-          if (m1 && SetMenuItemInfo(m1,pos,byPos,mi)) return true;
+          if (m1 && SetMenuItemInfo((HMENU)m1,pos,byPos,mi)) return true;
         }
       }      
     }
@@ -501,7 +530,7 @@ BOOL GetMenuItemInfo(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi)
         if (item && [item hasSubmenu])
         {
           NSMenu *m1=[item submenu];
-          if (m1 && GetMenuItemInfo(m1,pos,byPos,mi)) return true;
+          if (m1 && GetMenuItemInfo((HMENU)m1,pos,byPos,mi)) return true;
         }
       }      
     }
@@ -540,7 +569,7 @@ BOOL GetMenuItemInfo(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi)
     mi->wID = [item tag];
   }
   
-  if(mi->fMask && MIIM_SUBMENU)
+  if(mi->fMask & MIIM_SUBMENU)
   {
     if ([item hasSubmenu])
     {
@@ -552,10 +581,31 @@ BOOL GetMenuItemInfo(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi)
   
 }
 
-void SWELL_InsertMenu(HMENU menu, int pos, int flag, int idx, const char *str)
+void SWELL_InsertMenu(HMENU menu, int pos, int flag, UINT_PTR idx, const char *str)
 {
   MENUITEMINFO mi={sizeof(mi),MIIM_ID|MIIM_STATE|MIIM_TYPE,MFT_STRING,
-    (flag & ~MF_BYPOSITION),idx,NULL,NULL,NULL,0,(char *)str};
+    (flag & ~MF_BYPOSITION),(flag&MF_POPUP) ? 0 : (int)idx,NULL,NULL,NULL,0,(char *)str};
+  
+  if (flag&MF_POPUP) 
+  {
+    mi.hSubMenu = (HMENU)idx;
+    mi.fMask |= MIIM_SUBMENU;
+    mi.fState &= ~MF_POPUP;
+  }
+  
+  if (flag&MF_SEPARATOR)
+  {
+    mi.fMask=MIIM_TYPE;
+    mi.fType=MFT_SEPARATOR;
+    mi.fState &= ~MF_SEPARATOR;
+  }
+  
+  if (flag&MF_BITMAP)
+  {
+    mi.fType=MFT_BITMAP;
+    mi.fState &= ~MF_BITMAP;
+  }
+    
   InsertMenuItem(menu,pos,(flag&MF_BYPOSITION) ?  TRUE : FALSE, &mi);
 }
 
@@ -586,7 +636,7 @@ void InsertMenuItem(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi)
     item=[m insertItemWithTitle:@"(no image)" action:NULL keyEquivalent:@"" atIndex:pos];
     if (mi->dwTypeData)
     {
-      NSImage *i=(NSImage *)GetNSImageFromHICON(mi->dwTypeData);
+      NSImage *i=(NSImage *)GetNSImageFromHICON((HICON)mi->dwTypeData);
       if (i)
       {
         [item setImage:i];
@@ -722,7 +772,21 @@ int TrackPopupMenu(HMENU hMenu, int flags, int xpos, int ypos, int resvd, HWND h
     if (!v) v=[[NSApp mainWindow] contentView];
     if (!v) return 0;
     
-    SWELL_PopupMenuRecv *recv = [[SWELL_PopupMenuRecv alloc] initWithWnd:((flags&TPM_NONOTIFY)?0:hwnd)];
+    NSEvent *event = [NSApp currentEvent];
+       
+    {      
+      //create a new event at these coordinates, faking it
+      NSWindow *w = [v window];
+      NSPoint pt = NSMakePoint(xpos, ypos);
+      pt=[w convertScreenToBase:pt];
+      pt.y -= 4;
+      int wn = [w windowNumber]; // event ? [event windowNumber] : [w windowNumber];
+      NSTimeInterval ts = event ? [event timestamp] : 0;
+      NSGraphicsContext *gctx = event ? [event context] : 0;
+      event = [NSEvent otherEventWithType:NSApplicationDefined location:pt modifierFlags:0 timestamp:ts windowNumber:wn context:gctx subtype:0 data1:0 data2:0];
+    }
+    
+    SWELL_PopupMenuRecv *recv = [[SWELL_PopupMenuRecv alloc] initWithWnd:((flags & TPM_NONOTIFY) ? 0 : hwnd)];
     
     SWELL_SetMenuDestination((HMENU)m,(HWND)recv);
     
@@ -732,37 +796,19 @@ int TrackPopupMenu(HMENU hMenu, int flags, int xpos, int ypos, int resvd, HWND h
       SWELL_SetMenuDestination((HMENU)m,(HWND)recv);
     }
     
-    NSEvent *event = [NSApp currentEvent];
-    
-    int etype = [event type];
-#if 1 // disable this if you wish to have xpos/ypos be always used (someday we should enable it, yeah)
-    if ((etype >= NSLeftMouseDown && etype <= NSMouseExited)||(etype >= NSOtherMouseDown && etype <= NSOtherMouseDragged))
-    {
-      
-    }
-    else  
-#endif
-    {
-      // not mouse event! create a new event at these coordinates, faking it
-      NSWindow *w = [v window];
-      NSPoint pt = [w convertScreenToBase:NSMakePoint(xpos,ypos)];
-      event = [NSEvent otherEventWithType:NSApplicationDefined location:pt modifierFlags:0 timestamp:[event timestamp] windowNumber:[w windowNumber] context:[w graphicsContext] subtype:0 data1:0 data2:0];
-
-      //      event = [NSEvent mouseEventWithType:NSMouseMoved location:pt modifierFlags:0 timestamp:[event timestamp] windowNumber:[w windowNumber] context:[w graphicsContext] eventNumber:0 clickCount:0 pressure:0.0];
-    }
     [NSMenu popUpContextMenu:m withEvent:event forView:v];
 
-    int ret=[recv isCommand];
-    
+    int ret=[recv isCommand];    
     SWELL_SetMenuDestination((HMENU)m,(HWND)NULL);
     [recv release];
     
-    if (!(flags & TPM_NONOTIFY) && ret>0 && hwnd)
-    {
-      SendMessage(hwnd,WM_COMMAND,ret,0);
-    }
+    if (ret<=0) return 0;
     
-    return ret;
+    if (flags & TPM_RETURNCMD) return ret;
+    
+    if (hwnd) SendMessage(hwnd,WM_COMMAND,ret,0);
+    
+    return 1;
   }
   return 0;
 }
@@ -782,10 +828,33 @@ void SWELL_Menu_AddMenuItem(HMENU hMenu, const char *name, int idx, int flags)
   InsertMenuItem(hMenu,GetMenuItemCount(hMenu),TRUE,&mi);
 }
 
+int SWELL_GenerateMenuFromList(HMENU hMenu, const void *_list, int listsz)
+{
+  SWELL_MenuGen_Entry *list = (SWELL_MenuGen_Entry *)_list;
+  const int l1=strlen(SWELL_MENUGEN_POPUP_PREFIX);
+  while (listsz>0)
+  {
+    int cnt=1;
+    if (!list->name) SWELL_Menu_AddMenuItem(hMenu,NULL,-1,0);
+    else if (!strcmp(list->name,SWELL_MENUGEN_ENDPOPUP)) break;
+    else if (!strncmp(list->name,SWELL_MENUGEN_POPUP_PREFIX,l1)) 
+    { 
+      MENUITEMINFO mi={sizeof(mi),MIIM_SUBMENU|MIIM_STATE|MIIM_TYPE,MFT_STRING,0,0,CreatePopupMenuEx(list->name+l1),NULL,NULL,0,(char *)list->name+l1};
+      cnt += SWELL_GenerateMenuFromList(mi.hSubMenu,list+1,listsz-1);
+      InsertMenuItem(hMenu,GetMenuItemCount(hMenu),TRUE,&mi);
+    }
+    else SWELL_Menu_AddMenuItem(hMenu,list->name,list->idx,list->flags);
+
+    list+=cnt;
+    listsz -= cnt;
+  }
+  return list + 1 - (SWELL_MenuGen_Entry *)_list;
+}
+
 
 SWELL_MenuResourceIndex *SWELL_curmodule_menuresource_head; // todo: move to per-module thingy
 
-static SWELL_MenuResourceIndex *resById(SWELL_MenuResourceIndex *head, int resid)
+static SWELL_MenuResourceIndex *resById(SWELL_MenuResourceIndex *head, const char *resid)
 {
   SWELL_MenuResourceIndex *p=head;
   while (p)
@@ -796,7 +865,7 @@ static SWELL_MenuResourceIndex *resById(SWELL_MenuResourceIndex *head, int resid
   return 0;
 }
 
-HMENU SWELL_LoadMenu(SWELL_MenuResourceIndex *head, int resid)
+HMENU SWELL_LoadMenu(SWELL_MenuResourceIndex *head, const char *resid)
 {
   SWELL_MenuResourceIndex *p;
   
@@ -816,8 +885,7 @@ HMENU SWELL_DuplicateMenu(HMENU menu)
 BOOL  SetMenu(HWND hwnd, HMENU menu)
 {
   if (!hwnd||![(id)hwnd respondsToSelector:@selector(swellSetMenu:)]) return FALSE;
-  
-  SWELL_SetMenuDestination(menu,hwnd);
+  if (g_swell_terminating)  return FALSE;
 
   [(id)hwnd swellSetMenu:(HMENU)menu];
   NSWindow *nswnd = (NSWindow *)hwnd;
@@ -828,7 +896,7 @@ BOOL  SetMenu(HWND hwnd, HMENU menu)
         [NSApp mainMenu] != (NSMenu *)menu)
     {
       [NSApp setMainMenu:(NSMenu *)menu];
-      SendMessage(hwnd,WM_INITMENUPOPUP,(WPARAM)menu,0); // find a better place for this! TODO !!!
+      if (menu) SendMessage(hwnd,WM_INITMENUPOPUP,(WPARAM)menu,0); // find a better place for this! TODO !!!
     }
   }
   
@@ -837,21 +905,15 @@ BOOL  SetMenu(HWND hwnd, HMENU menu)
 
 HMENU GetMenu(HWND hwnd)
 {
-  if (!hwnd) return 0;
-  
-  HMENU ret = NULL;
-  if (![(id)hwnd respondsToSelector:@selector(swellGetMenu)] || !(ret=(HMENU) [(id)hwnd swellGetMenu])) 
-  {
-    if ([(id)hwnd isKindOfClass:[NSView class]])
-      hwnd = (HWND)[[(NSView *)hwnd window] contentView];
-    else if ([(id)hwnd isKindOfClass:[NSWindow class]])
-      hwnd = (HWND)[(NSWindow *)hwnd contentView];
-  }
-  if (!ret && hwnd && [(id)hwnd respondsToSelector:@selector(swellGetMenu)]) ret=(HMENU) [(id)hwnd swellGetMenu];
-  return ret;
-  
+  if (!hwnd) return NULL;
+  if ([(id)hwnd isKindOfClass:[NSWindow class]]) hwnd = (HWND)[(NSWindow *)hwnd contentView];
+  if ([(id)hwnd respondsToSelector:@selector(swellGetMenu)]) return (HMENU) [(id)hwnd swellGetMenu];
+  return NULL;
 }
 
+void DrawMenuBar(HWND hwnd)
+{
+}
 
 
 #endif

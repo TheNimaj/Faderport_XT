@@ -42,7 +42,6 @@ static int MacKeyCodeToVK(int code)
     case 71: return VK_NUMLOCK;
     case 75: return VK_DIVIDE;
     case 76: return VK_RETURN|0x8000;
-    case 27:
     case 78: return VK_SUBTRACT;
     case 81: return VK_SEPARATOR;
     case 82: return VK_NUMPAD0;
@@ -82,78 +81,60 @@ static int MacKeyCodeToVK(int code)
 	return 0;
 }
 
+bool IsRightClickEmulateEnabled();
+
+
 int SWELL_MacKeyToWindowsKey(void *nsevent, int *flags)
 {
   NSEvent *theEvent = (NSEvent *)nsevent;
 	int mod=[theEvent modifierFlags];// & ( NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask);
                                    //	if ([theEvent isARepeat]) return;
     
-    int flag=0;
-    if (mod & NSShiftKeyMask) flag|=FSHIFT;
-    if (mod & NSCommandKeyMask) flag|=FCONTROL; // todo: this should be command once we figure it out
-    if (mod & NSAlternateKeyMask) flag|=FALT;
+  int flag=0;
+  if (mod & NSShiftKeyMask) flag|=FSHIFT;
+  if (mod & NSCommandKeyMask) flag|=FCONTROL; // todo: this should be command once we figure it out
+  if (mod & NSAlternateKeyMask) flag|=FALT;
+  if ((mod&NSControlKeyMask) && !IsRightClickEmulateEnabled()) flag|=FLWIN;
     
-    int rawcode=[theEvent keyCode];
-//    printf("rawcode %d\n",rawcode);
-    
-    int code=MacKeyCodeToVK(rawcode);
-    if (!code)
+  int rawcode=[theEvent keyCode];
+
+  int code=MacKeyCodeToVK(rawcode);
+  if (!code)
+  {
+    NSString *str=[theEvent charactersIgnoringModifiers];
+//    if (!str || ![str length]) str=[theEvent characters];
+
+    if (!str || ![str length]) 
     {
-      NSString *str=[theEvent charactersIgnoringModifiers];
-      const char *p=[str cStringUsingEncoding: NSASCIIStringEncoding];
-      if (!p) 
-      {
-        return 0;
-      }
-      code=toupper(*p);
-      if (code == 25 && (flag&FSHIFT)) code=VK_TAB;
-      if (isalnum(code)||code==' ' || code == '\r' || code == '\n' || code ==27 || code == VK_TAB) flag|=FVIRTKEY;
+      code = 1024+rawcode; // raw code
+      flag|=FVIRTKEY;
     }
     else
     {
-      flag|=FVIRTKEY;
-      if (code==8) code='\b';
+      code=[str characterAtIndex:0];
+      if (code >= 'a' && code <= 'z') code+='A'-'a';
+      if (code == 25 && (flag&FSHIFT)) code=VK_TAB;
+      if (isalnum(code)||code==' ' || code == '\r' || code == '\n' || code ==27 || code == VK_TAB) flag|=FVIRTKEY;
     }
-    if (flag & FSHIFT)
-    {
-      if (code=='[') { code='{'; flag&=~(FSHIFT|FVIRTKEY); }
-      else if (code==']') { code='}'; flag&=~(FSHIFT|FVIRTKEY); }
-    }
-    
-    //if (code == ' ' && flag==(FVIRTKEY) && (mod&NSControlKeyMask)) flag|=FCONTROL;
-    
-    if (!(flag&FVIRTKEY)) flag&=~FSHIFT;
-    if (!flag)
-    {
-    // todo: some OS X API for this?
-      flag=FVIRTKEY|FSHIFT;
-      switch (code)
-      {
-        case '!': code='1'; break;
-        case '@': code='2'; break;
-        case '#': code='3'; break;
-        case '$': code='4'; break;
-        case '%': code='5'; break;
-        case '^': code='6'; break;
-        case '&': code='7'; break;
-        case '*': code='8'; break;
-        case '(': code='9'; break;
-        case ')': code='0'; break;
-        default: flag=0; break;
-      }
-    }
-    
-    if (flags) *flags=flag;
-    return code;
+  }
+  else
+  {
+    flag|=FVIRTKEY;
+    if (code==8) code='\b';
+  }
+
+  if (!(flag&FVIRTKEY)) flag&=~FSHIFT;
+  
+  if (flags) *flags=flag;
+  return code;
 }
 
 int SWELL_KeyToASCII(int wParam, int lParam, int *newflags)
 {
   if (wParam >= '0' && wParam <= '9' && lParam == (FSHIFT|FVIRTKEY))
   {
-  // todo: some OS X API for this?
     *newflags = lParam&~(FSHIFT|FVIRTKEY);
-    switch (wParam) 
+    if (!(lParam & (FCONTROL|FLWIN))) switch (wParam) 
     {
       case '1': return '!';
       case '2': return '@';
@@ -173,22 +154,36 @@ int SWELL_KeyToASCII(int wParam, int lParam, int *newflags)
 
 WORD GetAsyncKeyState(int key)
 {
-  if (key == VK_LBUTTON) return (GetCurrentEventButtonState()&1)?0x8000:0;
-  if (key == VK_RBUTTON) return (GetCurrentEventButtonState()&2)?0x8000:0;
-  if (key == VK_MBUTTON) return (GetCurrentEventButtonState()&4)?0x8000:0;
-  NSEvent *evt=[NSApp currentEvent];
-  if (!evt) return 0;
-  if (key == VK_CONTROL) return ([evt modifierFlags]&NSCommandKeyMask)?0x8000:0;
-  if (key == VK_MENU) return ([evt modifierFlags]&NSAlternateKeyMask)?0x8000:0;
-  if (key == VK_SHIFT) return ([evt modifierFlags]&NSShiftKeyMask)?0x8000:0;
+  int state=0;
+  if (key == VK_LBUTTON || key == VK_RBUTTON || key == VK_MBUTTON)
+  {
+    state=GetCurrentEventButtonState();
+  }
+  else    
+  {
+    state=CGEventSourceFlagsState(kCGEventSourceStateCombinedSessionState);
+  }
+
+  if ((key == VK_LBUTTON && (state&1)) ||
+      (key == VK_RBUTTON && (state&2)) ||
+      (key == VK_MBUTTON && (state&4)) ||      
+      (key == VK_SHIFT && (state&kCGEventFlagMaskShift)) ||
+      (key == VK_CONTROL && (state&kCGEventFlagMaskCommand)) ||
+      (key == VK_MENU && (state&kCGEventFlagMaskAlternate)) ||
+      (key == VK_LWIN && !IsRightClickEmulateEnabled() && (state&kCGEventFlagMaskControl)))
+  {
+    return 0x8000;
+  }
+  
   return 0;
 }
 
 
 SWELL_CursorResourceIndex *SWELL_curmodule_cursorresource_head;
 
-NSCursor* MakeCursorFromData(unsigned char* data, int hotspot_x, int hotspot_y)
+static NSCursor* MakeCursorFromData(unsigned char* data, int hotspot_x, int hotspot_y)
 {
+  NSCursor *c=NULL;
   NSBitmapImageRep* bmp = [[NSBitmapImageRep alloc] 
     initWithBitmapDataPlanes:0
     pixelsWide:16
@@ -198,34 +193,37 @@ NSCursor* MakeCursorFromData(unsigned char* data, int hotspot_x, int hotspot_y)
     hasAlpha:YES
     isPlanar:NO 
     colorSpaceName:NSCalibratedWhiteColorSpace
-    bytesPerRow:0
+    bytesPerRow:(16*2)
     bitsPerPixel:16]; 
-  if (!bmp) return 0;
   
-  unsigned char* p = [bmp bitmapData];
-  if (!p) return 0;
-  
-  int i;
-  for (i = 0; i < 16*16; ++i)
+  if (bmp)
   {
-    // tried 4 bits per sample and memcpy, didn't work
-    p[2*i] = data[i]&0xF0;
-    p[2*i+1] = (data[i]<<4)&0xF0;
+    unsigned char* p = [bmp bitmapData];
+    if (p)
+    {  
+      int i;
+      for (i = 0; i < 16*16; ++i)
+      {
+        // tried 4 bits per sample and memcpy, didn't work
+        p[2*i] = (data[i]&0xF0) | data[i]>>4;
+        p[2*i+1] = (data[i]<<4) | (data[i]&0xf);
+      }
+  
+      NSImage *img = [[NSImage alloc] init];
+      if (img)
+      {
+        [img addRepresentation:bmp];  
+        NSPoint hs = { hotspot_x, hotspot_y };
+        c = [[NSCursor alloc] initWithImage:img hotSpot:hs];
+        [img release];
+      }   
+    }
+    [bmp release];
   }
-  
-  NSImage* img = [NSImage alloc];
-  if (!img) return 0;
-  [img addRepresentation:bmp];  
-  
-  NSPoint hs = { hotspot_x, hotspot_y };
-  NSCursor* c = [[NSCursor alloc] initWithImage:img hotSpot:hs];
-  
-  [bmp release];
-  [img release];
   return c;
 }
 
-NSCursor* MakeSWELLSystemCursor(int id)
+static NSCursor* MakeSWELLSystemCursor(const char *id)
 {
   // bytemaps are (white<<4)|(alpha)
   const unsigned char B = 0xF;
@@ -244,22 +242,22 @@ NSCursor* MakeSWELLSystemCursor(int id)
   {
     if (id == IDC_SIZEALL)
     {
-      unsigned char p[16*16] = 
+      static unsigned char p[16*16] = 
       {
         0, 0, 0, 0, 0, 0, G, W, W, G, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, G, W, B, B, W, G, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, W, G, B, B, G, W, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, W, W, B, B, W, W, G, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, W, B, B, B, B, W, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, G, B, B, B, B, B, B, G, 0, 0, 0, 0,
         0, 0, 0, G, 0, 0, W, B, B, W, 0, 0, G, 0, 0, 0,
-        0, G, W, W, 0, 0, W, B, B, W, 0, 0, W, W, G, 0,
-        G, W, G, W, W, W, W, B, B, W, W, W, W, G, W, G,
+        0, G, W, B, 0, 0, W, B, B, W, 0, 0, B, W, G, 0,
+        G, W, B, B, W, W, W, B, B, W, W, W, B, B, W, G,
         W, B, B, B, B, B, B, B, B, B, B, B, B, B, B, W,
         W, B, B, B, B, B, B, B, B, B, B, B, B, B, B, W,
-        G, W, G, W, W, W, W, B, B, W, W, W, W, G, W, G,
-        0, G, W, W, 0, 0, W, B, B, W, 0, 0, W, W, G, 0,
+        G, W, B, B, W, W, W, B, B, W, W, W, B, B, W, G,
+        0, G, W, B, 0, 0, W, B, B, W, 0, 0, B, W, G, 0,
         0, 0, 0, G, 0, 0, W, B, B, W, 0, 0, G, 0, 0, 0,
-        0, 0, 0, 0, G, W, W, B, B, W, W, G, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, W, G, B, B, G, W, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, G, B, B, B, B, B, B, G, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, W, B, B, B, B, W, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, G, W, B, B, W, G, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, G, W, W, G, 0, 0, 0, 0, 0, 0,
       };
@@ -267,7 +265,7 @@ NSCursor* MakeSWELLSystemCursor(int id)
     }
     else if (id == IDC_SIZENWSE || id == IDC_SIZENESW)
     {
-      unsigned char p[16*16] = 
+      static unsigned char p[16*16] = 
       {
         W, W, W, W, W, W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
         W, G, G, G, W, G, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -299,11 +297,24 @@ NSCursor* MakeSWELLSystemCursor(int id)
           }
         }
       }
-     *pc = MakeCursorFromData(p, 8, 8);    
+     *pc = MakeCursorFromData(p, 8, 8);   
+      if (id == IDC_SIZENESW) // swap back!
+      {
+        int x, y;
+        for (y = 0; y < 16; ++y) 
+        {
+          for (x = 0; x < 8; ++x)
+          {
+            unsigned char tmp = p[16*y+x];
+            p[16*y+x] = p[16*y+16-x-1];
+            p[16*y+16-x-1] = tmp;
+          }
+        }
+      }      
     }
     else if (id == IDC_NO)
     {
-      unsigned char p[16*16] = 
+      static unsigned char p[16*16] = 
       {
         0, 0, 0, 0, G, W, W, W, W, W, W, G, 0, 0, 0, 0,
         0, 0, G, W, W, B, B, B, B, B, B, W, W, G, 0, 0,
@@ -329,48 +340,146 @@ NSCursor* MakeSWELLSystemCursor(int id)
   return *pc;
 }
 
-  
-HCURSOR SWELL_LoadCursor(int idx)
+static NSImage *swell_imageFromCursorString(const char *name, POINT *hotSpot)
 {
-  switch (idx)
+  NSImage *img=NULL;
+  FILE *fp = NULL;  
+  bool isFullFn=false;
+  
+  if (!strstr(name,"/") && strlen(name)<1024)
   {
-    case IDC_NO:   
-    case IDC_SIZENWSE:
-    case IDC_SIZENESW:
-    case IDC_SIZEALL: 
-      return (HCURSOR)MakeSWELLSystemCursor(idx); 
-    case IDC_SIZEWE:
-      return (HCURSOR)[NSCursor resizeLeftRightCursor];
-    case IDC_SIZENS:
-      return (HCURSOR)[NSCursor resizeUpDownCursor];
-    case IDC_ARROW:
-      return (HCURSOR)[NSCursor arrowCursor];
-    case IDC_HAND:
-      return (HCURSOR)[NSCursor openHandCursor];
-    case IDC_UPARROW:
-      return (HCURSOR)[NSCursor resizeUpCursor];
-    case IDC_IBEAM: 
-      return (HCURSOR)[NSCursor IBeamCursor];
+    char tmpn[4096];
+    GetModuleFileName(NULL,tmpn,sizeof(tmpn)-128-strlen(name));
+    strcat(tmpn,"/Contents/Resources/");
+    strcat(tmpn,name);
+    strcat(tmpn,".cur");
+    fp = fopen(tmpn,"rb");
+  }
+  else 
+  {
+    isFullFn=true;
+    if (strlen(name)>4 && !stricmp(name+strlen(name)-4,".cur")) fp = fopen(name,"rb");    
+  }  
+  
+  if (fp)
+  {
+    unsigned char buf[4096];
+    if (fread(buf,1,6,fp)==6 && !buf[0] && !buf[1] && buf[2] == 2 && buf[3] == 0 && buf[4] == 1 && buf[5] == 0)
+    {
+      static char tempfn[512];
+      if (!tempfn[0])
+      {
+        const char *p = getenv("TEMP");
+        if  (!p || !*p) p="/tmp";
+        sprintf(tempfn,"%.200s/swellcur%x%x.ico",p,timeGetTime(),(int)getpid());
+      }
+      
+      FILE *outfp = fopen(tempfn,"wb");
+      if (outfp)
+      {
+        bool wantLoad=false;
+        buf[2]=1; // change to .ico
+        fwrite(buf,1,6,outfp);
+        
+        fread(buf,1,16,fp);
+        int xHot = buf[4]|(buf[5]<<8);
+        int yHot = buf[6]|(buf[7]<<8);
+        
+        buf[4]=1; buf[5]=0; // 1 color plane
+        buf[6]=0; buf[7]=0; // 0 for pixel depth means "auto"
+        
+        if (!buf[3])
+        {
+          fwrite(buf,1,16,outfp);
+          for (;;)
+          {
+            int a = fread(buf,1,sizeof(buf),fp);
+            if (a<1) break;
+            fwrite(buf,1,a,outfp);
+          }           
+          wantLoad=true;
+        }              
+        
+        fclose(outfp);
+        if (wantLoad)
+        {
+          NSString *str = (NSString *)SWELL_CStringToCFString(tempfn);     
+          img = [[NSImage alloc] initWithContentsOfFile:str];
+          [str release];
+          if (img && hotSpot) 
+          {
+            hotSpot->x = xHot;
+            hotSpot->y = yHot;
+          }
+          //          printf("loaded converted ico for %s %s %d\n",tempfn,name,!!img);
+        }
+        unlink(tempfn);
+      }      
+      
+    }
+    
+    fclose(fp);
   }
   
+  if (!img) // fall back
+  {
+    NSString *str = (NSString *)SWELL_CStringToCFString(name);     
+    
+    if (isFullFn) img = [[NSImage alloc] initWithContentsOfFile:str];
+    else
+    {
+      img = [NSImage imageNamed:str];
+      if (img) [img retain];
+    }
+    [str release];
+  }
+  
+  return img;
+}
+
+  
+HCURSOR SWELL_LoadCursorFromFile(const char *fn)
+{
+  POINT hotspot={0,};
+  NSImage *img = swell_imageFromCursorString(fn,&hotspot);    
+  if (img)
+  {      
+    HCURSOR ret=(HCURSOR)[[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint(hotspot.x,hotspot.y)];      
+    [img release];
+    return ret;
+  }
+  return NULL;
+}
+  
+// todo: support for loading from file
+HCURSOR SWELL_LoadCursor(const char *_idx)
+{
+  if (_idx == IDC_NO||_idx==IDC_SIZENWSE || _idx == IDC_SIZENESW || _idx == IDC_SIZEALL) return (HCURSOR) MakeSWELLSystemCursor(_idx);
+  if (_idx == IDC_SIZEWE) return (HCURSOR)[NSCursor resizeLeftRightCursor];
+  if (_idx == IDC_SIZENS) return (HCURSOR)[NSCursor resizeUpDownCursor];
+  if (_idx == IDC_ARROW) return (HCURSOR)[NSCursor arrowCursor];
+  if (_idx == IDC_HAND) return (HCURSOR)[NSCursor openHandCursor];
+  if (_idx == IDC_UPARROW) return (HCURSOR)[NSCursor resizeUpCursor];
+  if (_idx == IDC_IBEAM) return (HCURSOR)[NSCursor IBeamCursor];
+  
+  // search registered cursor list
   SWELL_CursorResourceIndex *p = SWELL_curmodule_cursorresource_head;
   while (p)
   {
-    if (p->resid == idx)
+    if (p->resid == _idx)
     {
       if (p->cachedCursor) return p->cachedCursor;
       
-      NSString *str = (NSString *)SWELL_CStringToCFString(p->resname);     
-      NSImage *img = [NSImage imageNamed:str];
-      [str release];
+      NSImage *img = swell_imageFromCursorString(p->resname,&p->hotspot);    
       if (img)
       {      
-        return p->cachedCursor=(HCURSOR)[[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint(p->hotspot.x,p->hotspot.y)];
+        p->cachedCursor=(HCURSOR)[[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint(p->hotspot.x,p->hotspot.y)];      
+        [img release];
+        return p->cachedCursor;
       }
     }
     p=p->_next;
   }
-  // search registered cursor list here
   return 0;
 }
 
@@ -399,24 +508,31 @@ HCURSOR SWELL_GetLastSetCursor()
   return m_last_setcursor;
 }
 
-
+static POINT g_swell_mouse_relmode_curpos; // stored in osx-native coordinates (y=0=top of screen)
 static bool g_swell_mouse_relmode;
-static bool g_swell_mouse_relmode_synergydet; // only used when synergy is detected on hidden mouse mode
-static bool g_swell_last_set_valid;
-static POINT g_swell_last_set_pos;
+
 
 
 void GetCursorPos(POINT *pt)
 {
+  if (g_swell_mouse_relmode)
+  {
+    *pt=g_swell_mouse_relmode_curpos;
+    return;
+  }
   NSPoint localpt=[NSEvent mouseLocation];
-  pt->x=(int)localpt.x;
-  pt->y=(int)localpt.y;
+  pt->x=(int)floor(localpt.x);
+  pt->y=-(int)floor(-localpt.y); // floor() is used with negative sign, effectively ceil(), because screen coordinates are flipped and everywhere else we use nonflipped rounding
 }
 
 DWORD GetMessagePos()
 {  
+  if (g_swell_mouse_relmode)
+  {
+    return MAKELONG((int)g_swell_mouse_relmode_curpos.x,(int)g_swell_mouse_relmode_curpos.y);
+  }
   NSPoint localpt=[NSEvent mouseLocation];
-  return MAKELONG((int)localpt.x, (int)localpt.y);
+  return MAKELONG((int)floor(localpt.x), -(int)floor(-localpt.y)); // floor() is used with negative sign, effectively ceil(), because screen coordinates are flipped and everywhere else we use nonflipped rounding
 }
 
 
@@ -426,22 +542,15 @@ NSPoint swellProcessMouseEvent(int msg, NSView *view, NSEvent *event)
   {
     int idx=(int)[event deltaX];
     int idy=(int)[event deltaY];
-    NSPoint localpt=[event locationInWindow];
-    localpt=[view convertPoint:localpt fromView:nil];
-    POINT p={(int)localpt.x,(int)localpt.y};
-    ClientToScreen((HWND)view,&p);
-    
-     // if deltas set, and the cursor actually moved, then it must be synergy
-    if (!g_swell_mouse_relmode_synergydet && g_swell_last_set_valid && (idx||idy) && g_swell_last_set_pos.x+idx == p.x && g_swell_last_set_pos.y-idy == p.y)
-    {
-      g_swell_mouse_relmode_synergydet=true;
-    }
-    
-    if (g_swell_mouse_relmode_synergydet) idx=idy=0;      
-    else if (idx||idy) SetCursorPos(p.x+idx,p.y-idy);
-    return NSMakePoint(localpt.x+idx,localpt.y+idy);
+    g_swell_mouse_relmode_curpos.x += idx;
+    g_swell_mouse_relmode_curpos.y -= idy;
   }
-  
+  if (g_swell_mouse_relmode) 
+  {
+    POINT p=g_swell_mouse_relmode_curpos;
+    ScreenToClient((HWND)view,&p);
+    return NSMakePoint(p.x,p.y);
+  }
   NSPoint localpt=[event locationInWindow];
   return [view convertPoint:localpt fromView:nil];
 }
@@ -456,6 +565,7 @@ int SWELL_ShowCursor(BOOL bShow)
   m_curvis_cnt += (bShow?1:-1);
   if (m_curvis_cnt==-1 && !bShow) 
   {
+    GetCursorPos(&g_swell_mouse_relmode_curpos);
     CGDisplayHideCursor(kCGDirectMainDisplay);
     CGAssociateMouseAndMouseCursorPosition(false);
     g_swell_mouse_relmode=true;
@@ -465,25 +575,27 @@ int SWELL_ShowCursor(BOOL bShow)
     CGDisplayShowCursor(kCGDirectMainDisplay);
     CGAssociateMouseAndMouseCursorPosition(true);
     g_swell_mouse_relmode=false;
+    SetCursorPos(g_swell_mouse_relmode_curpos.x,g_swell_mouse_relmode_curpos.y);
   }  
-  g_swell_mouse_relmode_synergydet=false;
-  g_swell_last_set_valid=false;
   return m_curvis_cnt;
 }
 
 
 BOOL SWELL_SetCursorPos(int X, int Y)
 {  
-  if (g_swell_mouse_relmode_synergydet) return false;
+  if (g_swell_mouse_relmode)
+  {
+    g_swell_mouse_relmode_curpos.x=X;
+    g_swell_mouse_relmode_curpos.y=Y;
+    return TRUE;
+  }
 
-  g_swell_last_set_pos.x = X;
-  g_swell_last_set_pos.y = Y;
-  g_swell_last_set_valid=true;
 
   int h=CGDisplayPixelsHigh(CGMainDisplayID());
   CGPoint pos=CGPointMake(X,h-Y);
   return CGWarpMouseCursorPosition(pos)==kCGErrorSuccess;
 }
+
 
 
 #endif

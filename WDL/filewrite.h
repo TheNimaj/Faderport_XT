@@ -120,7 +120,7 @@ public:
 
 
 public:
-  WDL_FileWrite(const char *filename, int allow_async=1, int bufsize=8192, int minbufs=16, int maxbufs=16) // async==2 is unbuffered
+  WDL_FileWrite(const char *filename, int allow_async=1, int bufsize=8192, int minbufs=16, int maxbufs=16, bool wantAppendTo=false, bool noFileLocking=false) // async==2 is unbuffered
   {
     m_file_position=0;
     m_file_max_position=0;
@@ -148,6 +148,8 @@ public:
 #endif
 
     int rwflag = GENERIC_WRITE;
+    int createFlag= wantAppendTo?OPEN_ALWAYS:CREATE_ALWAYS;
+    int shareFlag = noFileLocking ? (FILE_SHARE_READ|FILE_SHARE_WRITE) : FILE_SHARE_READ;
     int flag = FILE_ATTRIBUTE_NORMAL;
 
     if (m_async)
@@ -171,19 +173,19 @@ public:
           WDL_TypedBuf<WCHAR> wfilename;
           wfilename.Resize(szreq+10);
           if (MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,filename,-1,wfilename.Get(),wfilename.GetSize()))
-            m_fh = CreateFileW(wfilename.Get(),rwflag,FILE_SHARE_READ,NULL,CREATE_ALWAYS,flag,NULL);
+            m_fh = CreateFileW(wfilename.Get(),rwflag,shareFlag,NULL,createFlag,flag,NULL);
         }
         else
         {
           WCHAR wfilename[1024];
           if (MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,filename,-1,wfilename,1024))
-            m_fh = CreateFileW(wfilename,rwflag,FILE_SHARE_READ,NULL,CREATE_ALWAYS,flag,NULL);
+            m_fh = CreateFileW(wfilename,rwflag,shareFlag,NULL,createFlag,flag,NULL);
         }
       }
       
       if (m_fh == INVALID_HANDLE_VALUE)
 #endif
-        m_fh = CreateFileA(filename,rwflag,FILE_SHARE_READ,NULL,CREATE_ALWAYS,flag,NULL);
+        m_fh = CreateFileA(filename,rwflag,shareFlag,NULL,createFlag,flag,NULL);
     }
 
     if (m_async && m_fh != INVALID_HANDLE_VALUE)
@@ -199,25 +201,44 @@ public:
       }
     }
 
+    if (m_fh != INVALID_HANDLE_VALUE && wantAppendTo)
+      SetPosition(GetSize());
+ 
 #elif defined(WDL_POSIX_NATIVE_WRITE)
     m_bufspace_used=0;
     m_filedes_locked=false;
     m_filedes=open(filename,O_WRONLY|O_CREAT,0644);
     if (m_filedes>=0)
     {
-      int preverr;
-      if ((preverr=flock(m_filedes,LOCK_EX|LOCK_NB))<0 && errno == EWOULDBLOCK) // try to get exclusive, at least for a moment
+
+      if (!noFileLocking)
       {
-        // FAILED exclusive locking
-        close(m_filedes); 
-        m_filedes=-1;
+        m_filedes_locked = !flock(m_filedes,LOCK_EX|LOCK_NB);
+        if (!m_filedes_locked)
+        {
+          // this check might not be necessary, it might be sufficient to just fail and close if no exclusive lock possible
+          if (errno == EWOULDBLOCK)  
+          {
+            // FAILED exclusive locking because someone else has a lock
+            close(m_filedes); 
+            m_filedes=-1;
+          }
+          else  // failed for some other reason, try to keep a shared lock at least
+          {
+            m_filedes_locked = !flock(m_filedes,LOCK_SH|LOCK_NB);
+          }
+        }
       }
-      else 
+
+      if (m_filedes>=0)
       {
-        if (flock(m_filedes,LOCK_SH|LOCK_NB)>=0 || // return to shared lock
-            preverr>=0) m_filedes_locked=true;
+        if (!wantAppendTo) ftruncate(m_filedes,0);
+        else
+        {
+          struct stat st;
+          if (!fstat(m_filedes,&st))  SetPosition(st.st_size);
+        }
       }
-      if (m_filedes>=0) ftruncate(m_filedes,0);
 
       
 #ifdef __APPLE__
@@ -226,7 +247,9 @@ public:
     }
     if (minbufs * bufsize >= 16384) m_bufspace.Resize((minbufs*bufsize+4095)&~4095);
 #else
-    m_fp=fopen(filename,"wb");
+    m_fp=fopen(filename,wantAppendTo ? "a+b" : "wb");
+    if (wantAppendTo && m_fp) 
+      fseek(m_fp,0,SEEK_END);
 #endif
   }
 
@@ -562,7 +585,7 @@ public:
     if (m_file_position>m_file_max_position) m_file_max_position=m_file_position;
 
     LONG high=(LONG) (m_file_position>>32);
-    return SetFilePointer(m_fh,(LONG)(m_file_position&0xFFFFFFFFi64),&high,FILE_BEGIN)==0xFFFFFFFF && GetLastError() != NO_ERROR;
+    return SetFilePointer(m_fh,(LONG)(m_file_position&((WDL_FILEWRITE_POSTYPE)0xFFFFFFFF)),&high,FILE_BEGIN)==0xFFFFFFFF && GetLastError() != NO_ERROR;
 #elif defined(WDL_POSIX_NATIVE_WRITE)
 
     if (m_filedes < 0) return true;
@@ -598,18 +621,18 @@ public:
 #elif defined(WDL_POSIX_NATIVE_WRITE)
   int GetHandle() { return m_filedes; }
 
-  int m_filedes;
-  bool m_filedes_locked;
-
   WDL_HeapBuf m_bufspace;
   int m_bufspace_used;
+  int m_filedes;
+
+  bool m_filedes_locked;
 
 #else
   int GetHandle() { return fileno(m_fp); }
  
   FILE *m_fp;
 #endif
-};
+} WDL_FIXALIGN;
 
 
 

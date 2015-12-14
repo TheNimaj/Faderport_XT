@@ -15,11 +15,6 @@
 
 using namespace std;
 
-#define FPB_RFLAG1 (1<<0)
-#define FPB_RFLAG2 (1<<1)
-#define FPB_RFLAG3 (1<<2)
-#define FPB_RFLAG_MASK FPB_RFLAG1 | FPB_RFLAG2 | FPB_RFLAG3
-
 
 CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 {
@@ -46,6 +41,7 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 	m_fx_waiting = false;
 	
 	m_faderport_reload = 0;
+    
 	//create midi hardware access
 	m_midiin = m_midi_in_dev >= 0 ? CreateMIDIInput(m_midi_in_dev) : NULL;
 	m_midiout = m_midi_out_dev >= 0 ? CreateThreadedMIDIOutput(CreateMIDIOutput(m_midi_out_dev,false,NULL)) : NULL;
@@ -152,7 +148,14 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 		// Pan tracks support: karbo 12.2.2012
 		else if(g_pan_scroll_tracks && !m_faderport_shift) //Allow shift to adjust pan? --nimaj 12.4.2015
 		{
+            
 			m_pan_dir = action->state == 0x1 ? true : false;
+            
+            if (m_pan_dir==false) // scroll prev track
+                AdjustBankOffset((m_faderport_bank) ? -8 : -1, true);
+            else  // scroll next track
+                AdjustBankOffset((m_faderport_bank) ? 8 : 1, true);
+            
 			m_track_waiting = true;
 		}
 		else
@@ -833,7 +836,7 @@ void CSurf_FaderPort::Run()
 				if(m_faderport_rew) CSurf_OnRew(1);
 			}
 		}
-		//Cause Bank to blink if we're in fxmode
+		
 		static DWORD then = timeGetTime();
 		DWORD now = timeGetTime();
 
@@ -841,11 +844,6 @@ void CSurf_FaderPort::Run()
 		{
 			if (now >= m_pan_lasttouch + 250 && m_track_waiting)
 			{
-				if (m_pan_dir==false) // scroll prev track
-					AdjustBankOffset((m_faderport_bank) ? -8 : -1, true);
-				else  // scroll next track
-					AdjustBankOffset((m_faderport_bank) ? 8 : 1, true);
-				
 				TrackList_UpdateAllExternalSurfaces();
 				m_track_waiting = false;
 			}
@@ -853,6 +851,7 @@ void CSurf_FaderPort::Run()
 
 		if(m_faderport_fxmode)
 		{
+            //Cause Bank to blink if we're in fxmode
 			if (now  >= then + 500)
 			{
 				then = timeGetTime();

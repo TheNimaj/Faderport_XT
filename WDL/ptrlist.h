@@ -39,9 +39,10 @@
 template<class PTRTYPE> class WDL_PtrList 
 {
   public:
-    WDL_PtrList(int defgran=4096) : m_hb(defgran WDL_HEAPBUF_TRACEPARM("WDL_PtrList"))
+    explicit WDL_PtrList(int defgran=4096) : m_hb(defgran WDL_HEAPBUF_TRACEPARM("WDL_PtrList"))
     {
     }
+
     ~WDL_PtrList()
     {
     }
@@ -99,7 +100,17 @@ template<class PTRTYPE> class WDL_PtrList
       return Insert(LowerBound(item,&m,compar),item);
     }
 
-    void Delete(int index, bool wantDelete=false, void (*delfunc)(void *)=NULL)
+    void Delete(int index)
+    {
+      PTRTYPE **list=GetList();
+      int size=GetSize();
+      if (list && index >= 0 && index < size)
+      {
+        if (index < --size) memmove(list+index,list+index+1,sizeof(PTRTYPE *)*(size-index));
+        m_hb.Resize(size * sizeof(PTRTYPE*),false);
+      }
+    }
+    void Delete(int index, bool wantDelete, void (*delfunc)(void *)=NULL)
     {
       PTRTYPE **list=GetList();
       int size=GetSize();
@@ -114,19 +125,48 @@ template<class PTRTYPE> class WDL_PtrList
         m_hb.Resize(size * sizeof(PTRTYPE*),false);
       }
     }
-    void Empty(bool wantDelete=false, void (*delfunc)(void *)=NULL)
+    void Delete(int index, void (*delfunc)(PTRTYPE *))
+    {
+      PTRTYPE **list=GetList();
+      int size=GetSize();
+      if (list && index >= 0 && index < size)
+      {
+        if (delfunc) delfunc(Get(index));
+        if (index < --size) memmove(list+index,list+index+1,sizeof(PTRTYPE *)*(size-index));
+        m_hb.Resize(size * sizeof(PTRTYPE*),false);
+      }
+    }
+    void Empty()
+    {
+      m_hb.Resize(0,false);
+    }
+    void Empty(bool wantDelete, void (*delfunc)(void *)=NULL)
     {
       if (wantDelete)
       {
         int x;
         for (x = GetSize()-1; x >= 0; x --)
         {
-          if (delfunc) delfunc(Get(x));
-          else delete Get(x);
+          PTRTYPE* p = Get(x);
+          if (p)
+          {
+            if (delfunc) delfunc(p);
+            else delete p;
+          }
           m_hb.Resize(x*sizeof(PTRTYPE *),false);
         }
       }
       m_hb.Resize(0,false);
+    }
+    void Empty(void (*delfunc)(PTRTYPE *))
+    {
+      int x;
+      for (x = GetSize()-1; x >= 0; x --)
+      {
+        PTRTYPE* p = Get(x);
+        if (delfunc && p) delfunc(p);
+        m_hb.Resize(x*sizeof(PTRTYPE *),false);
+      }
     }
     void EmptySafe(bool wantDelete=false,void (*delfunc)(void *)=NULL)
     {
@@ -164,6 +204,19 @@ template<class PTRTYPE> class WDL_PtrList
       return a;
     }
 
+};
+
+
+template<class PTRTYPE> class WDL_PtrList_DeleteOnDestroy : public WDL_PtrList<PTRTYPE>
+{
+public:
+  explicit WDL_PtrList_DeleteOnDestroy(void (*delfunc)(void *)=NULL, int defgran=4096) : WDL_PtrList<PTRTYPE>(defgran), m_delfunc(delfunc) {  } 
+  ~WDL_PtrList_DeleteOnDestroy()
+  {
+    WDL_PtrList<PTRTYPE>::EmptySafe(true,m_delfunc);
+  }
+private:
+  void (*m_delfunc)(void *);
 };
 
 #endif

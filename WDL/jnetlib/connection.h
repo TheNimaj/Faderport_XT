@@ -72,7 +72,7 @@ class JNL_IConnection
 
     virtual void run(int max_send_bytes=-1, int max_recv_bytes=-1, int *bytes_sent=NULL, int *bytes_rcvd=NULL)=0;
     virtual int  get_state()=0;
-    virtual char *get_errstr()=0;
+    virtual const char *get_errstr()=0;
 
     virtual void close(int quick=0)=0;
     virtual void flush_send(void)=0;
@@ -92,8 +92,8 @@ class JNL_IConnection
                                               // the connection has.)
     virtual int peek_bytes(void *data, int maxlength)=0; // returns bytes peeked
 
-    virtual unsigned long get_interface(void)=0;        // this returns the interface the connection is on
-    virtual unsigned long get_remote(void)=0; // remote host ip.
+    virtual unsigned int get_interface(void)=0;        // this returns the interface the connection is on
+    virtual unsigned int get_remote(void)=0; // remote host ip.
     virtual short get_remote_port(void)=0; // this returns the remote port of connection
 
     virtual void set_interface(int useInterface)=0; // call before connect if needed
@@ -129,7 +129,7 @@ class JNL_Connection JNL_Connection_PARENTDEF
 
     void run(int max_send_bytes=-1, int max_recv_bytes=-1, int *bytes_sent=NULL, int *bytes_rcvd=NULL);
     int  get_state() { return m_state; }
-    char *get_errstr() { return m_errorstr; }
+    const char *get_errstr() { return m_errorstr; }
 
     void close(int quick=0);
     void flush_send(void) { m_send_len=m_send_pos=0; }
@@ -150,8 +150,8 @@ class JNL_Connection JNL_Connection_PARENTDEF
                                               // the connection has.)
     int peek_bytes(void *data, int maxlength); // returns bytes peeked
 
-    unsigned long get_interface(void);        // this returns the interface the connection is on
-    unsigned long get_remote(void); // remote host ip.
+    unsigned int get_interface(void);        // this returns the interface the connection is on
+    unsigned int get_remote(void); // remote host ip.
     short get_remote_port(void); // this returns the remote port of connection
   
     void set_interface(int useInterface); // call before connect if needed
@@ -177,7 +177,7 @@ class JNL_Connection JNL_Connection_PARENTDEF
     int m_dns_owned;
 
     state m_state;
-    char *m_errorstr;
+    const char *m_errorstr;
 
     int getbfromrecv(int pos, int remove); // used by recv_line*
 

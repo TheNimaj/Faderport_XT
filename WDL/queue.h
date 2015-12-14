@@ -54,15 +54,11 @@ public:
     if (m_pos >= olen) m_pos=olen=0; // if queue is empty then autoreset it
 
     void *obuf=m_hb.Resize(olen+len,false);
-    if (!obuf) return 0;
+    if (m_hb.GetSize() != olen+len) return NULL;
+
     char* newbuf = (char*) obuf + olen;
     if (buf) memcpy(newbuf,buf,len);
     return newbuf; 
-  }
-
-  int GetSize()
-  {
-    return m_hb.GetSize()-m_pos;
   }
 
   template <class T> T* GetT(T* val=0)
@@ -92,7 +88,11 @@ public:
     return m_hb.Get();
   }
 
-  int Available() { return m_hb.GetSize() - m_pos; }
+  int GetSize()
+  {
+    return m_hb.GetSize()-m_pos;
+  }
+  int Available() { return GetSize(); }
 
   void Clear()
   {
@@ -199,6 +199,7 @@ public:
 private:
   WDL_HeapBuf m_hb;
   int m_pos;
+  int __pad; // keep 8 byte aligned
 };
 
 template <class T> class WDL_TypedQueue
@@ -218,11 +219,6 @@ public:
     return (T*) ((char*)obuf+olen);
   }
 
-  int GetSize()
-  {
-    return (m_hb.GetSize()-m_pos)/sizeof(T);
-  }
-
   T *Get()
   {
     void *buf=m_hb.Get();
@@ -230,7 +226,11 @@ public:
     return NULL;
   }
 
-  int Available() { return (m_hb.GetSize() - m_pos)/sizeof(T); }
+  int GetSize()
+  {
+    return (m_hb.GetSize()-m_pos)/sizeof(T);
+  }
+  int Available() { return GetSize(); }
 
   void Clear()
   {
@@ -266,6 +266,7 @@ public:
 private:
   WDL_HeapBuf m_hb;
   int m_pos;
+  int __pad; // keep 8 byte aligned
 };
 
 #endif

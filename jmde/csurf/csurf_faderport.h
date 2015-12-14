@@ -111,6 +111,13 @@ enum FaderPortButton
     FPB_FOOTSWITCH = 126
 };
 
+enum FP_RFlags
+{
+    FPB_RFLAG1 = (1<<0),
+    FPB_RFLAG2 = (1<<1),
+    FPB_RFLAG3 = (1<<2),
+    FPB_RFLAG_MASK = FPB_RFLAG1 | FPB_RFLAG2 | FPB_RFLAG3
+};
 struct FaderPortAction
 {
     FaderPortAction(MIDI_event_t* evt)
