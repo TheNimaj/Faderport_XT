@@ -1,0 +1,1138 @@
+4	Track: Set Volume for Selected Track(s) (midi CC only)
+5	Track: Set Pan for Selected Track(s) (midi CC only)
+6	Track: Toggle Mute for Selected Track(s)
+7	Track: Toggle Solo for Selected Track(s)
+8	Track: Toggle FX Bypass for Selected Track(s)
+9	Track: Toggle Record Arm for Selected Track(s)
+12	Track: Set Volume for Master Track (midi CC only)
+13	Track: Set Pan for Master Track (midi CC only)
+14	Track: Toggle Mute for Master Track
+15	Track: Toggle Solo for Master Track
+16	Track: Toggle FX Bypass for Master Track
+20	Track: Set Volume for Track 01 (midi CC only)
+21	Track: Set Pan for Track 01 (midi CC only)
+22	Track: Toggle Mute for Track 01
+23	Track: Toggle Solo for Track 01
+24	Track: Toggle FX Bypass for Track 01
+25	Track: Toggle Record Arm for Track 01
+28	Track: Set Volume for Track 02 (midi CC only)
+29	Track: Set Pan for Track 02 (midi CC only)
+30	Track: Toggle Mute for Track 02
+31	Track: Toggle Solo for Track 02
+32	Track: Toggle FX Bypass for Track 02
+33	Track: Toggle Record Arm for Track 02
+36	Track: Set Volume for Track 03 (midi CC only)
+37	Track: Set Pan for Track 03 (midi CC only)
+38	Track: Toggle Mute for Track 03
+39	Track: Toggle Solo for Track 03
+40	Track: Toggle FX Bypass for Track 03
+41	Track: Toggle Record Arm for Track 03
+44	Track: Set Volume for Track 04 (midi CC only)
+45	Track: Set Pan for Track 04 (midi CC only)
+46	Track: Toggle Mute for Track 04
+47	Track: Toggle Solo for Track 04
+48	Track: Toggle FX Bypass for Track 04
+49	Track: Toggle Record Arm for Track 04
+52	Track: Set Volume for Track 05 (midi CC only)
+53	Track: Set Pan for Track 05 (midi CC only)
+54	Track: Toggle Mute for Track 05
+55	Track: Toggle Solo for Track 05
+56	Track: Toggle FX Bypass for Track 05
+57	Track: Toggle Record Arm for Track 05
+60	Track: Set Volume for Track 06 (midi CC only)
+61	Track: Set Pan for Track 06 (midi CC only)
+62	Track: Toggle Mute for Track 06
+63	Track: Toggle Solo for Track 06
+64	Track: Toggle FX Bypass for Track 06
+65	Track: Toggle Record Arm for Track 06
+68	Track: Set Volume for Track 07 (midi CC only)
+69	Track: Set Pan for Track 07 (midi CC only)
+70	Track: Toggle Mute for Track 07
+71	Track: Toggle Solo for Track 07
+72	Track: Toggle FX Bypass for Track 07
+73	Track: Toggle Record Arm for Track 07
+76	Track: Set Volume for Track 08 (midi CC only)
+77	Track: Set Pan for Track 08 (midi CC only)
+78	Track: Toggle Mute for Track 08
+79	Track: Toggle Solo for Track 08
+80	Track: Toggle FX Bypass for Track 08
+81	Track: Toggle Record Arm for Track 08
+84	Track: Set Volume for Track 09 (midi CC only)
+85	Track: Set Pan for Track 09 (midi CC only)
+86	Track: Toggle Mute for Track 09
+87	Track: Toggle Solo for Track 09
+88	Track: Toggle FX Bypass for Track 09
+89	Track: Toggle Record Arm for Track 09
+92	Track: Set Volume for Track 10 (midi CC only)
+93	Track: Set Pan for Track 10 (midi CC only)
+94	Track: Toggle Mute for Track 10
+95	Track: Toggle Solo for Track 10
+96	Track: Toggle FX Bypass for Track 10
+97	Track: Toggle Record Arm for Track 10
+100	Track: Set Volume for Track 11 (midi CC only)
+101	Track: Set Pan for Track 11 (midi CC only)
+102	Track: Toggle Mute for Track 11
+103	Track: Toggle Solo for Track 11
+104	Track: Toggle FX Bypass for Track 11
+105	Track: Toggle Record Arm for Track 11
+108	Track: Set Volume for Track 12 (midi CC only)
+109	Track: Set Pan for Track 12 (midi CC only)
+110	Track: Toggle Mute for Track 12
+111	Track: Toggle Solo for Track 12
+112	Track: Toggle FX Bypass for Track 12
+113	Track: Toggle Record Arm for Track 12
+116	Track: Set Volume for Track 13 (midi CC only)
+117	Track: Set Pan for Track 13 (midi CC only)
+118	Track: Toggle Mute for Track 13
+119	Track: Toggle Solo for Track 13
+120	Track: Toggle FX Bypass for Track 13
+121	Track: Toggle Record Arm for Track 13
+124	Track: Set Volume for Track 14 (midi CC only)
+125	Track: Set Pan for Track 14 (midi CC only)
+126	Track: Toggle Mute for Track 14
+127	Track: Toggle Solo for Track 14
+128	Track: Toggle FX Bypass for Track 14
+129	Track: Toggle Record Arm for Track 14
+132	Track: Set Volume for Track 15 (midi CC only)
+133	Track: Set Pan for Track 15 (midi CC only)
+134	Track: Toggle Mute for Track 15
+135	Track: Toggle Solo for Track 15
+136	Track: Toggle FX Bypass for Track 15
+137	Track: Toggle Record Arm for Track 15
+140	Track: Set Volume for Track 16 (midi CC only)
+141	Track: Set Pan for Track 16 (midi CC only)
+142	Track: Toggle Mute for Track 16
+143	Track: Toggle Solo for Track 16
+144	Track: Toggle FX Bypass for Track 16
+145	Track: Toggle Record Arm for Track 16
+148	Track: Set Volume for Track 17 (midi CC only)
+149	Track: Set Pan for Track 17 (midi CC only)
+150	Track: Toggle Mute for Track 17
+151	Track: Toggle Solo for Track 17
+152	Track: Toggle FX Bypass for Track 17
+153	Track: Toggle Record Arm for Track 17
+156	Track: Set Volume for Track 18 (midi CC only)
+157	Track: Set Pan for Track 18 (midi CC only)
+158	Track: Toggle Mute for Track 18
+159	Track: Toggle Solo for Track 18
+160	Track: Toggle FX Bypass for Track 18
+161	Track: Toggle Record Arm for Track 18
+164	Track: Set Volume for Track 19 (midi CC only)
+165	Track: Set Pan for Track 19 (midi CC only)
+166	Track: Toggle Mute for Track 19
+167	Track: Toggle Solo for Track 19
+168	Track: Toggle FX Bypass for Track 19
+169	Track: Toggle Record Arm for Track 19
+172	Track: Set Volume for Track 20 (midi CC only)
+173	Track: Set Pan for Track 20 (midi CC only)
+174	Track: Toggle Mute for Track 20
+175	Track: Toggle Solo for Track 20
+176	Track: Toggle FX Bypass for Track 20
+177	Track: Toggle Record Arm for Track 20
+180	Track: Set Volume for Track 21 (midi CC only)
+181	Track: Set Pan for Track 21 (midi CC only)
+182	Track: Toggle Mute for Track 21
+183	Track: Toggle Solo for Track 21
+184	Track: Toggle FX Bypass for Track 21
+185	Track: Toggle Record Arm for Track 21
+188	Track: Set Volume for Track 22 (midi CC only)
+189	Track: Set Pan for Track 22 (midi CC only)
+190	Track: Toggle Mute for Track 22
+191	Track: Toggle Solo for Track 22
+192	Track: Toggle FX Bypass for Track 22
+193	Track: Toggle Record Arm for Track 22
+196	Track: Set Volume for Track 23 (midi CC only)
+197	Track: Set Pan for Track 23 (midi CC only)
+198	Track: Toggle Mute for Track 23
+199	Track: Toggle Solo for Track 23
+200	Track: Toggle FX Bypass for Track 23
+201	Track: Toggle Record Arm for Track 23
+204	Track: Set Volume for Track 24 (midi CC only)
+205	Track: Set Pan for Track 24 (midi CC only)
+206	Track: Toggle Mute for Track 24
+207	Track: Toggle Solo for Track 24
+208	Track: Toggle FX Bypass for Track 24
+209	Track: Toggle Record Arm for Track 24
+212	Track: Set Volume for Track 25 (midi CC only)
+213	Track: Set Pan for Track 25 (midi CC only)
+214	Track: Toggle Mute for Track 25
+215	Track: Toggle Solo for Track 25
+216	Track: Toggle FX Bypass for Track 25
+217	Track: Toggle Record Arm for Track 25
+220	Track: Set Volume for Track 26 (midi CC only)
+221	Track: Set Pan for Track 26 (midi CC only)
+222	Track: Toggle Mute for Track 26
+223	Track: Toggle Solo for Track 26
+224	Track: Toggle FX Bypass for Track 26
+225	Track: Toggle Record Arm for Track 26
+228	Track: Set Volume for Track 27 (midi CC only)
+229	Track: Set Pan for Track 27 (midi CC only)
+230	Track: Toggle Mute for Track 27
+231	Track: Toggle Solo for Track 27
+232	Track: Toggle FX Bypass for Track 27
+233	Track: Toggle Record Arm for Track 27
+236	Track: Set Volume for Track 28 (midi CC only)
+237	Track: Set Pan for Track 28 (midi CC only)
+238	Track: Toggle Mute for Track 28
+239	Track: Toggle Solo for Track 28
+240	Track: Toggle FX Bypass for Track 28
+241	Track: Toggle Record Arm for Track 28
+244	Track: Set Volume for Track 29 (midi CC only)
+245	Track: Set Pan for Track 29 (midi CC only)
+246	Track: Toggle Mute for Track 29
+247	Track: Toggle Solo for Track 29
+248	Track: Toggle FX Bypass for Track 29
+249	Track: Toggle Record Arm for Track 29
+252	Track: Set Volume for Track 30 (midi CC only)
+253	Track: Set Pan for Track 30 (midi CC only)
+254	Track: Toggle Mute for Track 30
+255	Track: Toggle Solo for Track 30
+256	Track: Toggle FX Bypass for Track 30
+257	Track: Toggle Record Arm for Track 30
+260	Track: Set Volume for Track 31 (midi CC only)
+261	Track: Set Pan for Track 31 (midi CC only)
+262	Track: Toggle Mute for Track 31
+263	Track: Toggle Solo for Track 31
+264	Track: Toggle FX Bypass for Track 31
+265	Track: Toggle Record Arm for Track 31
+268	Track: Set Volume for Track 32 (midi CC only)
+269	Track: Set Pan for Track 32 (midi CC only)
+270	Track: Toggle Mute for Track 32
+271	Track: Toggle Solo for Track 32
+272	Track: Toggle FX Bypass for Track 32
+273	Track: Toggle Record Arm for Track 32
+276	Track: Set Volume for Track 33 (midi CC only)
+277	Track: Set Pan for Track 33 (midi CC only)
+278	Track: Toggle Mute for Track 33
+279	Track: Toggle Solo for Track 33
+280	Track: Toggle FX Bypass for Track 33
+281	Track: Toggle Record Arm for Track 33
+284	Track: Set Volume for Track 34 (midi CC only)
+285	Track: Set Pan for Track 34 (midi CC only)
+286	Track: Toggle Mute for Track 34
+287	Track: Toggle Solo for Track 34
+288	Track: Toggle FX Bypass for Track 34
+289	Track: Toggle Record Arm for Track 34
+292	Track: Set Volume for Track 35 (midi CC only)
+293	Track: Set Pan for Track 35 (midi CC only)
+294	Track: Toggle Mute for Track 35
+295	Track: Toggle Solo for Track 35
+296	Track: Toggle FX Bypass for Track 35
+297	Track: Toggle Record Arm for Track 35
+300	Track: Set Volume for Track 36 (midi CC only)
+301	Track: Set Pan for Track 36 (midi CC only)
+302	Track: Toggle Mute for Track 36
+303	Track: Toggle Solo for Track 36
+304	Track: Toggle FX Bypass for Track 36
+305	Track: Toggle Record Arm for Track 36
+308	Track: Set Volume for Track 37 (midi CC only)
+309	Track: Set Pan for Track 37 (midi CC only)
+310	Track: Toggle Mute for Track 37
+311	Track: Toggle Solo for Track 37
+312	Track: Toggle FX Bypass for Track 37
+313	Track: Toggle Record Arm for Track 37
+316	Track: Set Volume for Track 38 (midi CC only)
+317	Track: Set Pan for Track 38 (midi CC only)
+318	Track: Toggle Mute for Track 38
+319	Track: Toggle Solo for Track 38
+320	Track: Toggle FX Bypass for Track 38
+321	Track: Toggle Record Arm for Track 38
+324	Track: Set Volume for Track 39 (midi CC only)
+325	Track: Set Pan for Track 39 (midi CC only)
+326	Track: Toggle Mute for Track 39
+327	Track: Toggle Solo for Track 39
+328	Track: Toggle FX Bypass for Track 39
+329	Track: Toggle Record Arm for Track 39
+332	Track: Set Volume for Track 40 (midi CC only)
+333	Track: Set Pan for Track 40 (midi CC only)
+334	Track: Toggle Mute for Track 40
+335	Track: Toggle Solo for Track 40
+336	Track: Toggle FX Bypass for Track 40
+337	Track: Toggle Record Arm for Track 40
+340	Track: Set Volume for Track 41 (midi CC only)
+341	Track: Set Pan for Track 41 (midi CC only)
+342	Track: Toggle Mute for Track 41
+343	Track: Toggle Solo for Track 41
+344	Track: Toggle FX Bypass for Track 41
+345	Track: Toggle Record Arm for Track 41
+348	Track: Set Volume for Track 42 (midi CC only)
+349	Track: Set Pan for Track 42 (midi CC only)
+350	Track: Toggle Mute for Track 42
+351	Track: Toggle Solo for Track 42
+352	Track: Toggle FX Bypass for Track 42
+353	Track: Toggle Record Arm for Track 42
+356	Track: Set Volume for Track 43 (midi CC only)
+357	Track: Set Pan for Track 43 (midi CC only)
+358	Track: Toggle Mute for Track 43
+359	Track: Toggle Solo for Track 43
+360	Track: Toggle FX Bypass for Track 43
+361	Track: Toggle Record Arm for Track 43
+364	Track: Set Volume for Track 44 (midi CC only)
+365	Track: Set Pan for Track 44 (midi CC only)
+366	Track: Toggle Mute for Track 44
+367	Track: Toggle Solo for Track 44
+368	Track: Toggle FX Bypass for Track 44
+369	Track: Toggle Record Arm for Track 44
+372	Track: Set Volume for Track 45 (midi CC only)
+373	Track: Set Pan for Track 45 (midi CC only)
+374	Track: Toggle Mute for Track 45
+375	Track: Toggle Solo for Track 45
+376	Track: Toggle FX Bypass for Track 45
+377	Track: Toggle Record Arm for Track 45
+380	Track: Set Volume for Track 46 (midi CC only)
+381	Track: Set Pan for Track 46 (midi CC only)
+382	Track: Toggle Mute for Track 46
+383	Track: Toggle Solo for Track 46
+384	Track: Toggle FX Bypass for Track 46
+385	Track: Toggle Record Arm for Track 46
+388	Track: Set Volume for Track 47 (midi CC only)
+389	Track: Set Pan for Track 47 (midi CC only)
+390	Track: Toggle Mute for Track 47
+391	Track: Toggle Solo for Track 47
+392	Track: Toggle FX Bypass for Track 47
+393	Track: Toggle Record Arm for Track 47
+396	Track: Set Volume for Track 48 (midi CC only)
+397	Track: Set Pan for Track 48 (midi CC only)
+398	Track: Toggle Mute for Track 48
+399	Track: Toggle Solo for Track 48
+400	Track: Toggle FX Bypass for Track 48
+401	Track: Toggle Record Arm for Track 48
+404	Track: Set Volume for Track 49 (midi CC only)
+405	Track: Set Pan for Track 49 (midi CC only)
+406	Track: Toggle Mute for Track 49
+407	Track: Toggle Solo for Track 49
+408	Track: Toggle FX Bypass for Track 49
+409	Track: Toggle Record Arm for Track 49
+412	Track: Set Volume for Track 50 (midi CC only)
+413	Track: Set Pan for Track 50 (midi CC only)
+414	Track: Toggle Mute for Track 50
+415	Track: Toggle Solo for Track 50
+416	Track: Toggle FX Bypass for Track 50
+417	Track: Toggle Record Arm for Track 50
+420	Track: Set Volume for Track 51 (midi CC only)
+421	Track: Set Pan for Track 51 (midi CC only)
+422	Track: Toggle Mute for Track 51
+423	Track: Toggle Solo for Track 51
+424	Track: Toggle FX Bypass for Track 51
+425	Track: Toggle Record Arm for Track 51
+428	Track: Set Volume for Track 52 (midi CC only)
+429	Track: Set Pan for Track 52 (midi CC only)
+430	Track: Toggle Mute for Track 52
+431	Track: Toggle Solo for Track 52
+432	Track: Toggle FX Bypass for Track 52
+433	Track: Toggle Record Arm for Track 52
+436	Track: Set Volume for Track 53 (midi CC only)
+437	Track: Set Pan for Track 53 (midi CC only)
+438	Track: Toggle Mute for Track 53
+439	Track: Toggle Solo for Track 53
+440	Track: Toggle FX Bypass for Track 53
+441	Track: Toggle Record Arm for Track 53
+444	Track: Set Volume for Track 54 (midi CC only)
+445	Track: Set Pan for Track 54 (midi CC only)
+446	Track: Toggle Mute for Track 54
+447	Track: Toggle Solo for Track 54
+448	Track: Toggle FX Bypass for Track 54
+449	Track: Toggle Record Arm for Track 54
+452	Track: Set Volume for Track 55 (midi CC only)
+453	Track: Set Pan for Track 55 (midi CC only)
+454	Track: Toggle Mute for Track 55
+455	Track: Toggle Solo for Track 55
+456	Track: Toggle FX Bypass for Track 55
+457	Track: Toggle Record Arm for Track 55
+460	Track: Set Volume for Track 56 (midi CC only)
+461	Track: Set Pan for Track 56 (midi CC only)
+462	Track: Toggle Mute for Track 56
+463	Track: Toggle Solo for Track 56
+464	Track: Toggle FX Bypass for Track 56
+465	Track: Toggle Record Arm for Track 56
+468	Track: Set Volume for Track 57 (midi CC only)
+469	Track: Set Pan for Track 57 (midi CC only)
+470	Track: Toggle Mute for Track 57
+471	Track: Toggle Solo for Track 57
+472	Track: Toggle FX Bypass for Track 57
+473	Track: Toggle Record Arm for Track 57
+476	Track: Set Volume for Track 58 (midi CC only)
+477	Track: Set Pan for Track 58 (midi CC only)
+478	Track: Toggle Mute for Track 58
+479	Track: Toggle Solo for Track 58
+480	Track: Toggle FX Bypass for Track 58
+481	Track: Toggle Record Arm for Track 58
+484	Track: Set Volume for Track 59 (midi CC only)
+485	Track: Set Pan for Track 59 (midi CC only)
+486	Track: Toggle Mute for Track 59
+487	Track: Toggle Solo for Track 59
+488	Track: Toggle FX Bypass for Track 59
+489	Track: Toggle Record Arm for Track 59
+492	Track: Set Volume for Track 60 (midi CC only)
+493	Track: Set Pan for Track 60 (midi CC only)
+494	Track: Toggle Mute for Track 60
+495	Track: Toggle Solo for Track 60
+496	Track: Toggle FX Bypass for Track 60
+497	Track: Toggle Record Arm for Track 60
+500	Track: Set Volume for Track 61 (midi CC only)
+501	Track: Set Pan for Track 61 (midi CC only)
+502	Track: Toggle Mute for Track 61
+503	Track: Toggle Solo for Track 61
+504	Track: Toggle FX Bypass for Track 61
+505	Track: Toggle Record Arm for Track 61
+508	Track: Set Volume for Track 62 (midi CC only)
+509	Track: Set Pan for Track 62 (midi CC only)
+510	Track: Toggle Mute for Track 62
+511	Track: Toggle Solo for Track 62
+512	Track: Toggle FX Bypass for Track 62
+513	Track: Toggle Record Arm for Track 62
+516	Track: Set Volume for Track 63 (midi CC only)
+517	Track: Set Pan for Track 63 (midi CC only)
+518	Track: Toggle Mute for Track 63
+519	Track: Toggle Solo for Track 63
+520	Track: Toggle FX Bypass for Track 63
+521	Track: Toggle Record Arm for Track 63
+524	Track: Set Volume for Track 64 (midi CC only)
+525	Track: Set Pan for Track 64 (midi CC only)
+526	Track: Toggle Mute for Track 64
+527	Track: Toggle Solo for Track 64
+528	Track: Toggle FX Bypass for Track 64
+529	Track: Toggle Record Arm for Track 64
+532	Track: Set Volume for Track 65 (midi CC only)
+533	Track: Set Pan for Track 65 (midi CC only)
+534	Track: Toggle Mute for Track 65
+535	Track: Toggle Solo for Track 65
+536	Track: Toggle FX Bypass for Track 65
+537	Track: Toggle Record Arm for Track 65
+540	Track: Set Volume for Track 66 (midi CC only)
+541	Track: Set Pan for Track 66 (midi CC only)
+542	Track: Toggle Mute for Track 66
+543	Track: Toggle Solo for Track 66
+544	Track: Toggle FX Bypass for Track 66
+545	Track: Toggle Record Arm for Track 66
+548	Track: Set Volume for Track 67 (midi CC only)
+549	Track: Set Pan for Track 67 (midi CC only)
+550	Track: Toggle Mute for Track 67
+551	Track: Toggle Solo for Track 67
+552	Track: Toggle FX Bypass for Track 67
+553	Track: Toggle Record Arm for Track 67
+556	Track: Set Volume for Track 68 (midi CC only)
+557	Track: Set Pan for Track 68 (midi CC only)
+558	Track: Toggle Mute for Track 68
+559	Track: Toggle Solo for Track 68
+560	Track: Toggle FX Bypass for Track 68
+561	Track: Toggle Record Arm for Track 68
+564	Track: Set Volume for Track 69 (midi CC only)
+565	Track: Set Pan for Track 69 (midi CC only)
+566	Track: Toggle Mute for Track 69
+567	Track: Toggle Solo for Track 69
+568	Track: Toggle FX Bypass for Track 69
+569	Track: Toggle Record Arm for Track 69
+572	Track: Set Volume for Track 70 (midi CC only)
+573	Track: Set Pan for Track 70 (midi CC only)
+574	Track: Toggle Mute for Track 70
+575	Track: Toggle Solo for Track 70
+576	Track: Toggle FX Bypass for Track 70
+577	Track: Toggle Record Arm for Track 70
+580	Track: Set Volume for Track 71 (midi CC only)
+581	Track: Set Pan for Track 71 (midi CC only)
+582	Track: Toggle Mute for Track 71
+583	Track: Toggle Solo for Track 71
+584	Track: Toggle FX Bypass for Track 71
+585	Track: Toggle Record Arm for Track 71
+588	Track: Set Volume for Track 72 (midi CC only)
+589	Track: Set Pan for Track 72 (midi CC only)
+590	Track: Toggle Mute for Track 72
+591	Track: Toggle Solo for Track 72
+592	Track: Toggle FX Bypass for Track 72
+593	Track: Toggle Record Arm for Track 72
+596	Track: Set Volume for Track 73 (midi CC only)
+597	Track: Set Pan for Track 73 (midi CC only)
+598	Track: Toggle Mute for Track 73
+599	Track: Toggle Solo for Track 73
+600	Track: Toggle FX Bypass for Track 73
+601	Track: Toggle Record Arm for Track 73
+604	Track: Set Volume for Track 74 (midi CC only)
+605	Track: Set Pan for Track 74 (midi CC only)
+606	Track: Toggle Mute for Track 74
+607	Track: Toggle Solo for Track 74
+608	Track: Toggle FX Bypass for Track 74
+609	Track: Toggle Record Arm for Track 74
+612	Track: Set Volume for Track 75 (midi CC only)
+613	Track: Set Pan for Track 75 (midi CC only)
+614	Track: Toggle Mute for Track 75
+615	Track: Toggle Solo for Track 75
+616	Track: Toggle FX Bypass for Track 75
+617	Track: Toggle Record Arm for Track 75
+620	Track: Set Volume for Track 76 (midi CC only)
+621	Track: Set Pan for Track 76 (midi CC only)
+622	Track: Toggle Mute for Track 76
+623	Track: Toggle Solo for Track 76
+624	Track: Toggle FX Bypass for Track 76
+625	Track: Toggle Record Arm for Track 76
+628	Track: Set Volume for Track 77 (midi CC only)
+629	Track: Set Pan for Track 77 (midi CC only)
+630	Track: Toggle Mute for Track 77
+631	Track: Toggle Solo for Track 77
+632	Track: Toggle FX Bypass for Track 77
+633	Track: Toggle Record Arm for Track 77
+636	Track: Set Volume for Track 78 (midi CC only)
+637	Track: Set Pan for Track 78 (midi CC only)
+638	Track: Toggle Mute for Track 78
+639	Track: Toggle Solo for Track 78
+640	Track: Toggle FX Bypass for Track 78
+641	Track: Toggle Record Arm for Track 78
+644	Track: Set Volume for Track 79 (midi CC only)
+645	Track: Set Pan for Track 79 (midi CC only)
+646	Track: Toggle Mute for Track 79
+647	Track: Toggle Solo for Track 79
+648	Track: Toggle FX Bypass for Track 79
+649	Track: Toggle Record Arm for Track 79
+652	Track: Set Volume for Track 80 (midi CC only)
+653	Track: Set Pan for Track 80 (midi CC only)
+654	Track: Toggle Mute for Track 80
+655	Track: Toggle Solo for Track 80
+656	Track: Toggle FX Bypass for Track 80
+657	Track: Toggle Record Arm for Track 80
+660	Track: Set Volume for Track 81 (midi CC only)
+661	Track: Set Pan for Track 81 (midi CC only)
+662	Track: Toggle Mute for Track 81
+663	Track: Toggle Solo for Track 81
+664	Track: Toggle FX Bypass for Track 81
+665	Track: Toggle Record Arm for Track 81
+668	Track: Set Volume for Track 82 (midi CC only)
+669	Track: Set Pan for Track 82 (midi CC only)
+670	Track: Toggle Mute for Track 82
+671	Track: Toggle Solo for Track 82
+672	Track: Toggle FX Bypass for Track 82
+673	Track: Toggle Record Arm for Track 82
+676	Track: Set Volume for Track 83 (midi CC only)
+677	Track: Set Pan for Track 83 (midi CC only)
+678	Track: Toggle Mute for Track 83
+679	Track: Toggle Solo for Track 83
+680	Track: Toggle FX Bypass for Track 83
+681	Track: Toggle Record Arm for Track 83
+684	Track: Set Volume for Track 84 (midi CC only)
+685	Track: Set Pan for Track 84 (midi CC only)
+686	Track: Toggle Mute for Track 84
+687	Track: Toggle Solo for Track 84
+688	Track: Toggle FX Bypass for Track 84
+689	Track: Toggle Record Arm for Track 84
+692	Track: Set Volume for Track 85 (midi CC only)
+693	Track: Set Pan for Track 85 (midi CC only)
+694	Track: Toggle Mute for Track 85
+695	Track: Toggle Solo for Track 85
+696	Track: Toggle FX Bypass for Track 85
+697	Track: Toggle Record Arm for Track 85
+700	Track: Set Volume for Track 86 (midi CC only)
+701	Track: Set Pan for Track 86 (midi CC only)
+702	Track: Toggle Mute for Track 86
+703	Track: Toggle Solo for Track 86
+704	Track: Toggle FX Bypass for Track 86
+705	Track: Toggle Record Arm for Track 86
+708	Track: Set Volume for Track 87 (midi CC only)
+709	Track: Set Pan for Track 87 (midi CC only)
+710	Track: Toggle Mute for Track 87
+711	Track: Toggle Solo for Track 87
+712	Track: Toggle FX Bypass for Track 87
+713	Track: Toggle Record Arm for Track 87
+716	Track: Set Volume for Track 88 (midi CC only)
+717	Track: Set Pan for Track 88 (midi CC only)
+718	Track: Toggle Mute for Track 88
+719	Track: Toggle Solo for Track 88
+720	Track: Toggle FX Bypass for Track 88
+721	Track: Toggle Record Arm for Track 88
+724	Track: Set Volume for Track 89 (midi CC only)
+725	Track: Set Pan for Track 89 (midi CC only)
+726	Track: Toggle Mute for Track 89
+727	Track: Toggle Solo for Track 89
+728	Track: Toggle FX Bypass for Track 89
+729	Track: Toggle Record Arm for Track 89
+732	Track: Set Volume for Track 90 (midi CC only)
+733	Track: Set Pan for Track 90 (midi CC only)
+734	Track: Toggle Mute for Track 90
+735	Track: Toggle Solo for Track 90
+736	Track: Toggle FX Bypass for Track 90
+737	Track: Toggle Record Arm for Track 90
+740	Track: Set Volume for Track 91 (midi CC only)
+741	Track: Set Pan for Track 91 (midi CC only)
+742	Track: Toggle Mute for Track 91
+743	Track: Toggle Solo for Track 91
+744	Track: Toggle FX Bypass for Track 91
+745	Track: Toggle Record Arm for Track 91
+748	Track: Set Volume for Track 92 (midi CC only)
+749	Track: Set Pan for Track 92 (midi CC only)
+750	Track: Toggle Mute for Track 92
+751	Track: Toggle Solo for Track 92
+752	Track: Toggle FX Bypass for Track 92
+753	Track: Toggle Record Arm for Track 92
+756	Track: Set Volume for Track 93 (midi CC only)
+757	Track: Set Pan for Track 93 (midi CC only)
+758	Track: Toggle Mute for Track 93
+759	Track: Toggle Solo for Track 93
+760	Track: Toggle FX Bypass for Track 93
+761	Track: Toggle Record Arm for Track 93
+764	Track: Set Volume for Track 94 (midi CC only)
+765	Track: Set Pan for Track 94 (midi CC only)
+766	Track: Toggle Mute for Track 94
+767	Track: Toggle Solo for Track 94
+768	Track: Toggle FX Bypass for Track 94
+769	Track: Toggle Record Arm for Track 94
+772	Track: Set Volume for Track 95 (midi CC only)
+773	Track: Set Pan for Track 95 (midi CC only)
+774	Track: Toggle Mute for Track 95
+775	Track: Toggle Solo for Track 95
+776	Track: Toggle FX Bypass for Track 95
+777	Track: Toggle Record Arm for Track 95
+780	Track: Set Volume for Track 96 (midi CC only)
+781	Track: Set Pan for Track 96 (midi CC only)
+782	Track: Toggle Mute for Track 96
+783	Track: Toggle Solo for Track 96
+784	Track: Toggle FX Bypass for Track 96
+785	Track: Toggle Record Arm for Track 96
+788	Track: Set Volume for Track 97 (midi CC only)
+789	Track: Set Pan for Track 97 (midi CC only)
+790	Track: Toggle Mute for Track 97
+791	Track: Toggle Solo for Track 97
+792	Track: Toggle FX Bypass for Track 97
+793	Track: Toggle Record Arm for Track 97
+796	Track: Set Volume for Track 98 (midi CC only)
+797	Track: Set Pan for Track 98 (midi CC only)
+798	Track: Toggle Mute for Track 98
+799	Track: Toggle Solo for Track 98
+800	Track: Toggle FX Bypass for Track 98
+801	Track: Toggle Record Arm for Track 98
+804	Track: Set Volume for Track 99 (midi CC only)
+805	Track: Set Pan for Track 99 (midi CC only)
+806	Track: Toggle Mute for Track 99
+807	Track: Toggle Solo for Track 99
+808	Track: Toggle FX Bypass for Track 99
+809	Track: Toggle Record Arm for Track 99
+812	Track: Set Volume for Last Touched track (midi CC only)
+813	Track: Set Pan for Last Touched track (midi CC only)
+814	Track: Toggle Mute for Last Touched track
+815	Track: Toggle Solo for Last Touched track
+816	Track: Toggle FX Bypass for Last Touched track
+817	Track: Toggle Record Arm for Last Touched track
+993	View: go to track (midi CC only)
+994	View: adjust vertical zoom (midi CC only)
+995	View: adjust vertical scroll (midi CC only)
+996	View: move edit cursor (midi CC only - relative recommended)
+997	View: adjust horizontal scroll (midi CC only - relative recommended)
+998	View: adjust horizontal zoom (midi CC only)
+999	Options: Set metronome volume (midi CC only)
+1007	Transport: Play
+1008	Transport: Pause
+1011	View: Zoom out horizontal
+1012	View: Zoom in horizontal
+1013	Transport: Record
+1016	Transport: Stop
+1041	Track: cycle selected tracks folder state
+1042	Track: cycle selected folder collapsed state
+1068	Transport: Toggle repeat
+1134	Transport: tap tempo
+1135	Options -> Toggle locking
+1155	Options -> Cycle ripple editing mode
+1156	Options -> Toggle group override
+1157	Options -> Toggle snapping
+40001	Track -> Insert new track
+40004	File -> Quit REAPER
+40005	Track -> Remove selected tracks 
+40006	Item: Remove selected items
+40007	Help -> About REAPER
+40009	Item Properties: Show properties dialog for items
+40011	Item Properties: Show properties dialog for items' source
+40012	Item: Split item(s) at edit or play cursor
+40013	Insert click source
+40014	Item: Copy loop of selected portion of items
+40015	File -> Render project to disk...
+40016	Options -> Preferences...
+40017	File -> Save live output to disk (bounce)...
+40018	Insert media files...
+40020	Time Selection: Remove time selection and loop point selection
+40021	File -> Project settings...
+40022	File -> Save project as...
+40023	File -> New project
+40025	File -> Open project
+40026	File -> Save project
+40029	Edit -> Undo
+40030	Edit -> Redo
+40031	View: Zoom time selection
+40032	Item Grouping: Group items
+40033	Item Grouping: Remove items from group
+40034	Item Grouping: Select all items in group(s)
+40035	Item: Select all items/tracks/env points (depending on focus)
+40036	View -> Toggle auto-view-scroll on playback
+40037	Time Selection: Shift left (by time selection length)
+40038	Time Selection: Shift right (by time selection length)
+40039	Time Selection: Nudge left
+40040	Time Selection: Nudge right
+40041	Options -> Toggle auto-crossfading
+40042	Transport: Go to start of project
+40043	Transport: Go to end of project
+40044	Transport: Play/stop
+40047	Peaks: Build any missing peaks
+40048	Peaks: Rebuild all peaks
+40049	Time Selection: Crop project to time selection
+40050	Track -> Toggle track pre-fx volume envelope active
+40051	Track -> Toggle track pre-fx pan envelope active
+40052	Track -> Toggle track volume envelope active
+40053	Track -> Toggle track pan envelope active
+40057	Edit -> Copy items/tracks/env points (depending on focus)
+40058	Item: Paste items/tracks
+40059	Edit -> Cut items/tracks/env points (depending on focus)
+40060	Item: Copy portions of items in time selection
+40061	Item: Split item(s) at time selection
+40062	Track -> Duplicate selected tracks
+40063	File -> Spawn new instance of REAPER
+40065	Envelope: clear envelope
+40069	View: Jump to time window
+40070	Options: Envelope points move with media items
+40071	Options -> Show snap/grid settings
+40072	View -> Show undo history window
+40073	Transport: Play/pause
+40075	View: Toggle master track visible
+40076	Record: Set record mode to time selection auto-punch
+40078	View: Toggle mixer visible
+40080	Mixer: toggle show folder tracks in mixer
+40081	Mixer: toggle folder tracks grouping to left
+40082	Mixer: toggle show normal top level tracks in mixer
+40083	Mixer: toggle docking in Docker
+40084	Transport: Rewind a little bit
+40085	Transport: Fast forward a little bit
+40086	Automation: set all tracks automation mode to read
+40087	Automation: set all tracks automation mode to touch
+40088	Automation: set all tracks automation mode to trim/read
+40089	Envelope: delete all points in time selection
+40090	Automation: set all tracks automation mode to write
+40097	Peaks: Remove all peak cache files
+40098	File -> Clean current project directory
+40099	Audio device configuration...
+40100	Item: Set all media offline
+40101	Item: Set all media online
+40102	Time Selection: Move cursor left, creating time selection
+40103	Time Selection: Move cursor right, creating time selection
+40104	View: Move cursor left
+40105	View: Move cursor right
+40108	Item Properties: Normalize items
+40109	Item: Open items in primary external editor
+40110	View: Toggle track zoom to minimum height
+40111	View: Zoom in vertical
+40112	View: Zoom out vertical
+40113	View: Toggle track zoom to maximum height
+40115	Track: Nudge volume for selected tracks up
+40116	Track: Nudge volume for selected tracks down
+40117	Item Edit: Move items up one track
+40118	Item Edit: Move items down one track
+40119	Item Edit: Move items right
+40120	Item Edit: Move items left
+40121	Item Edit: Move items left, preserving timing of contents
+40122	Item Edit: Move items right, preserving timing of contents
+40123	Item Edit: Move contents of items left
+40124	Item Edit: Move contents of items right
+40125	Take: Switch items to next take
+40126	Take: Switch items to previous take
+40129	Take: Delete current take from items
+40130	Take: Delete current take from items (prompt to confirm)
+40131	Take: Crop current take in items
+40132	Item: Open item copies in primary external editor
+40138	View: Scroll view up
+40139	View: Scroll view down
+40140	View: Scroll view left
+40141	View: Scroll view right
+40142	Insert empty item
+40145	Options -> Toggle grid lines
+40150	View:Go to play position
+40151	View: Go to cursor
+40155	Peaks: Increase peaks view gain
+40156	Peaks: Decrease peaks view gain
+40157	Markers: Insert marker at current posiiton
+40160	Markers: Go to marker 10
+40161	Markers: Go to marker 1
+40162	Markers: Go to marker 2
+40163	Markers: Go to marker 3
+40164	Markers: Go to marker 4
+40165	Markers: Go to marker 5
+40166	Markers: Go to marker 6
+40167	Markers: Go to marker 7
+40168	Markers: Go to marker 8
+40169	Markers: Go to marker 9
+40171	Markers: Insert and/or edit marker at current position
+40172	Markers: Previous marker/project start
+40173	Markers: Next marker/project end
+40174	Markers: Insert region from time selection
+40175	Item Properties: Toggle items mute
+40176	Item Properties: Set items channel mode to normal
+40177	Item Properties: Set items channel mode to reverse stereo
+40178	Item Properties: Set items channel mode to mono (downmix)
+40179	Item Properties: Set items channel mode to mono (left)
+40180	Item Properties: Set items channel mode to mono (right)
+40181	Item Properties: Toggle item phase
+40182	Item: Select all items
+40183	Item Properties: Toggle items/tracks mute (depending on focus)
+40184	Item: Remove selected items/tracks/env pts (depending on focus)
+40185	File -> Consolidate tracks...
+40186	Item: Split item(s) at edit or play cursor (ignoring grouping)
+40187	Envelope: set default point shape to linear
+40188	Envelope: set default point shape to square
+40189	Envelope: set shape of selected points to linear
+40190	Envelope: set shape of selected points to square
+40196	Item: Split item(s) at play cursor
+40197	Mixer: toggle tracks with receives in mixer
+40198	Mixer: toggle tracks with receives grouping to left
+40199	Mixer: toggle show tracks in folders in mixer
+40200	Time Selection: Insert space at time selection (moving later items)
+40201	Time Selection: Remove contents of time selection (moving later items)
+40202	Item: Open items in secondary external editor
+40203	Item: Open item copies in secondary external editor
+40204	Item Properties: Pitch item up one semitone
+40205	Item Properties: Pitch item down one semitone
+40206	Item Properties: Pitch item up one cent
+40207	Item Properties: Pitch item down one cent
+40208	Insert timecode generator
+40209	Item: Apply track FX to items
+40210	Track: Copy selected tracks
+40214	Insert new MIDI item...
+40221	Mixer: toggle scroll view when tracks activated
+40222	Loop points: Set start point
+40223	Loop points: Set end point
+40224	Take: Explode takes of items across tracks
+40225	Item Edit: Grow left edge of items
+40226	Item Edit: Shrink left edge of items
+40227	Item Edit: Shrink right edge of items
+40228	Item Edit: Grow right edge of items
+40239	Options -> Toggle always on top
+40240	View -> Show performance meter window
+40251	View -> Show routing matrix window
+40252	Record: Set record mode to normal
+40253	Record: Set record mode to selected item auto-punch
+40254	Item Properties: Normalize multiple items to common gain
+40256	Markers: Insert time signature /tempo change marker at edit cursor
+40259	View: Toggle transport visible
+40266	Automation: set all tracks automation mode to latch
+40268	View -> Show navigator window
+40270	Item: Reverse items to new take
+40271	View -> Show FX browser window
+40277	Options -> Show lock settings
+40279	View -> Show Docker
+40280	Track: Mute/unmute selected tracks
+40281	Track: Solo/unsolo selected tracks
+40282	Track: Invert phase for selected tracks
+40283	Track: Nudge pan for selected tracks left
+40284	Track: Nudge pan for selected tracks right
+40285	Track: Go to next track
+40286	Track: Go to previous track
+40287	Track: Go to next track (leaving other tracks selected)
+40288	Track: Go to previous track (leaving other tracks selected)
+40289	Item: Unselect all items
+40290	Time Selection: Set time selection to selected items
+40291	Track: View FX chain for current track
+40292	Track: View envelopes for current track
+40293	Track: View I/O for current track
+40294	Track: Toggle record arming for current (last touched) track
+40295	View: Zoom out project
+40296	Track: Select all tracks
+40297	Track: Unselect all tracks
+40298	Track: Toggle FX bypass for current track
+40299	Item: Move to source preferred position
+40307	Item: Cut selected area of selected items
+40308	Help -> Keyboard Shortcuts
+40309	Options -> Ripple Editing: Off
+40310	Options -> Ripple Editing: One Track
+40311	Options -> Ripple Editing: All Tracks
+40312	Item: Remove selected area of selected items
+40313	View: attach/unattach Docker to/from main window
+40315	Item: Auto trim/split selected items...
+40316	Item: Quantize item positions to grid...
+40317	Transport: Play (with time selection skipping)
+40318	Item Navigation: Move cursor left to edge of selected item
+40319	Item Navigation: Move cursor right to edge of selected item
+40320	Time Selection: Nudge left edge left
+40321	Time Selection: Nudge left edge right
+40322	Time Selection: Nudge right edge left
+40323	Time Selection: Nudge right edge right
+40327	Visualization: Show visualization configuration
+40328	Visualization: Show visualization preferences page
+40329	Visualization: Start/stop visualization
+40330	Envelope: select points in time selection
+40331	Envelope: unselect all points
+40332	Envelope: select all points
+40333	Envelope: delete all selected points
+40334	Envelope: invert selected points
+40337	Track: Cut selected tracks
+40338	Markers: Time signature measure from time selection
+40339	Track: Unmute all tracks
+40340	Track: Unsolo all tracks
+40341	Track: Mute all tracks
+40342	Track: Bypass all FX
+40343	Track: Unbypass all FX
+40344	Track: Toggle all FX bypass
+40345	Send all notes off to all MIDI outputs/plug-ins
+40346	Toggle fullscreen
+40357	Track: Set selected track colors to custom color...
+40358	Track: Set selected track colors to random colors
+40359	Track: Set selected track colors to default
+40360	Track: Set selected track colors to one random color
+40361	Item: Apply track FX to items (mono output)
+40362	Item: Glue selected items
+40363	Options -> Show metronome settings
+40364	Options -> Toggle metronome
+40365	View: Time Unit for Ruler: MS
+40366	View: Time Unit for Ruler: Measures.Beats + MS
+40367	View: Time Unit for Ruler: Measures.Beats
+40368	View: Time Unit for Ruler: Seconds
+40369	View: Time Unit for Ruler: Samples
+40370	View: Time Unit for Ruler: Hours : Minutes : Seconds : Frames
+40371	Mixer: toggle show multiple rows when space
+40372	Mixer: toggle show multiple rows even when space to fit tracks in less rows
+40375	Item Navigation: Move cursor to next transient in selected items
+40376	Item Navigation: Move cursor to previous transient in selected items
+40377	View -> Show Virtual MIDI keyboard
+40378	View -> Show big clock window
+40379	Transport: Time Unit to Ruler
+40380	Item Properties: Set item timebase to project/track default
+40381	Options -> Switch to next color theme
+40382	Options -> Switch to previous color theme
+40383	Options -> Switch to a random color theme
+40389	Mixer: toggle show master controls on right side
+40390	Options -> Smooth seek (seeks at end of measure)
+40392	Track: Save selected tracks as track template...
+40394	File -> Save project as template...
+40400	Automation: set selected tracks automation mode to trim/read
+40401	Automation: set selected tracks automation mode to read
+40402	Automation: set selected tracks automation mode to touch
+40403	Automation: set selected tracks automation mode to write
+40404	Automation: set selected tracks automation mode to latch
+40405	Track: Render selected tracks to stem tracks (and mute originals)
+40406	Track -> Toggle track volume envelope visible
+40407	Track -> Toggle track pan envelope visible
+40408	Track -> Toggle track pre-fx volume envelope visible
+40409	Track -> Toggle track pre-fx pan envelope visible
+40410	Transport: Time Unit: MS
+40411	Transport: Time Unit: Measures.Beats
+40412	Transport: Time Unit: Seconds
+40413	Transport: Time Unit: Samples
+40414	Transport: Time Unit: Hours : Minutes : Seconds : Frames
+40415	Envelope: reset selected points to zero/center
+40416	Item Navigation: Select and move to previous item
+40417	Item Navigation: Select and move to next item
+40418	Item Navigation: Select and move to item in previous track
+40419	Item Navigation: Select and move to item in next track
+40420	Markers: Remove all markers from time selection
+40421	Item: Select all items in selected tracks
+40422	View -> Show screen sets window
+40424	Envelope: set shape of selected points to smooth
+40425	Envelope: set default point shape to smooth
+40428	Envelope: set shape of selected points to fast start
+40429	Envelope: set shape of selected points to fast end
+40430	Envelope: set default point shape to fast start
+40431	Envelope: set default point shape to fast end
+40432	Mixer: toggle show pan controls on top
+40433	Item Properties: Set item timebase to time
+40434	View: Move edit cursor to play cursor
+40435	Options -> Show all takes in lanes (when room)
+40436	Item: Apply track FX to items (MIDI output)
+40437	Item Properties: Toggle item play all takes
+40438	Take: Implode items across tracks into takes
+40439	Item: Set selected media online
+40440	Item: Set selected media offline
+40441	Peaks: Rebuild peaks for selected items
+40442	Help -> Check for new versions
+40444	Screenset: Load track view #01
+40445	Screenset: Load track view #02
+40446	Screenset: Load track view #03
+40447	Screenset: Load track view #04
+40448	Screenset: Load track view #05
+40449	Screenset: Load track view #06
+40450	Screenset: Load track view #07
+40451	Screenset: Load track view #08
+40452	Screenset: Load track view #09
+40453	Screenset: Load track view #10
+40454	Screenset: Load window set #01
+40455	Screenset: Load window set #02
+40456	Screenset: Load window set #03
+40457	Screenset: Load window set #04
+40458	Screenset: Load window set #05
+40459	Screenset: Load window set #06
+40460	Screenset: Load window set #07
+40461	Screenset: Load window set #08
+40462	Screenset: Load window set #09
+40463	Screenset: Load window set #10
+40464	Screenset: Save track view #01
+40465	Screenset: Save track view #02
+40466	Screenset: Save track view #03
+40467	Screenset: Save track view #04
+40468	Screenset: Save track view #05
+40469	Screenset: Save track view #06
+40470	Screenset: Save track view #07
+40471	Screenset: Save track view #08
+40472	Screenset: Save track view #09
+40473	Screenset: Save track view #10
+40474	Screenset: Save window set #01
+40475	Screenset: Save window set #02
+40476	Screenset: Save window set #03
+40477	Screenset: Save window set #04
+40478	Screenset: Save window set #05
+40479	Screenset: Save window set #06
+40480	Screenset: Save window set #07
+40481	Screenset: Save window set #08
+40482	Screenset: Save window set #09
+40483	Screenset: Save window set #10
+40484	Item Properties: Set item timebase to beats (position, length, rate)
+40485	Item Properties: Set item timebase to beats (position only)
+40486	Track Properties: Set track timebase to project default
+40487	Track Properties: Set track timebase to time
+40488	Track Properties: Set track timebase to beats (position, length, rate)
+40489	Track Properties: Set track timebase to beats (position only)
+40490	Track: Arm all tracks for recording
+40491	Track: Unarm all tracks for recording
+40492	Track: Set selected track record monitor to off
+40493	Track: Set selected track record monitor to on
+40494	Track: Set selected track record monitor to auto/tape
+40495	Track: Cycle selected track record monitor
+40496	Track: Set selected track record mode to input
+40497	Track: Set selected track record mode to output (stereo)
+40498	Track: Set selected track record mode to none (monitoring only)
+40499	Track: Set selected track record mode to output (stereo latency compensated)
+40500	Track: Set selected track record mode to MIDI output
+40501	Track: Set selected track record mode to output (mono)
+40502	Track: Set selected track record mode to output (mono latency compensated)
+40503	Track: Set selected track record mode to MIDI overdub
+40504	Track: Set selected track record mode to MIDI replace
+40505	Track: Select last touched track
+40507	Options -> Show overlapping items in lanes
+40508	Item: Trim selected items to selected area
+40509	Item: Fade items in to cursor
+40510	Item: Fade items out from cursor
+40511	Item: Trim items left of cursor
+40512	Item: Trim items right of cursor
+40513	View: Move edit cursor to mouse cursor
+40514	View: Move edit cursor to mouse cursor (no snapping)
+40515	Item Properties: Pitch item up one octave
+40516	Item Properties: Pitch item down one octave
+40517	Item Properties: Increase item rate by ~6% (one semitone)
+40518	Item Properties: Decrease item rate by ~6% (one semitone)
+40519	Item Properties: Increase item rate by ~0.6% (10 cents)
+40520	Item Properties: Decrease item rate by ~0.6% (10 cents)
+40521	Transport: Set play rate to 1.0
+40522	Transport: Increase play rate by ~6% (one semitone)
+40523	Transport: Decrease play rate by ~6% (one semitone)
+40524	Transport: Increase play rate by ~0.6% (10 cents)
+40525	Transport: Decrease play rate by ~0.6% (10 cents)
+40526	Transport: Apply play rate to current BPM
+40527	View: Clear all peak indicators
+40528	Item: select item under mouse cursor
+40529	Item: select item under mouse cursor (leaving other items selected)
+40530	Item: toggle selection of item under mouse cursor
+40531	Transport: show playrate control
+40532	Transport: show play state as text
+40533	Transport: center transport controls
+40534	Transport: Time Unit: Measures.Beats + MS
+40535	Track: Set all FX offline for selected tracks
+40536	Track: Set all FX online for selected tracks
+40537	Track: Render selected tracks to mono stem tracks (and mute originals)
+40541	Item: Set snap offset to cursor
+40542	Item: Set snap offset to nearest grid line
+40543	Take: Implode items on same track into takes
+40547	Item Properties: Loop section of source
+40548	Item: Heal splits in selected items
+40549	Mixer: toggle show FX inserts if space available
+40557	Mixer: toggle show sends if space available
+40566	Item Properties: Toggle item preserve pitch
+40567	Locking: clear all lock modes
+40568	Locking: set all lock modes
+40569	Locking: enable locking
+40570	Locking: disable locking
+40571	Locking: set time selection locking mode
+40572	Locking: clear time selection locking mode
+40573	Locking: toggle time selection locking mode
+40574	Locking: set full item locking mode
+40575	Locking: clear full item locking mode
+40576	Locking: toggle full item locking mode
+40577	Locking: set left/right item locking mode
+40578	Locking: clear left/right item locking mode
+40579	Locking: toggle left/right item locking mode
+40580	Locking: set up/down item locking mode
+40581	Locking: clear up/down item locking mode
+40582	Locking: toggle up/down item locking mode
+40583	Locking: set envelope locking mode
+40584	Locking: clear envelope locking mode
+40585	Locking: toggle envelope locking mode
+40586	Locking: set region locking mode
+40587	Locking: clear region locking mode
+40588	Locking: toggle region locking mode
+40589	Locking: set marker locking mode
+40590	Locking: clear marker locking mode
+40591	Locking: toggle marker locking mode
+40592	Locking: set time signature marker locking mode
+40593	Locking: clear time signature marker locking mode
+40594	Locking: toggle time signature marker locking mode
+40595	Locking: set item edges locking mode
+40596	Locking: clear item edges locking mode
+40597	Locking: toggle item edges locking mode
+40598	Locking: set item controls locking mode
+40599	Locking: clear item controls locking mode
+40600	Locking: toggle item controls locking mode
+40601	Item: render items to new take
+40602	Performance meter: reset graph
+40603	Take: paste as takes in selected items
+40604	Track: View track recording settings for last touched track
+40605	Help -> Show Action List
+40607	Track: allow media buffering for selected tracks
+40608	Track: prevent media buffering for selected tracks
+40609	Track: allow anticipative FX for selected tracks
+40610	Track: prevent anticipative FX for selected tracks
+40611	Item: Set selected item end to cursor
+40612	Item: Set selected items length to source media length
+40613	Markers: Delete marker near cursor
+40614	Markers: Edit marker near cursor
+40615	Markers: Delete region near cursor
+40616	Markers: Edit region near cursor
+40617	Markers: Delete time signature marker near cursor
+40618	Markers: Edit time signature marker near cursor
+40619	Show External Timecode Synchronization Settings
+40620	Toggle External Timecode Synchronization
+40621	Options: loop points linked to time selection
+40622	Time selection: copy time selection to loop points
+40623	Time selection: copy loop points to time selection
+40624	Loop points: remove loop points
+40625	Time Selection: Set start point
+40626	Time Selection: Set end point
+40627	Locking: set loop points locking mode
+40628	Locking: clear loop points locking mode
+40629	Locking: toggle loop points locking mode
+40630	Move cursor to start of time selection
+40631	Move cursor to end of time selection
+40632	Move cursor to start of loop
+40633	Move cursor to end of loop
+40634	Loop points: Remove loop point selection
+40635	Time Selection: Remove time selection
+40636	Item Properties: Loop source
+40637	Virtual MIDI Keyboard: send all input to VKB
+40638	Item: Show FX chain for selected item take
+40639	Take: Duplicate current take
+40640	Item: Remove FX for selected item take
+40641	Track Properties: Enable free item positioning
+40642	Take: Explode takes of items in place
+40643	Take: Explode takes of items in order
+40644	Items: Implode items across tracks into items on one track
+40645	Items: Auto-reposition items in free positioning mode
+40646	View: Move cursor left to grid division
+40647	View: Move cursor right to grid division
+40648	Options: Add envelope points when moving items
+40649	Options: Add envelope points when ripple editing/inserting time
+40650	Options: reduce envelope data when recording automation
+40651	View: Toggle item label visibility
+40652	Item Properties: Set item rate to 1.0
+40653	Item Properties: Reset item pitch
+45000	Take: Set 1st take active
+45001	Take: Set 2nd take active
+45002	Take: Set 3rd take active
+45003	Take: Set 4th take active
+45004	Take: Set 5th take active
+45005	Take: Set 6th take active
+45006	Take: Set 7th take active
+45007	Take: Set 8th take active
+45008	Take: Set 9th take active
+46000	Track: Insert track from template...
+50124	Media Explorer: Show/Hide Media Explorer
+50125	Video: Show/Hide Video window
+50126	Insert random NINJAM loop
+50230	Add network item at cursor
+65535	Nop
+
