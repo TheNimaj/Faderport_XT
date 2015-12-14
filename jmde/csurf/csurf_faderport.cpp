@@ -129,7 +129,7 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 	{
 		m_pan_lasttouch=timeGetTime();
 		
-		double adj=0.05;
+		double adj=0.02;
 		if (action->state>0x3f) adj=-adj;
 		MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
 		
@@ -197,7 +197,7 @@ void CSurf_FaderPort::ProcessButtonUp(FaderPortAction* action)
 
 			if(!g_shift_latch)//Turn it off if we're not latching
 			{
-				m_faderport_shift = !m_faderport_shift;
+				m_faderport_shift = false;
 				if (m_midiout) m_midiout->Send(0xa0,5,m_faderport_shift,-1);
 			}
 			break;
@@ -705,6 +705,15 @@ void CSurf_FaderPort::ReadINIfile()
 	// fader_controls_fx: default = false
 	GetPrivateProfileString("FPCSURF","FADER_CONTROLS_FX","0",resultString,512,INIFileName);
 	g_fader_controls_fx = atoi(resultString) == 1 ? true : false;
+    
+    // pan_touch_reset_time (in ms): default = 500
+    GetPrivateProfileString("FPCSURF","PAN_TOUCH_RESET_TIME","500",resultString,512,INIFileName);
+    g_pan_touch_reset_time = atoi(resultString);
+    
+    // pan_scroll_fader_time (in ms): default = 250
+    GetPrivateProfileString("FPCSURF","PAN_SCROLL_FADER_TIME","250",resultString,512,INIFileName);
+    g_pan_scroll_fader_time = atoi(resultString);
+   
 	
 	delete[] INIFileName;
 	delete[] resultString;
@@ -842,7 +851,7 @@ void CSurf_FaderPort::Run()
 
 		if (g_pan_scroll_tracks)
 		{
-			if (now >= m_pan_lasttouch + 250 && m_track_waiting)
+			if (now >= m_pan_lasttouch + g_pan_scroll_fader_time && m_track_waiting)
 			{
 				TrackList_UpdateAllExternalSurfaces();
 				m_track_waiting = false;
@@ -861,17 +870,11 @@ void CSurf_FaderPort::Run()
 			}
 			
 			//Prevent the fader from doing weird/rapid jumps when selecting param with pan
-			if (now >= m_pan_lasttouch + 250 && m_fx_waiting)
+			if (now >= m_pan_lasttouch + g_pan_scroll_fader_time && m_fx_waiting)
 			{
 				int val = paramToint14(m_fxautomation.GetParamNormalized());
 				AdjustFader(val);
 				m_fx_waiting = false;
-			}
-			
-			if (now >= m_pan_lasttouch + 250 && m_track_waiting)
-			{
-				TrackList_UpdateAllExternalSurfaces();
-				m_track_waiting = false;
 			}
 		}
 	}
@@ -969,8 +972,8 @@ bool CSurf_FaderPort::GetTouchState(MediaTrack *trackid, int isPan)
 		if (!m_flipmode != !isPan)
 		{
 			DWORD now=timeGetTime();
-			// fake touch, go for 3s after last movement
-			if (m_pan_lasttouch==1 || (now<m_pan_lasttouch+3000 && now >= m_pan_lasttouch-1000))
+			// fake touch, go for 3s after last movement; Pan touch reset support 12.14.15
+			if (m_pan_lasttouch==1 || (now<m_pan_lasttouch+g_pan_touch_reset_time && now >= m_pan_lasttouch-1000))
 				return true;
 	  
 			return false;

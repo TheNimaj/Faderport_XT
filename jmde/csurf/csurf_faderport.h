@@ -40,8 +40,11 @@ bool g_selected_is_touched=false ;
 bool g_shift_latch=true;
 bool g_auto_scroll=true;
 bool g_override_automation_read;
-bool g_pan_scroll_tracks;
+bool g_pan_scroll_tracks=false;
 bool g_fader_controls_fx=false;
+
+int g_pan_touch_reset_time=500;
+int g_pan_scroll_fader_time=250;
 
 // button Actions
 string g_action_footswitch;
