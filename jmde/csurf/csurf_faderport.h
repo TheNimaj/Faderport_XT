@@ -180,10 +180,14 @@ class CSurf_FaderPort : public IReaperControlSurface
     bool m_faderport_fwd;
     bool m_faderport_rew;
     bool m_faderport_fxmode;
+
+	//Stores flags for shift, mute, and rec (arm)
+	unsigned m_faderport_reload;
     
     bool m_fx_waiting;
     bool m_track_waiting;
-    
+	bool m_pan_dir;//left = false; true = right
+
     Envelope_Automator m_fxautomation;
     
     int m_vol_lastpos;

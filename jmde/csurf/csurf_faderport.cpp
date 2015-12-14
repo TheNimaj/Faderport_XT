@@ -15,6 +15,11 @@
 
 using namespace std;
 
+#define FPB_RFLAG1 (1<<0)
+#define FPB_RFLAG2 (1<<1)
+#define FPB_RFLAG3 (1<<2)
+#define FPB_RFLAG_MASK FPB_RFLAG1 | FPB_RFLAG2 | FPB_RFLAG3
+
 
 CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 {
@@ -40,6 +45,7 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 	m_faderport_fxmode = false;
 	m_fx_waiting = false;
 	
+	m_faderport_reload = 0;
 	//create midi hardware access
 	m_midiin = m_midi_in_dev >= 0 ? CreateMIDIInput(m_midi_in_dev) : NULL;
 	m_midiout = m_midi_out_dev >= 0 ? CreateThreadedMIDIOutput(CreateMIDIOutput(m_midi_out_dev,false,NULL)) : NULL;
@@ -58,21 +64,10 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 	
 	if (m_midiout)
 	{
-		/*for(int i = 0; i < 8; ++i)
-		{
-			for(int j = 0; j < 8; ++j)
-			{
-				m_midiout->Send(0xb0,0x00,i,-1);
-				m_midiout->Send(0xb0,0x20,j*16,-1);
-				Sleep(20);
-			}
-		}
-		 */
 		m_midiout->Send(0xb0,0x00,0x06,-1);
 		m_midiout->Send(0xb0,0x20,0x27,-1);
 		
 		int x;
-		
 		for (x = 0; x < 0x30; x ++) // lights out
 			m_midiout->Send(0xa0,x,0x00,-1);
 		
@@ -157,15 +152,7 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 		// Pan tracks support: karbo 12.2.2012
 		else if(g_pan_scroll_tracks && !m_faderport_shift) //Allow shift to adjust pan? --nimaj 12.4.2015
 		{
-			if (action->state == 0x7E) // scroll prev track
-			{
-					AdjustBankOffset((m_faderport_bank)?-8:-1,true);
-			}
-			else if   (action->state == 0x1)  // scroll next track
-			{
-					AdjustBankOffset((m_faderport_bank)?8:1,true);
-			}
-			
+			m_pan_dir = action->state == 0x1 ? true : false;
 			m_track_waiting = true;
 		}
 		else
@@ -203,6 +190,8 @@ void CSurf_FaderPort::ProcessButtonUp(FaderPortAction* action)
 		}
 		case FPB_SHIFT:
 		{
+			m_faderport_reload &= ~FPB_RFLAG1;
+
 			if(!g_shift_latch)//Turn it off if we're not latching
 			{
 				m_faderport_shift = !m_faderport_shift;
@@ -210,6 +199,17 @@ void CSurf_FaderPort::ProcessButtonUp(FaderPortAction* action)
 			}
 			break;
 		}
+
+		case FPB_STOP:
+		{
+			m_faderport_reload &= ~FPB_RFLAG2;
+		}
+		case FPB_PLAY:
+		{
+			m_faderport_reload &= ~FPB_RFLAG3;
+			break;
+		}
+
 		case FPB_FWD:
 		{
 			m_faderport_fwd = false;
@@ -246,6 +246,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 		}
 		case FPB_SHIFT:
 		{
+			m_faderport_reload |= FPB_RFLAG1;
 			m_faderport_shift = !m_faderport_shift;
 			if (m_midiout) m_midiout->Send(0xa0,5,m_faderport_shift,-1);
 			break;
@@ -352,6 +353,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 			
 		case FPB_STOP:
 		{
+			m_faderport_reload |= FPB_RFLAG2;
 			CSurf_OnStop();
 			break;
 		}
@@ -383,6 +385,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 			
 		case FPB_PLAY:
 		{
+			m_faderport_reload |= FPB_RFLAG3;
 			CSurf_OnPlay();
 			break;
 		}
@@ -806,7 +809,19 @@ void CSurf_FaderPort::Run()
 		MIDI_event_t *evts;
 		while ((evts=list->EnumItems(&l))) OnMIDIEvent(evts);
 		
-		
+		//if shift+stop+play are pressed (at the same time) reload the ini
+		if ((m_faderport_reload & FPB_RFLAG_MASK) == FPB_RFLAG_MASK)
+		{
+			
+			ReadINIfile();
+			//Reset flags that depend on features being active
+			m_faderport_fxmode = false;
+			m_track_waiting = false;
+			m_faderport_shift = false;
+			CSurf_OnStop(); //Stop playback (which is probably on)
+			if (m_midiout) m_midiout->Send(0xa0, 5, 0, -1);//Turn shift light off just incase
+			m_faderport_reload = 0;
+		}
 		
 		if (m_faderport_rew || m_faderport_fwd)
 		{
@@ -818,12 +833,26 @@ void CSurf_FaderPort::Run()
 				if(m_faderport_rew) CSurf_OnRew(1);
 			}
 		}
-		
+		//Cause Bank to blink if we're in fxmode
+		static DWORD then = timeGetTime();
+		DWORD now = timeGetTime();
+
+		if (g_pan_scroll_tracks)
+		{
+			if (now >= m_pan_lasttouch + 250 && m_track_waiting)
+			{
+				if (m_pan_dir==false) // scroll prev track
+					AdjustBankOffset((m_faderport_bank) ? -8 : -1, true);
+				else  // scroll next track
+					AdjustBankOffset((m_faderport_bank) ? 8 : 1, true);
+				
+				TrackList_UpdateAllExternalSurfaces();
+				m_track_waiting = false;
+			}
+		}
+
 		if(m_faderport_fxmode)
 		{
-			//Cause Bank to blink if we're in fxmode
-			static DWORD then = timeGetTime();
-			DWORD now = timeGetTime();
 			if (now  >= then + 500)
 			{
 				then = timeGetTime();
