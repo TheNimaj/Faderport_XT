@@ -31,6 +31,7 @@
 		10B428371C1F3B6F00441EBE /* res.rc_mac_menu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = res.rc_mac_menu; path = jmde/csurf/res.rc_mac_menu; sourceTree = "<group>"; };
 		10B428381C1F3B6F00441EBE /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = jmde/csurf/resource.h; sourceTree = "<group>"; };
 		10B428481C1F3C0900441EBE /* swell-modstub.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-modstub.mm"; path = "WDL/swell/swell-modstub.mm"; sourceTree = "<group>"; };
+		10B4284A1C20CEC100441EBE /* README.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +52,7 @@
 				10B428291C1F3B6F00441EBE /* automator.cpp */,
 				10B4282A1C1F3B6F00441EBE /* automator.h */,
 				10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */,
+				10B4284A1C20CEC100441EBE /* README.rtf */,
 				10B428301C1F3B6F00441EBE /* csurf_faderport.h */,
 				10B428311C1F3B6F00441EBE /* csurf_main.cpp */,
 				10B428341C1F3B6F00441EBE /* csurf.h */,
