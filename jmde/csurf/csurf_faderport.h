@@ -231,7 +231,7 @@ public:
     CSurf_FaderPort(int indev, int outdev, int *errStats);
     ~CSurf_FaderPort();
     
-    const char *GetTypeString() { return "FADERPORT"; }
+    const char *GetTypeString() { return "FADERPORTXT"; }
     const char *GetDescString()
     {
         descspace.Set("PreSonus FaderPort XT");

@@ -81,6 +81,9 @@ CSurf_FaderPort::~CSurf_FaderPort()
 		int x;
 		for (x = 0; x < 0x30; x ++) // lights out
 			m_midiout->Send(0xa0,x,0x00,-1);
+        
+        m_midiout->Send(0xb0,0x00,0x0,-1);
+        m_midiout->Send(0xb0,0x20,0x0,-1);
 		Sleep(5);
 	}
 	
@@ -423,23 +426,20 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				if(g_action_output == "1") // kw: special case for Master track selection via output button (need to refactor redundant code).
 				{
 					
-					int numTracks = CSurf_NumTracks(g_csurf_mcpmode);
-					MediaTrack *tr;
-					for(int i=0;i<numTracks;i++)
-					{
-						// deselect any currently selected tracks
-						tr=CSurf_TrackFromID(i+1,g_csurf_mcpmode);
-						CSurf_OnSelectedChange(tr, false);
-					}
-					
-					// if shift is used, run shift action
-					tr=CSurf_TrackFromID(0, false);
+                    MediaTrack *tr = CSurf_TrackFromID(0, false);
 					if ((m_faderport_shift))
 					{
 						RunCommand(g_action_output_shift);
 					}
 					else
 					{
+                        for(int i=0;i<CSurf_NumTracks(g_csurf_mcpmode);i++)
+                        {
+                            // deselect any currently selected tracks
+                            tr=CSurf_TrackFromID(i+1,g_csurf_mcpmode);
+                            CSurf_OnSelectedChange(tr, false);
+                        }
+
 						// get master and select it
 						CSurf_OnSelectedChange(tr, true);
 						CSurf_OnTrackSelection(tr);
@@ -468,8 +468,6 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 						RunCommand(g_action_output_shift);
 					else
 						RunCommand(g_action_output);
-					
-					
 				}
 			}
 			break;
@@ -602,15 +600,12 @@ void CSurf_FaderPort::OnMIDIEvent(MIDI_event_t *evt)
 void CSurf_FaderPort::ReadINIfile()
 {
 	char *INIFileName=new char[1024];
-#ifdef __APPLE__
+    
 	/*
 	 In default case this would be "/Users/username/Library/Application Support/REAPER"
 	 I do it this way because it could cause permissions issues trying to copy it to the app package
 	 */
 	sprintf(INIFileName,"%s/reaper_csurf_fpxt.ini",GetResourcePath());
-#else
-	sprintf(INIFileName,"%s\\Plugins\\reaper_csurf_fpxt.ini",GetExePath());
-#endif
 	OutputDebugString(INIFileName);
 	char *resultString=new char[512];
 	
@@ -1219,7 +1214,7 @@ static HWND configFunc(const char *type_string, HWND parent, const char *initCon
 
 reaper_csurf_reg_t csurf_faderport_reg =
 {
-	"FADERPORT",
+	"FADERPORTXT",
 	"PreSonus FaderPort XT",
 	createFunc,
 	configFunc,

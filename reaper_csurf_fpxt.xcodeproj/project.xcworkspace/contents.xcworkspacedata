@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:reaper_csurf.xcodeproj">
+      location = "self:/Users/brycebias/Development/Projects/Faderport_XT/reaper_csurf_fpxt.xcodeproj">
    </FileRef>
 </Workspace>

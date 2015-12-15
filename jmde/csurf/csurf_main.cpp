@@ -9,112 +9,10 @@
 
 #define REAPERAPI_IMPLEMENT
 
-#ifndef DEBUG
-#define REAPERAPI_MINIMAL
-
-
-#define REAPERAPI_WANT_DB2SLIDER
-#define REAPERAPI_WANT_SLIDER2DB
-#define REAPERAPI_WANT_GetNumMIDIInputs
-#define REAPERAPI_WANT_GetNumMIDIOutputs
-#define REAPERAPI_WANT_CreateMIDIInput
-#define REAPERAPI_WANT_CreateMIDIOutput
-#define REAPERAPI_WANT_GetMIDIOutputName
-#define REAPERAPI_WANT_GetMIDIInputName
-#define REAPERAPI_WANT_CSurf_TrackToID
-#define REAPERAPI_WANT_CSurf_TrackFromID
-#define REAPERAPI_WANT_CSurf_NumTracks
-#define REAPERAPI_WANT_CSurf_SetTrackListChange
-#define REAPERAPI_WANT_CSurf_SetSurfaceVolume
-#define REAPERAPI_WANT_CSurf_SetSurfacePan
-#define REAPERAPI_WANT_CSurf_SetSurfaceMute
-#define REAPERAPI_WANT_CSurf_SetSurfaceSelected
-#define REAPERAPI_WANT_CSurf_SetSurfaceSolo
-#define REAPERAPI_WANT_CSurf_SetSurfaceRecArm
-#define REAPERAPI_WANT_CSurf_GetTouchState
-#define REAPERAPI_WANT_CSurf_SetAutoMode
-#define REAPERAPI_WANT_CSurf_SetPlayState
-#define REAPERAPI_WANT_CSurf_SetRepeatState
-#define REAPERAPI_WANT_CSurf_OnVolumeChange
-#define REAPERAPI_WANT_CSurf_OnPanChange
-#define REAPERAPI_WANT_CSurf_OnMuteChange
-#define REAPERAPI_WANT_CSurf_OnSelectedChange
-#define REAPERAPI_WANT_CSurf_OnSoloChange
-#define REAPERAPI_WANT_CSurf_OnFXChange
-#define REAPERAPI_WANT_CSurf_OnRecArmChange
-#define REAPERAPI_WANT_CSurf_OnPlay
-#define REAPERAPI_WANT_CSurf_OnStop
-#define REAPERAPI_WANT_CSurf_OnFwd
-#define REAPERAPI_WANT_CSurf_OnRew
-#define REAPERAPI_WANT_CSurf_OnRecord
-#define REAPERAPI_WANT_CSurf_GoStart
-#define REAPERAPI_WANT_CSurf_GoEnd
-#define REAPERAPI_WANT_CSurf_OnArrow
-#define REAPERAPI_WANT_CSurf_OnTrackSelection
-#define REAPERAPI_WANT_CSurf_ResetAllCachedVolPanStates
-#define REAPERAPI_WANT_CSurf_ScrubAmt
-#define REAPERAPI_WANT_TrackList_UpdateAllExternalSurfaces
-#define REAPERAPI_WANT_kbd_OnMidiEvent
-#define REAPERAPI_WANT_GetMasterMuteSoloFlags
-#define REAPERAPI_WANT_ClearAllRecArmed
-#define REAPERAPI_WANT_SetTrackAutomationMode
-#define REAPERAPI_WANT_GetTrackAutomationMode
-#define REAPERAPI_WANT_SoloAllTracks
-#define REAPERAPI_WANT_MuteAllTracks
-#define REAPERAPI_WANT_BypassFxAllTracks
-#define REAPERAPI_WANT_GetTrackInfo
-#define REAPERAPI_WANT_SetTrackSelected
-#define REAPERAPI_WANT_SetAutomationMode
-#define REAPERAPI_WANT_UpdateTimeline
-#define REAPERAPI_WANT_Main_UpdateLoopInfo
-#define REAPERAPI_WANT_GetPlayState
-#define REAPERAPI_WANT_GetPlayPosition
-#define REAPERAPI_WANT_GetCursorPosition
-#define REAPERAPI_WANT_format_timestr_pos
-#define REAPERAPI_WANT_Track_GetPeakInfo
-#define REAPERAPI_WANT_GetTrackUIVolPan
-#define REAPERAPI_WANT_GetSetRepeat
-#define REAPERAPI_WANT_mkvolpanstr
-#define REAPERAPI_WANT_mkvolstr
-#define REAPERAPI_WANT_mkpanstr
-#define REAPERAPI_WANT_MoveEditCursor
-#define REAPERAPI_WANT_adjustZoom
-#define REAPERAPI_WANT_GetHZoomLevel
-
-#define REAPERAPI_WANT_TrackFX_GetCount
-#define REAPERAPI_WANT_TrackFX_GetNumParams
-#define REAPERAPI_WANT_TrackFX_GetParam
-#define REAPERAPI_WANT_TrackFX_SetParam
-#define REAPERAPI_WANT_TrackFX_GetParamName
-#define REAPERAPI_WANT_TrackFX_FormatParamValue
-#define REAPERAPI_WANT_TrackFX_GetFXName
-
-#define REAPERAPI_WANT_get_config_var
-#define REAPERAPI_WANT_projectconfig_var_addr
-#define REAPERAPI_WANT_projectconfig_var_getoffs
-
-
-#define REAPERAPI_WANT_GetTrackGUID
-
-#define REAPERAPI_WANT_GetTrack
-#define REAPERAPI_WANT_GetMasterTrack
-#define REAPERAPI_WANT_ShowConsoleMsg
-#define REAPERAPI_WANT_Main_OnCommand
-#define REAPERAPI_WANT_GetMediaTrackInfo_Value
-#define REAPERAPI_WANT_GetExePath
-#define REAPERAPI_WANT_GetResourcePath
-#define REAPERAPI_WANT_NamedCommandLookup
-
-#define REAPERAPI_WANT_TimeMap2_timeToBeats
-
-#endif
-
-
 #include "../reaper_plugin_functions.h"
 #include "csurf.h"
 
-extern reaper_csurf_reg_t csurf_bcf_reg,csurf_faderport_reg,csurf_hui_reg,
-     csurf_mcu_reg,csurf_mcuex_reg,csurf_tranzport_reg,csurf_alphatrack_reg,csurf_01X_reg;
+extern reaper_csurf_reg_t csurf_faderport_reg;
 
 REAPER_PLUGIN_HINSTANCE g_hInst; // used for dialogs, if any
 HWND g_hwnd;
@@ -156,16 +54,7 @@ REAPER_PLUGIN_DLL_EXPORT int REAPER_PLUGIN_ENTRYPOINT(REAPER_PLUGIN_HINSTANCE hI
 
   if (errcnt) return 0;
 
-
-    //Only register faderport on mac because I've only copied the dialog for it
     rec->Register("csurf",&csurf_faderport_reg);
-    rec->Register("csurf",&csurf_hui_reg);
-    rec->Register("csurf",&csurf_tranzport_reg);
-    rec->Register("csurf",&csurf_alphatrack_reg);
-    rec->Register("csurf",&csurf_01X_reg);
-    rec->Register("csurf",&csurf_bcf_reg);
-    rec->Register("csurf",&csurf_mcu_reg);
-    rec->Register("csurf",&csurf_mcuex_reg);
 
   return 1;
 
