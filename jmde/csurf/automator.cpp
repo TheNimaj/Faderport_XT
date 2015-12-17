@@ -10,6 +10,7 @@
 #include "../reaper_plugin_functions.h"
 
 #include "../MacCompatibility.h"
+#include <sstream>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ bool Envelope_Automator::Poll(MediaTrack* tr)
     {
         m_FX = 0;
         m_Param = 0;
-        m_MaxParam = TrackFX_GetNumParams(m_ParentTrack, m_FX);
+        m_ParamCount = TrackFX_GetNumParams(m_ParentTrack, m_FX);
     }
     
     return m_Valid;
@@ -35,7 +36,7 @@ double Envelope_Automator::SetSelectedTrackFX(MediaTrack* tr, int fx)
     m_FX = fx;
     m_Param = 0;
     m_FXCount = TrackFX_GetCount(m_ParentTrack);
-    m_MaxParam = TrackFX_GetNumParams(m_ParentTrack, m_FX);
+    m_ParamCount = TrackFX_GetNumParams(m_ParentTrack, m_FX);
     m_Valid = m_FXCount != 0;
     if(m_Valid)
     {
@@ -50,11 +51,23 @@ double Envelope_Automator::SetSelectedTrackFX(MediaTrack* tr, int fx)
     return -1;
 }
 
+double Envelope_Automator::SetSelectedParam(int param)
+{
+    if(!m_Valid) return -1.0f;
+    if(param >= m_ParamCount) return -1.0f;
+    m_Param = param;
+    
+    string name = GetCurrentParamName();
+    TrackCtl_SetToolTip(name.c_str(), 0, 0, true);
+    
+    return TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+}
+
 void Envelope_Automator::SelectNextFX()
 {
     if(!m_Valid) return;
-    m_FX = ++m_FX % m_FXCount;
-    m_MaxParam = TrackFX_GetNumParams(m_ParentTrack, m_FX);
+    if(++m_FX >= m_FXCount) m_FX = 0;
+    m_ParamCount = TrackFX_GetNumParams(m_ParentTrack, m_FX);
     m_Param = 0;
     
     //Display the name of the fx
@@ -65,8 +78,8 @@ void Envelope_Automator::SelectNextFX()
 void Envelope_Automator::SelectPrevFX()
 {
     if(!m_Valid) return;
-    m_FX = --m_FX % m_FXCount;
-    m_MaxParam = TrackFX_GetNumParams(m_ParentTrack, m_FX);
+    if(--m_FX < 0) m_FX = m_FXCount-1;
+    m_ParamCount = TrackFX_GetNumParams(m_ParentTrack, m_FX);
     m_Param = 0;
     
     //Display the name of the fx
@@ -77,8 +90,12 @@ void Envelope_Automator::SelectPrevFX()
 double Envelope_Automator::SelectNextParam()
 {
     if(!m_Valid) return 0.0f;
-    m_Param = ++m_Param % m_MaxParam;
+    if(++m_Param >= m_ParamCount) m_Param = 0;
     
+    stringstream ss;
+    ss << m_Param;
+    OutputDebugString(ss.str().c_str());
+
     //Display the name of the param
     string name = GetCurrentParamName();
     TrackCtl_SetToolTip(name.c_str(), 0, 0, true);
@@ -89,7 +106,11 @@ double Envelope_Automator::SelectNextParam()
 double Envelope_Automator::SelectPrevParam()
 {
     if(!m_Valid) return 0.0f;
-    m_Param = --m_Param % m_MaxParam;
+    if(--m_Param < 0) m_Param = m_ParamCount-1;
+    
+    stringstream ss;
+    ss << m_Param;
+    OutputDebugString(ss.str().c_str());
     
     //Display the name of the param
     string name = GetCurrentParamName();

@@ -90,9 +90,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1067CD371C101C7600EC3683 /* reaper_csurf_fpxt_fpxt */ = {
+		1067CD371C101C7600EC3683 /* reaper_csurf_fpxt */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1067CD3C1C101C7600EC3683 /* Build configuration list for PBXNativeTarget "reaper_csurf_fpxt_fpxt" */;
+			buildConfigurationList = 1067CD3C1C101C7600EC3683 /* Build configuration list for PBXNativeTarget "reaper_csurf_fpxt" */;
 			buildPhases = (
 				1067CD341C101C7600EC3683 /* Sources */,
 				1067CD351C101C7600EC3683 /* Frameworks */,
@@ -102,7 +102,7 @@
 			);
 			dependencies = (
 			);
-			name = reaper_csurf_fpxt_fpxt;
+			name = reaper_csurf_fpxt;
 			productName = reaper_csurf;
 			productReference = 1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
@@ -133,7 +133,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1067CD371C101C7600EC3683 /* reaper_csurf_fpxt_fpxt */,
+				1067CD371C101C7600EC3683 /* reaper_csurf_fpxt */,
 			);
 		};
 /* End PBXProject section */
@@ -170,6 +170,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
@@ -212,6 +213,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -233,6 +235,7 @@
 		1067CD3D1C101C7600EC3683 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
@@ -255,6 +258,7 @@
 		1067CD3E1C101C7600EC3683 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
@@ -284,7 +288,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1067CD3C1C101C7600EC3683 /* Build configuration list for PBXNativeTarget "reaper_csurf_fpxt_fpxt" */ = {
+		1067CD3C1C101C7600EC3683 /* Build configuration list for PBXNativeTarget "reaper_csurf_fpxt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1067CD3D1C101C7600EC3683 /* Debug */,

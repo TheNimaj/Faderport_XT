@@ -40,6 +40,7 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 	m_faderport_fxmode = false;
 	m_fx_waiting = false;
 	
+    m_pan_left_turns = m_pan_right_turns = 0;
 	m_faderport_reload = 0;
     
 	//create midi hardware access
@@ -131,19 +132,49 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 	if (action->id==0) //Not actually sure what this means, but it was there from the beginning
 	{
 		m_pan_lasttouch=timeGetTime();
-		
-		double adj=0.02;
-		if (action->state>0x3f) adj=-adj;
-		MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-		
-		if (!tr) return;
-		
-		
+        
+        MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+        if (!tr) return;
+        
+		double adj = 0.00;
+		if (action->state==0x7E) //prev. 3f
+             ++m_pan_left_turns;
+        else if(action->state==0x1)
+            ++m_pan_right_turns;
+        
+        if(m_pan_left_turns >= g_pan_min_turns)
+        {
+            adj= -(1/float(g_pan_resolution * .5));
+            
+            //It seems that if the pan is currently at 0, it needs ~.02 to get it moving
+            if(GetMediaTrackInfo_Value(tr, "D_PAN") == 0 && fabs(adj) < .02 ) adj = -.02;
+            
+            m_pan_left_turns = 0;
+            m_pan_dir = PD_LEFT;
+        }
+        else if(m_pan_right_turns >= g_pan_min_turns)
+        {
+            adj= 1/float(g_pan_resolution * .5);
+            
+            //It seems that if the pan is currently at 0, it needs ~.02 to get it moving
+            if(GetMediaTrackInfo_Value(tr, "D_PAN") == 0 && fabs(adj) < .02 ) adj = .02;
+            
+            m_pan_right_turns = 0;
+            m_pan_dir = PD_RIGHT;
+        }else
+        {
+            m_pan_dir = PD_UNCHANGED;
+        }
+        
+        stringstream ss;
+        ss<<adj << ":" << m_pan_left_turns << ":" << m_pan_right_turns;
+        OutputDebugString(ss.str().c_str());
+        
 		if (m_faderport_fxmode)
 		{
-			if(action->state == 0x7E)
+			if(m_pan_dir == PD_LEFT)
 				m_fxautomation.SelectPrevParam();
-			else
+			else if (m_pan_dir == PD_RIGHT)
 				m_fxautomation.SelectNextParam();
 			
 			m_fx_waiting = true;
@@ -152,11 +183,9 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 		else if(g_pan_scroll_tracks && !m_faderport_shift) //Allow shift to adjust pan? --nimaj 12.4.2015
 		{
             
-			m_pan_dir = action->state == 0x1 ? true : false;
-            
-            if (m_pan_dir==false) // scroll prev track
+            if (m_pan_dir==PD_LEFT) // scroll prev track
                 AdjustBankOffset((m_faderport_bank) ? -8 : -1, true);
-            else  // scroll next track
+            else  if(m_pan_dir == PD_RIGHT)// scroll next track
                 AdjustBankOffset((m_faderport_bank) ? 8 : 1, true);
             
 			m_track_waiting = true;
@@ -166,7 +195,9 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 			if (m_flipmode)
 				CSurf_SetSurfaceVolume(tr,CSurf_OnVolumeChange(tr,adj*11.0,true),NULL);
 			else
+            {
 				CSurf_SetSurfacePan(tr,CSurf_OnPanChange(tr,adj,true),NULL);
+            }
 		}
 		
 		
@@ -708,6 +739,18 @@ void CSurf_FaderPort::ReadINIfile()
     // pan_scroll_fader_time (in ms): default = 250
     GetPrivateProfileString("FPCSURF","PAN_SCROLL_FADER_TIME","250",resultString,512,INIFileName);
     g_pan_scroll_fader_time = atoi(resultString);
+    
+    // pan_min_turns : default = 1
+    GetPrivateProfileString("FPCSURF","PAN_MIN_TURNS","1",resultString,512,INIFileName);
+    g_pan_min_turns = atoi(resultString);
+    
+    // pan_resolution: default = 128
+    GetPrivateProfileString("FPCSURF","PAN_RESOLUTION","128",resultString,512,INIFileName);
+    g_pan_resolution = atoi(resultString);
+    
+    // select_touched_param: default = 0
+    GetPrivateProfileString("FPCSURF","SELECT_TOUCHED_PARAM","0",resultString,512,INIFileName);
+    g_select_touched_param = atoi(resultString) == 1 ? true : false;
    
 	
 	delete[] INIFileName;
@@ -719,19 +762,8 @@ void CSurf_FaderPort::ReadINIfile()
 	sprintf(buf,"SHIFT LATCH = %d",g_shift_latch);OutputDebugString(buf);
 	sprintf(buf,"AUTO SCROLL = %d",g_auto_scroll);OutputDebugString(buf);
 	sprintf(buf,"FADER CONTROLS FXPARAM = %d",g_fader_controls_fx);OutputDebugString(buf);
-	sprintf(buf,"USER ACTION = %s",g_action_user.c_str());OutputDebugString(buf);
-	sprintf(buf,"SHIFT/USER ACTION = %s",g_action_user_shift.c_str());OutputDebugString(buf);
-	sprintf(buf,"PUNCH ACTION = %s",g_action_punch.c_str());OutputDebugString(buf);
-	sprintf(buf,"SHIFT/PUNCH ACTION = %s",g_action_punch_shift.c_str());OutputDebugString(buf);
-	sprintf(buf,"LOOP ACTION = %s",g_action_loop.c_str());OutputDebugString(buf);
-	sprintf(buf,"SHIFT/LOOP ACTION = %s",g_action_loop_shift.c_str());OutputDebugString(buf);
-	sprintf(buf,"FIRST SELECTED IS LAST TOUCHED = %d",g_selected_is_touched);OutputDebugString(buf);
-	sprintf(buf,"TRANS = %s",g_action_trans.c_str());OutputDebugString(buf);
-	sprintf(buf,"TRANS SHIFT = %s",g_action_trans_shift.c_str());OutputDebugString(buf);
-	sprintf(buf,"PROJECT = %s",g_action_project.c_str());OutputDebugString(buf);
-	sprintf(buf,"PROJECT SHIFT = %s",g_action_project_shift.c_str());OutputDebugString(buf);
-	sprintf(buf,"MIX = %s",g_action_mix.c_str());OutputDebugString(buf);
-	sprintf(buf,"MIX SHIFT = %s",g_action_mix_shift.c_str());OutputDebugString(buf);
+    sprintf(buf,"PAN RESOLUTION = %d",g_pan_resolution);OutputDebugString(buf);
+    sprintf(buf,"PAN MIN TURNS = %d",g_pan_min_turns);OutputDebugString(buf);
 }
 
 void CSurf_FaderPort::AdjustBankOffset(int amt, bool dosel)
@@ -1030,7 +1062,6 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 	{
 		case CSURF_EXT_SETLASTTOUCHEDTRACK:
 		{
-			OutputDebugString("CSURF_EXT_SETLASTTOUCHEDTRACK");
 			break;
 		}
 		
@@ -1065,7 +1096,10 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 			int fx = (fxpid >> 16);
 			int param = (fxpid & 0xFF);
 			if(m_faderport_fxmode)
+            {
+                if(g_select_touched_param) m_fxautomation.SetSelectedParam(param);
 				if(m_fxautomation.IsSelected(tr, fx, param)) AdjustFader(paramToint14(val));
+            }
 			
 			break;
 		}

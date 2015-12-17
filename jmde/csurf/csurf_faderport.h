@@ -42,9 +42,13 @@ bool g_auto_scroll=true;
 bool g_override_automation_read;
 bool g_pan_scroll_tracks=false;
 bool g_fader_controls_fx=false;
+bool g_select_touched_param=false;
 
 int g_pan_touch_reset_time=500;
 int g_pan_scroll_fader_time=250;
+
+int g_pan_min_turns = 3;
+int g_pan_resolution;
 
 // button Actions
 string g_action_footswitch;
@@ -121,6 +125,14 @@ enum FP_RFlags
     FPB_RFLAG3 = (1<<2),
     FPB_RFLAG_MASK = FPB_RFLAG1 | FPB_RFLAG2 | FPB_RFLAG3
 };
+
+enum PanDirection
+{
+    PD_UNCHANGED,
+    PD_LEFT,
+    PD_RIGHT
+};
+
 struct FaderPortAction
 {
     FaderPortAction(MIDI_event_t* evt)
@@ -196,7 +208,10 @@ class CSurf_FaderPort : public IReaperControlSurface
     
     bool m_fx_waiting;
     bool m_track_waiting;
-	bool m_pan_dir;//left = false; true = right
+	PanDirection m_pan_dir;//left = false; true = right
+    
+    int m_pan_left_turns;
+    int m_pan_right_turns;
 
     Envelope_Automator m_fxautomation;
     

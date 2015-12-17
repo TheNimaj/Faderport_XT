@@ -27,7 +27,7 @@ class Envelope_Automator
     int m_Param = 0;
     int m_FXCount = 0;
     float m_LastVal = 0.0f;
-    int m_MaxParam = 0;
+    int m_ParamCount = 0;
     
 protected:
     std::string GetCurrentFXName();
@@ -43,6 +43,7 @@ public:
         Returns normalized value of fx param
      */
     double SetSelectedTrackFX(MediaTrack* tr, int fx);
+    double SetSelectedParam(int param);
     
     void SelectNextFX();
     void SelectPrevFX();
