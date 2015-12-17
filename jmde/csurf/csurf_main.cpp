@@ -4,9 +4,6 @@
 ** License: LGPL.
 */
 
-//Disable this while working on Faderport XT
-
-
 #define REAPERAPI_IMPLEMENT
 
 #include "../reaper_plugin_functions.h"

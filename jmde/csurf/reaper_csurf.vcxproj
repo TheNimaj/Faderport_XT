@@ -381,14 +381,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="automator.cpp" />
-    <ClCompile Include="csurf_01X.cpp" />
-    <ClCompile Include="csurf_alphatrack.cpp" />
-    <ClCompile Include="csurf_babyhui.cpp" />
-    <ClCompile Include="csurf_bcf2000.cpp" />
     <ClCompile Include="csurf_faderport.cpp" />
     <ClCompile Include="csurf_main.cpp" />
-    <ClCompile Include="csurf_mcu.cpp" />
-    <ClCompile Include="csurf_tranzport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\reaper_plugin_functions.h" />
