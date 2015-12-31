@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		104592EB1C356F9100B6D2C4 /* reaper_csurf_fpxt.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */; };
+		104592EF1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini in CopyFiles */ = {isa = PBXBuildFile; fileRef = 104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */; };
 		1067CD691C10219A00EC3683 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1067CD681C10219A00EC3683 /* Cocoa.framework */; };
 		10B428391C1F3B6F00441EBE /* automator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428291C1F3B6F00441EBE /* automator.cpp */; };
 		10B4283A1C1F3B6F00441EBE /* automator.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B4282A1C1F3B6F00441EBE /* automator.h */; };
@@ -16,9 +18,37 @@
 		10B428441C1F3B6F00441EBE /* csurf.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428341C1F3B6F00441EBE /* csurf.h */; };
 		10B428461C1F3B6F00441EBE /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428381C1F3B6F00441EBE /* resource.h */; };
 		10B428491C1F3C0900441EBE /* swell-modstub.mm in Sources */ = {isa = PBXBuildFile; fileRef = 10B428481C1F3C0900441EBE /* swell-modstub.mm */; };
+		10FAC7331C23704F002C33BE /* reaper_csurf_fpxt.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */; };
+		10FAC7341C2370A4002C33BE /* README.rtf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 10B4284A1C20CEC100441EBE /* README.rtf */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		104592EA1C356F5800B6D2C4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "/Users/brycebias/Library/Application Support/REAPER/UserPlugins";
+			dstSubfolderSpec = 0;
+			files = (
+				104592EB1C356F9100B6D2C4 /* reaper_csurf_fpxt.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10FAC7321C237021002C33BE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /Users/brycebias/Development/Projects/Faderport_XT/Build;
+			dstSubfolderSpec = 0;
+			files = (
+				10FAC7341C2370A4002C33BE /* README.rtf in CopyFiles */,
+				10FAC7331C23704F002C33BE /* reaper_csurf_fpxt.dylib in CopyFiles */,
+				104592EF1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */ = {isa = PBXFileReference; lastKnownFileType = text; name = reaper_csurf_fpxt.ini; path = "../../../Library/Application Support/REAPER/reaper_csurf_fpxt.ini"; sourceTree = "<group>"; };
 		1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_csurf_fpxt.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		1067CD681C10219A00EC3683 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		10B428291C1F3B6F00441EBE /* automator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = automator.cpp; path = jmde/csurf/automator.cpp; sourceTree = "<group>"; };
@@ -49,6 +79,7 @@
 		1067CD2F1C101C7600EC3683 = {
 			isa = PBXGroup;
 			children = (
+				104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */,
 				10B428291C1F3B6F00441EBE /* automator.cpp */,
 				10B4282A1C1F3B6F00441EBE /* automator.h */,
 				10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */,
@@ -97,6 +128,8 @@
 				1067CD341C101C7600EC3683 /* Sources */,
 				1067CD351C101C7600EC3683 /* Frameworks */,
 				1067CD361C101C7600EC3683 /* Headers */,
+				104592EA1C356F5800B6D2C4 /* CopyFiles */,
+				10FAC7321C237021002C33BE /* CopyFiles */,
 			);
 			buildRules = (
 			);

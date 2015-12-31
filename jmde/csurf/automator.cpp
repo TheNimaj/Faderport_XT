@@ -16,7 +16,7 @@ using namespace std;
 
 bool Envelope_Automator::Poll(MediaTrack* tr)
 {
-    if(m_ParentTrack == tr) { m_Valid = false; return false; }
+    //if(m_ParentTrack == tr) { m_Valid = false; return false; }
     m_ParentTrack = tr;
     m_FXCount = TrackFX_GetCount(m_ParentTrack);
     m_Valid = m_FXCount != 0;
@@ -140,7 +140,7 @@ double Envelope_Automator::EndTouch(bool touchMode)
     {
         if(touchMode)
         {
-            TrackFX_SetParamNormalized(m_ParentTrack, m_FX, m_Param, m_LastVal);
+            //TrackFX_SetParamNormalized(m_ParentTrack, m_FX, m_Param, m_LastVal);
             TrackFX_EndParamEdit(m_ParentTrack, m_FX, m_Param);
         }
         
@@ -177,14 +177,14 @@ std::string Envelope_Automator::GetCurrentParamName()
 
 void Envelope_Automator::SetParamNormalized(double val)
 {
-     if(m_Valid)
+     if(m_Valid && val != m_LastVal) //<- doubt this will do much good
          TrackFX_SetParamNormalized(m_ParentTrack,m_FX, m_Param, val);
 }
 
 double Envelope_Automator::GetParamNormalized() const
 {
      if(m_Valid) return TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
-    return 0.0f;
+    return 0.;
 }
 
 bool Envelope_Automator::IsSelected(MediaTrack* tr, int fx, int param) const

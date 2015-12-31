@@ -39,7 +39,8 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 	m_faderport_rew = false;
 	m_faderport_fxmode = false;
 	m_fx_waiting = false;
-	
+    
+    m_fader_val = 0;
     m_pan_left_turns = m_pan_right_turns = 0;
 	m_faderport_reload = 0;
     
@@ -95,8 +96,22 @@ CSurf_FaderPort::~CSurf_FaderPort()
 void CSurf_FaderPort::RunCommand(const string& cmd) { Main_OnCommand(NamedCommandLookup(cmd.c_str()),-1); }
 void CSurf_FaderPort::AdjustFader(int val)
 {
+    if(m_fader_val == val) return;
+    m_fader_val = val;
 	m_midiout->Send(0xb0,0x00,val>>7,-1);
 	m_midiout->Send(0xb0,0x20,val&127,-1);
+}
+
+void CSurf_FaderPort::Notify(unsigned char button)
+{
+    if(!m_midiout) return;
+    bool st = false;
+    for(int i = 0; i < 7; ++i)
+    {
+        m_midiout->Send(0xa0, button, st, -1);
+        st=!st;
+        Sleep(125);
+    }
 }
 
 /*
@@ -105,9 +120,6 @@ void CSurf_FaderPort::AdjustFader(int val)
 
 void CSurf_FaderPort::ProcessFader(FaderPortAction* action)
 {
-	stringstream ss;
-	ss << action->id << ":" << action->state;
-	//OutputDebugString(ss.str().c_str());
 	if (action->id==0) m_faderport_lasthw=(int)action->state;
 	else if (action->id == 0x20)
 	{
@@ -134,7 +146,7 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 		m_pan_lasttouch=timeGetTime();
         
         MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-        if (!tr) return;
+       
         
 		double adj = 0.00;
 		if (action->state==0x7E) //prev. 3f
@@ -142,23 +154,16 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
         else if(action->state==0x1)
             ++m_pan_right_turns;
         
+        
         if(m_pan_left_turns >= g_pan_min_turns)
         {
             adj= -(1/float(g_pan_resolution * .5));
-            
-            //It seems that if the pan is currently at 0, it needs ~.02 to get it moving
-            if(GetMediaTrackInfo_Value(tr, "D_PAN") == 0 && fabs(adj) < .02 ) adj = -.02;
-            
             m_pan_left_turns = 0;
             m_pan_dir = PD_LEFT;
         }
         else if(m_pan_right_turns >= g_pan_min_turns)
         {
             adj= 1/float(g_pan_resolution * .5);
-            
-            //It seems that if the pan is currently at 0, it needs ~.02 to get it moving
-            if(GetMediaTrackInfo_Value(tr, "D_PAN") == 0 && fabs(adj) < .02 ) adj = .02;
-            
             m_pan_right_turns = 0;
             m_pan_dir = PD_RIGHT;
         }else
@@ -166,10 +171,8 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
             m_pan_dir = PD_UNCHANGED;
         }
         
-        stringstream ss;
-        ss<<adj << ":" << m_pan_left_turns << ":" << m_pan_right_turns;
-        OutputDebugString(ss.str().c_str());
         
+        //Actions
 		if (m_faderport_fxmode)
 		{
 			if(m_pan_dir == PD_LEFT)
@@ -179,28 +182,37 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 			
 			m_fx_waiting = true;
 		}
-		// Pan tracks support: karbo 12.2.2012
-		else if(g_pan_scroll_tracks && !m_faderport_shift) //Allow shift to adjust pan? --nimaj 12.4.2015
-		{
+        
+        int current_action = m_faderport_shift ? g_action_pan_shift : g_action_pan;
+        if(current_action == 0) //default: pan
+        {
+            if(m_pan_dir==PD_UNCHANGED || !tr) return;
+            //It seems that if the pan is currently at 0, it needs ~.02 to get it moving
+            if(GetMediaTrackInfo_Value(tr, "D_PAN") == 0 && fabs(adj) < .02 )
+                adj = (m_pan_dir==PD_LEFT ? -.02 : .02);
             
+            if (m_flipmode) CSurf_SetSurfaceVolume(tr,CSurf_OnVolumeChange(tr,adj*11.0,true),NULL);
+            else  CSurf_SetSurfacePan(tr,CSurf_OnPanChange(tr,adj,true),NULL);
+        }
+            
+        else if (current_action == 1) //scroll tracks
+        {
+            // Pan tracks support: karbo 12.2.2012
             if (m_pan_dir==PD_LEFT) // scroll prev track
                 AdjustBankOffset((m_faderport_bank) ? -8 : -1, true);
             else  if(m_pan_dir == PD_RIGHT)// scroll next track
                 AdjustBankOffset((m_faderport_bank) ? 8 : 1, true);
+                
+            m_track_waiting = true;
+
+        }
             
-			m_track_waiting = true;
-		}
-		else
-		{
-			if (m_flipmode)
-				CSurf_SetSurfaceVolume(tr,CSurf_OnVolumeChange(tr,adj*11.0,true),NULL);
-			else
-            {
-				CSurf_SetSurfacePan(tr,CSurf_OnPanChange(tr,adj,true),NULL);
-            }
-		}
-		
-		
+        else if (current_action == 2) //custom
+        {
+            if(m_pan_dir == PD_RIGHT) RunCommand(m_faderport_shift ? g_action_pan_right_shift : g_action_pan_right);
+            else if(m_pan_dir == PD_LEFT) RunCommand(m_faderport_shift ? g_action_pan_left_shift : g_action_pan_left);
+            
+        }
 	}
 }
 
@@ -215,9 +227,6 @@ void CSurf_FaderPort::ProcessButtonUp(FaderPortAction* action)
 				bool isTouch = GetTrackAutomationMode(m_fxautomation.GetTrack()) == 2;
 				bool isPlaying = GetPlayState() & 5;
 				int val = paramToint14(m_fxautomation.EndTouch(isTouch && isPlaying));
-				stringstream ss;
-				ss << std::boolalpha << isPlaying;
-				OutputDebugString(ss.str().c_str());
 				if(m_midiout && isTouch && isPlaying) AdjustFader(val);
 			}else
 			{
@@ -299,6 +308,13 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				
 				if(m_faderport_fxmode)
 				{
+                    if(!m_fxautomation.HasValidEnvelope())
+                    {
+                        Notify(0x13);
+                        //Abort fx mode
+                        m_faderport_fxmode = false;
+                        break;
+                    }
 					int val = paramToint14(m_fxautomation.GetParamNormalized());
 					AdjustFader(val);
 				}else
@@ -442,7 +458,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 		case FPB_OUTPUT:
 		{
 			
-			if(!g_pan_scroll_tracks && g_action_output == "0")
+			if(g_action_output == "0")//Does it matter if we can scroll with pan?
 			{
 				m_flipmode=!m_flipmode;
 				if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
@@ -450,8 +466,6 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				TrackList_UpdateAllExternalSurfaces();
 			}else
 			{
-				// if (m_midiout) m_midiout->Send(0xa0, 0x11,m_outFlip?1:0,-1); // light on/off
-				// m_outFlip=!m_outFlip;
 				if (m_midiout) m_midiout->Send(0xa0, 0x11,1,-1); // light on
 				
 				if(g_action_output == "1") // kw: special case for Master track selection via output button (need to refactor redundant code).
@@ -617,9 +631,6 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 
 void CSurf_FaderPort::OnMIDIEvent(MIDI_event_t *evt)
 {
-	char eventBuf[200];
-	if(evt->midi_message[0]);
-	sprintf(eventBuf,"MIDI Messages[0:1:2:3] = %d:%d:%d:%d",evt->midi_message[0],evt->midi_message[1],evt->midi_message[2],evt->midi_message[3]);//OutputDebugString(eventBuf);
 	FaderPortAction action(evt);
 	if(action.device == FPD_FADER) ProcessFader(&action);
 	else if(action.device == FPD_PAN_KNOB) ProcessPan(&action);
@@ -716,9 +727,6 @@ void CSurf_FaderPort::ReadINIfile()
 	GetPrivateProfileString("FPCSURF","ACTION_LOOP_SHIFT","40157",resultString,512,INIFileName);
 	g_action_loop_shift=(resultString);
 	
-	// pan scrolls tracks: default 0
-	GetPrivateProfileString("FPCSURF","PAN_SCROLLS_TRACKS","0",resultString,512,INIFileName);
-	g_pan_scroll_tracks=atoi(resultString) == 1 ? true : false;
 	
 	//ignore mix/proj/trns buttons: default = false
 	GetPrivateProfileString("FPCSURF","MTP_OVERRIDE","0",resultString,512,INIFileName);
@@ -747,12 +755,34 @@ void CSurf_FaderPort::ReadINIfile()
     // pan_resolution: default = 128
     GetPrivateProfileString("FPCSURF","PAN_RESOLUTION","128",resultString,512,INIFileName);
     g_pan_resolution = atoi(resultString);
+    //Prevent a divide by zero....someone will try it
+    if(g_pan_resolution==0)g_pan_resolution=1;
     
     // select_touched_param: default = 0
     GetPrivateProfileString("FPCSURF","SELECT_TOUCHED_PARAM","0",resultString,512,INIFileName);
     g_select_touched_param = atoi(resultString) == 1 ? true : false;
-   
+    
+    // pan mode: default 0
+    GetPrivateProfileString("FPCSURF","PAN_MODE","0",resultString,512,INIFileName);
+    g_action_pan = atoi(resultString);
+    
+    // pan mode shift:  default 0
+    GetPrivateProfileString("FPCSURF","PAN_MODE_SHIFT","1",resultString,512,INIFileName);
+    g_action_pan_shift = atoi(resultString);
+    
+    //PAN ACTIONS
+    GetPrivateProfileString("FPCSURF","ACTION_PAN_LEFT","0",resultString,512,INIFileName);
+    g_action_pan_left = resultString;
 	
+    GetPrivateProfileString("FPCSURF","ACTION_PAN_RIGHT","0",resultString,512,INIFileName);
+    g_action_pan_right = resultString;
+    
+    GetPrivateProfileString("FPCSURF","ACTION_PAN_LEFT_SHIFT","0",resultString,512,INIFileName);
+    g_action_pan_left_shift = resultString;
+    
+    GetPrivateProfileString("FPCSURF","ACTION_PAN_RIGHT_SHIFT","0",resultString,512,INIFileName);
+    g_action_pan_right_shift = resultString;
+    
 	delete[] INIFileName;
 	delete[] resultString;
 	
@@ -764,6 +794,8 @@ void CSurf_FaderPort::ReadINIfile()
 	sprintf(buf,"FADER CONTROLS FXPARAM = %d",g_fader_controls_fx);OutputDebugString(buf);
     sprintf(buf,"PAN RESOLUTION = %d",g_pan_resolution);OutputDebugString(buf);
     sprintf(buf,"PAN MIN TURNS = %d",g_pan_min_turns);OutputDebugString(buf);
+    sprintf(buf,"PAN ACTION = %d",g_action_pan);OutputDebugString(buf);
+    sprintf(buf,"PAN ACTION SHIFT = %d",g_action_pan_shift);OutputDebugString(buf);
 }
 
 void CSurf_FaderPort::AdjustBankOffset(int amt, bool dosel)
@@ -851,14 +883,26 @@ void CSurf_FaderPort::Run()
 		//if shift+stop+play are pressed (at the same time) reload the ini
 		if ((m_faderport_reload & FPB_RFLAG_MASK) == FPB_RFLAG_MASK)
 		{
-			
+			CSurf_OnStop(); //Stop playback (which is probably on)
 			ReadINIfile();
 			//Reset flags that depend on features being active
 			m_faderport_fxmode = false;
 			m_track_waiting = false;
 			m_faderport_shift = false;
-			CSurf_OnStop(); //Stop playback (which is probably on)
-			if (m_midiout) m_midiout->Send(0xa0, 5, 0, -1);//Turn shift light off just incase
+
+			if (m_midiout)//Confirmation blink
+            {
+                bool st = false;
+                for(int i = 0; i < 7; ++i)
+                {
+                    
+                    m_midiout->Send(0xa0, 5, st, -1);//Turn shift light off just incase
+                    m_midiout->Send(0xa0, 1, st, -1);//Play light
+                    m_midiout->Send(0xa0, 2, st, -1);//Stop light
+                    st=!st;
+                    Sleep(125);
+                }
+            }
 			m_faderport_reload = 0;
 		}
 		
@@ -876,15 +920,21 @@ void CSurf_FaderPort::Run()
 		static DWORD then = timeGetTime();
 		DWORD now = timeGetTime();
 
-		if (g_pan_scroll_tracks)
-		{
-			if (now >= m_pan_lasttouch + g_pan_scroll_fader_time && m_track_waiting)
-			{
-				TrackList_UpdateAllExternalSurfaces();
-				m_track_waiting = false;
-			}
-		}
-
+        //track should only be waiting if we're using pan to scroll tracks
+        if (now >= m_pan_lasttouch + g_pan_scroll_fader_time && m_track_waiting)
+        {
+            TrackList_UpdateAllExternalSurfaces();
+            m_track_waiting = false;
+        }
+		
+        //Prevent the fader from doing weird/rapid jumps when selecting param with pan
+        if (now >= m_pan_lasttouch + g_pan_scroll_fader_time && m_fx_waiting)
+        {
+            int val = paramToint14(m_fxautomation.GetParamNormalized());
+            AdjustFader(val);
+            m_fx_waiting = false;
+        }
+        
 		if(m_faderport_fxmode)
 		{
             //Cause Bank to blink if we're in fxmode
@@ -895,14 +945,6 @@ void CSurf_FaderPort::Run()
 				blink = !blink;
 				if (m_midiout) m_midiout->Send(0xa0,0x13,blink,-1);
 			}
-			
-			//Prevent the fader from doing weird/rapid jumps when selecting param with pan
-			if (now >= m_pan_lasttouch + g_pan_scroll_fader_time && m_fx_waiting)
-			{
-				int val = paramToint14(m_fxautomation.GetParamNormalized());
-				AdjustFader(val);
-				m_fx_waiting = false;
-			}
 		}
 	}
 }
@@ -912,7 +954,6 @@ void CSurf_FaderPort::Run()
 
 void CSurf_FaderPort::SetSurfaceVolume(MediaTrack *trackid, double volume)
 {
-	//OutputDebugString("Setting New Volume");
 	FIXID(id)
 	if (m_midiout && !id && !m_flipmode && !m_faderport_fxmode)
 	{
@@ -999,12 +1040,14 @@ bool CSurf_FaderPort::GetTouchState(MediaTrack *trackid, int isPan)
 		if (!m_flipmode != !isPan)
 		{
 			DWORD now=timeGetTime();
-			// fake touch, go for 3s after last movement; Pan touch reset support 12.14.15
+			// fake touch, Pan touch reset support 12.14.15
 			if (m_pan_lasttouch==1 || (now<m_pan_lasttouch+g_pan_touch_reset_time && now >= m_pan_lasttouch-1000))
 				return true;
 	  
 			return false;
 		}
+        
+        if (m_faderport_fxmode) return m_fxautomation.GetTouchState();
 		
 		return !!m_fader_touchstate;
 	}
@@ -1070,21 +1113,15 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 			stringstream ss;
 			if( !parm1 && !parm2 && !parm3)
 			{
-				ss << "CSURF_EXT_SETFOCUSEDFX: Cleared";OutputDebugString(ss.str().c_str());
-				
 				break;
 			}
 			else
 			{
 				MediaTrack* tr = (MediaTrack*) parm1;
 				int fxid = *(int*)parm3;
-				ss << "FX: " << fxid << " selected on MediaTrack: " << tr;
-				OutputDebugString(ss.str().c_str());
-				if(m_faderport_fxmode)
-				{
-					double val = m_fxautomation.SetSelectedTrackFX(tr, fxid);
-					if(val > -1) AdjustFader(paramToint14(val));
-				}
+                double val = m_fxautomation.SetSelectedTrackFX(tr, fxid);
+                if(val > -1 && m_faderport_fxmode) AdjustFader(paramToint14(val));
+				
 			}
 			break;
 		}
@@ -1095,12 +1132,10 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 			double val = *(double*) parm3;
 			int fx = (fxpid >> 16);
 			int param = (fxpid & 0xFF);
-			if(m_faderport_fxmode)
-            {
-                if(g_select_touched_param) m_fxautomation.SetSelectedParam(param);
-				if(m_fxautomation.IsSelected(tr, fx, param)) AdjustFader(paramToint14(val));
-            }
-			
+            //Double check of IsSelected keeps fader from lagging
+            if(g_select_touched_param && !m_fxautomation.IsSelected(tr, fx, param)) m_fxautomation.SetSelectedParam(param);
+            if(m_faderport_fxmode && m_fxautomation.IsSelected(tr, fx, param)) AdjustFader(paramToint14(val));
+           
 			break;
 		}
 			
@@ -1111,10 +1146,6 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 			{
 				//todo: Update the internal state pof the automation controller
 				if(m_fxautomation.GetTrack() == tr) (void) parm1;
-				stringstream ss;
-				ss << "Value of Parm2:Parm3 = " << (parm2 == nullptr ? "nullptr" : to_string(*(int*)parm2))
-					<< " : " << (parm3 == nullptr ? "nullptr" : to_string(*(int*)parm3));
-				OutputDebugString(ss.str().c_str());
 			}
 			break;
 		}

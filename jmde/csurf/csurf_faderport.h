@@ -40,7 +40,6 @@ bool g_selected_is_touched=false ;
 bool g_shift_latch=true;
 bool g_auto_scroll=true;
 bool g_override_automation_read;
-bool g_pan_scroll_tracks=false;
 bool g_fader_controls_fx=false;
 bool g_select_touched_param=false;
 
@@ -49,6 +48,9 @@ int g_pan_scroll_fader_time=250;
 
 int g_pan_min_turns = 3;
 int g_pan_resolution;
+
+int g_action_pan;
+int g_action_pan_shift;
 
 // button Actions
 string g_action_footswitch;
@@ -65,6 +67,11 @@ string g_action_project_shift;
 
 string g_action_trans;
 string g_action_trans_shift;
+
+string g_action_pan_left;
+string g_action_pan_right;
+string g_action_pan_left_shift;
+string g_action_pan_right_shift;
 
 string g_action_undo = to_string(IDC_EDIT_UNDO);
 string g_action_undo_shift = to_string(IDC_EDIT_REDO);
@@ -139,7 +146,7 @@ struct FaderPortAction
     {
         device = (FaderPortDevice)evt->midi_message[0];
         id = (FaderPortButton)evt->midi_message[1];
-        state = evt->midi_message[2];;
+        state = evt->midi_message[2];
     }
     
     FaderPortDevice device;
@@ -202,6 +209,7 @@ class CSurf_FaderPort : public IReaperControlSurface
     bool m_faderport_fwd;
     bool m_faderport_rew;
     bool m_faderport_fxmode;
+    bool m_touch_latch;
 
 	//Stores flags for shift, mute, and rec (arm)
 	unsigned m_faderport_reload;
@@ -212,7 +220,8 @@ class CSurf_FaderPort : public IReaperControlSurface
     
     int m_pan_left_turns;
     int m_pan_right_turns;
-
+    int m_fader_val;
+    
     Envelope_Automator m_fxautomation;
     
     int m_vol_lastpos;
@@ -242,6 +251,8 @@ protected:
     void OnMIDIEvent(MIDI_event_t *evt);
     void ReadINIfile();
     void AdjustBankOffset(int amt, bool dosel);
+    
+    void Notify(unsigned char button);
 public:
     CSurf_FaderPort(int indev, int outdev, int *errStats);
     ~CSurf_FaderPort();
