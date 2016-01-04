@@ -383,11 +383,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\FaderportDraw.cpp" />
     <ClCompile Include="automator.cpp" />
     <ClCompile Include="csurf_faderport.cpp" />
     <ClCompile Include="csurf_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\FaderportDraw.h" />
     <ClInclude Include="..\reaper_plugin_functions.h" />
     <ClInclude Include="csurf.h" />
     <ClInclude Include="..\peak_cache.h" />

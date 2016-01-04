@@ -16,7 +16,7 @@
 
 #define _LETS_DRAW 1
 #ifdef _LETS_DRAW
-#include "FaderportDraw.h"//Utterly useless. Just cool
+#include "../FaderportDraw.h"//Utterly useless. Just cool
 #endif
 
 using namespace std;
