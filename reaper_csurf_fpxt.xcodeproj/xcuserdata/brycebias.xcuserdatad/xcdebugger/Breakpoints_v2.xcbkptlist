@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jmde/csurf/csurf_faderport.cpp"
-            timestampString = "473266967.267012"
+            timestampString = "473494524.331711"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "901"
-            endingLineNumber = "901"
+            startingLineNumber = "911"
+            endingLineNumber = "911"
             landmarkName = "CSurf_FaderPort::Run()"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,12 +26,92 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jmde/csurf/csurf_faderport.cpp"
-            timestampString = "473266967.267012"
+            timestampString = "473494524.331711"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1092"
-            endingLineNumber = "1092"
+            startingLineNumber = "1102"
+            endingLineNumber = "1102"
             landmarkName = "CSurf_FaderPort::OnTrackSelection(MediaTrack *trackid)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "jmde/csurf/csurf_faderport.cpp"
+            timestampString = "473309594.206162"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FaderportDraw.cpp"
+            timestampString = "473314625.706244"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "Display(std::string text, midi_Output* out, int d1, int d2)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Display(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, midi_Output*, int, int)"
+                  moduleName = "reaper_csurf_fpxt.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/brycebias/Development/Projects/Faderport_XT/FaderportDraw.cpp"
+                  timestampString = "473314508.808071"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18"
+                  offsetFromSymbolStart = "5223">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Display(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, midi_Output*, int, int)"
+                  moduleName = "reaper_csurf_fpxt.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/brycebias/Development/Projects/Faderport_XT/FaderportDraw.cpp"
+                  timestampString = "473314508.80845"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18"
+                  offsetFromSymbolStart = "5290">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "jmde/csurf/csurf_faderport.cpp"
+            timestampString = "473494235.57775"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
+            landmarkName = "CSurf_FaderPort::ProcessPan(FaderPortAction* action)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

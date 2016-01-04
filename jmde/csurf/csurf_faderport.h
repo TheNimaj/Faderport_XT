@@ -18,7 +18,7 @@
 
 #include "csurf.h"
 
-#include <Windows.h> //Just be sure this stays a capital 'W' for mac -- nimaj
+#include <Windows.h> 
 #include <string>
 
 #include "automator.h"
@@ -35,59 +35,7 @@ static bool g_csurf_mcpmode=false; // we may wish to allow an action to set this
 // INI support (karbo 11.8.2011 )
 #define BUFSIZE MAX_PATH
 
-// settings
-bool g_selected_is_touched=false ;
-bool g_shift_latch=true;
-bool g_auto_scroll=true;
-bool g_override_automation_read;
-bool g_fader_controls_fx=false;
-bool g_select_touched_param=false;
 
-int g_pan_touch_reset_time=500;
-int g_pan_scroll_fader_time=250;
-
-int g_pan_min_turns = 3;
-int g_pan_resolution;
-
-int g_action_pan;
-int g_action_pan_shift;
-
-// button Actions
-string g_action_footswitch;
-string g_action_footswitch_shift;
-
-string g_action_output;
-string g_action_output_shift;
-
-string g_action_mix;
-string g_action_mix_shift;
-
-string g_action_project;
-string g_action_project_shift;
-
-string g_action_trans;
-string g_action_trans_shift;
-
-string g_action_pan_left;
-string g_action_pan_right;
-string g_action_pan_left_shift;
-string g_action_pan_right_shift;
-
-string g_action_undo = to_string(IDC_EDIT_UNDO);
-string g_action_undo_shift = to_string(IDC_EDIT_REDO);
-
-int g_action_bank_base;
-
-string g_action_punch=to_string(ID_MARKER_PREV);
-string g_action_punch_shift=to_string(ID_LOOP_SETSTART);
-
-string g_action_loop=to_string(IDC_REPEAT);
-string g_action_loop_shift=to_string(ID_INSERT_MARKER);
-
-string g_action_user=to_string(ID_MARKER_NEXT);
-string g_action_user_shift=to_string(ID_LOOP_SETEND);
-
-bool g_isMaster;
 
 enum FaderPortDevice
 {
@@ -123,6 +71,35 @@ enum FaderPortButton
     FPB_REC = 7,
     FPB_FADER_TOUCH = 127,
     FPB_FOOTSWITCH = 126
+};
+
+enum FaderPortLights
+{
+    FPL_REC = 0x00,
+    FPL_PLAY,
+    FPL_STOP,
+    FPL_FWD,
+    FPL_RWD,
+    FPL_SHIFT,
+    FPL_PUNCH,
+    FPL_USER,
+    FPL_LOOP,
+    FPL_UNDO,
+    FPL_TRNS,
+    FPL_PROJ,
+    FPL_MIX,
+    FPL_READ,
+    FPL_WRITE,
+    FPL_TOUCH,
+    FPL_OFF,
+    FPL_OUTPUT,
+    FPL_CH_NEXT,
+    FPL_BANK,
+    FPL_CH_PREV,
+    FPL_MUTE,
+    FPL_SOLO,
+    FPL_REC_ARM,
+    FPL_COUNT
 };
 
 enum FP_RFlags

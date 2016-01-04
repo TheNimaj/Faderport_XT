@@ -9,10 +9,20 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>reaper_csurf_fpxt32.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>1067CD371C101C7600EC3683</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>107ACC271C38ED9400270544</key>
 		<dict>
 			<key>primary</key>
 			<true/>

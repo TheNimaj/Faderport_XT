@@ -9,7 +9,24 @@
 /* Begin PBXBuildFile section */
 		104592EB1C356F9100B6D2C4 /* reaper_csurf_fpxt.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */; };
 		104592EF1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini in CopyFiles */ = {isa = PBXBuildFile; fileRef = 104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */; };
+		104592F21C361AA800B6D2C4 /* FaderportDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */; };
+		104592F31C361AA800B6D2C4 /* FaderportDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 104592F11C361AA800B6D2C4 /* FaderportDraw.h */; };
 		1067CD691C10219A00EC3683 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1067CD681C10219A00EC3683 /* Cocoa.framework */; };
+		107ACC291C38ED9400270544 /* csurf_faderport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */; };
+		107ACC2A1C38ED9400270544 /* swell-modstub.mm in Sources */ = {isa = PBXBuildFile; fileRef = 10B428481C1F3C0900441EBE /* swell-modstub.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		107ACC2B1C38ED9400270544 /* automator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428291C1F3B6F00441EBE /* automator.cpp */; };
+		107ACC2C1C38ED9400270544 /* FaderportDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */; };
+		107ACC2D1C38ED9400270544 /* csurf_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428311C1F3B6F00441EBE /* csurf_main.cpp */; };
+		107ACC2F1C38ED9400270544 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1067CD681C10219A00EC3683 /* Cocoa.framework */; };
+		107ACC311C38ED9400270544 /* csurf.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428341C1F3B6F00441EBE /* csurf.h */; };
+		107ACC321C38ED9400270544 /* csurf_faderport.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428301C1F3B6F00441EBE /* csurf_faderport.h */; };
+		107ACC331C38ED9400270544 /* automator.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B4282A1C1F3B6F00441EBE /* automator.h */; };
+		107ACC351C38ED9400270544 /* FaderportDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 104592F11C361AA800B6D2C4 /* FaderportDraw.h */; };
+		107ACC361C38ED9400270544 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428381C1F3B6F00441EBE /* resource.h */; };
+		107ACC3A1C38ED9400270544 /* README.rtf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 10B4284A1C20CEC100441EBE /* README.rtf */; };
+		107ACC3C1C38ED9400270544 /* reaper_csurf_fpxt.ini in CopyFiles */ = {isa = PBXBuildFile; fileRef = 104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */; };
+		107ACC411C38F25600270544 /* reaper_csurf_fpxt32.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */; };
+		107ACC421C38F25F00270544 /* reaper_csurf_fpxt32.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */; };
 		10B428391C1F3B6F00441EBE /* automator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428291C1F3B6F00441EBE /* automator.cpp */; };
 		10B4283A1C1F3B6F00441EBE /* automator.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B4282A1C1F3B6F00441EBE /* automator.h */; };
 		10B4283F1C1F3B6F00441EBE /* csurf_faderport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */; };
@@ -33,6 +50,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		107ACC371C38ED9400270544 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "/Users/brycebias/Library/Application Support/REAPER/UserPlugins";
+			dstSubfolderSpec = 0;
+			files = (
+				107ACC411C38F25600270544 /* reaper_csurf_fpxt32.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		107ACC391C38ED9400270544 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /Users/brycebias/Development/Projects/Faderport_XT/Build;
+			dstSubfolderSpec = 0;
+			files = (
+				107ACC421C38F25F00270544 /* reaper_csurf_fpxt32.dylib in CopyFiles */,
+				107ACC3A1C38ED9400270544 /* README.rtf in CopyFiles */,
+				107ACC3C1C38ED9400270544 /* reaper_csurf_fpxt.ini in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		10FAC7321C237021002C33BE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -49,8 +88,12 @@
 
 /* Begin PBXFileReference section */
 		104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */ = {isa = PBXFileReference; lastKnownFileType = text; name = reaper_csurf_fpxt.ini; path = "../../../Library/Application Support/REAPER/reaper_csurf_fpxt.ini"; sourceTree = "<group>"; };
+		104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FaderportDraw.cpp; sourceTree = "<group>"; };
+		104592F11C361AA800B6D2C4 /* FaderportDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaderportDraw.h; sourceTree = "<group>"; };
+		104592F71C36217800B6D2C4 /* settings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = settings.h; path = jmde/csurf/settings.h; sourceTree = "<group>"; };
 		1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_csurf_fpxt.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		1067CD681C10219A00EC3683 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_csurf_fpxt32.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		10B428291C1F3B6F00441EBE /* automator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = automator.cpp; path = jmde/csurf/automator.cpp; sourceTree = "<group>"; };
 		10B4282A1C1F3B6F00441EBE /* automator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = automator.h; path = jmde/csurf/automator.h; sourceTree = "<group>"; };
 		10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = csurf_faderport.cpp; path = jmde/csurf/csurf_faderport.cpp; sourceTree = "<group>"; };
@@ -73,12 +116,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		107ACC2E1C38ED9400270544 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				107ACC2F1C38ED9400270544 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		1067CD2F1C101C7600EC3683 = {
 			isa = PBXGroup;
 			children = (
+				104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */,
+				104592F71C36217800B6D2C4 /* settings.h */,
+				104592F11C361AA800B6D2C4 /* FaderportDraw.h */,
 				104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */,
 				10B428291C1F3B6F00441EBE /* automator.cpp */,
 				10B4282A1C1F3B6F00441EBE /* automator.h */,
@@ -100,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */,
+				107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -114,7 +169,20 @@
 				10B428441C1F3B6F00441EBE /* csurf.h in Headers */,
 				10B428401C1F3B6F00441EBE /* csurf_faderport.h in Headers */,
 				10B4283A1C1F3B6F00441EBE /* automator.h in Headers */,
+				104592F31C361AA800B6D2C4 /* FaderportDraw.h in Headers */,
 				10B428461C1F3B6F00441EBE /* resource.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		107ACC301C38ED9400270544 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				107ACC311C38ED9400270544 /* csurf.h in Headers */,
+				107ACC321C38ED9400270544 /* csurf_faderport.h in Headers */,
+				107ACC331C38ED9400270544 /* automator.h in Headers */,
+				107ACC351C38ED9400270544 /* FaderportDraw.h in Headers */,
+				107ACC361C38ED9400270544 /* resource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +206,25 @@
 			name = reaper_csurf_fpxt;
 			productName = reaper_csurf;
 			productReference = 1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		107ACC271C38ED9400270544 /* reaper_csurf_fpxt32 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 107ACC3D1C38ED9400270544 /* Build configuration list for PBXNativeTarget "reaper_csurf_fpxt32" */;
+			buildPhases = (
+				107ACC281C38ED9400270544 /* Sources */,
+				107ACC2E1C38ED9400270544 /* Frameworks */,
+				107ACC301C38ED9400270544 /* Headers */,
+				107ACC371C38ED9400270544 /* CopyFiles */,
+				107ACC391C38ED9400270544 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = reaper_csurf_fpxt32;
+			productName = reaper_csurf;
+			productReference = 107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -167,6 +254,7 @@
 			projectRoot = "";
 			targets = (
 				1067CD371C101C7600EC3683 /* reaper_csurf_fpxt */,
+				107ACC271C38ED9400270544 /* reaper_csurf_fpxt32 */,
 			);
 		};
 /* End PBXProject section */
@@ -179,7 +267,20 @@
 				10B4283F1C1F3B6F00441EBE /* csurf_faderport.cpp in Sources */,
 				10B428491C1F3C0900441EBE /* swell-modstub.mm in Sources */,
 				10B428391C1F3B6F00441EBE /* automator.cpp in Sources */,
+				104592F21C361AA800B6D2C4 /* FaderportDraw.cpp in Sources */,
 				10B428411C1F3B6F00441EBE /* csurf_main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		107ACC281C38ED9400270544 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				107ACC291C38ED9400270544 /* csurf_faderport.cpp in Sources */,
+				107ACC2A1C38ED9400270544 /* swell-modstub.mm in Sources */,
+				107ACC2B1C38ED9400270544 /* automator.cpp in Sources */,
+				107ACC2C1C38ED9400270544 /* FaderportDraw.cpp in Sources */,
+				107ACC2D1C38ED9400270544 /* csurf_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,6 +291,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -233,6 +335,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -268,6 +371,7 @@
 		1067CD3D1C101C7600EC3683 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -291,6 +395,7 @@
 		1067CD3E1C101C7600EC3683 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -305,6 +410,52 @@
 				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-DSWELL_PROVIDED_BY_APP";
 				PRODUCT_MODULE_NAME = reaper_csurf;
 				PRODUCT_NAME = reaper_csurf_fpxt;
+				"WARNING_CFLAGS[arch=*]" = "-Wno-unused-variable";
+			};
+			name = Release;
+		};
+		107ACC3E1C38ED9400270544 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				EXECUTABLE_PREFIX = "";
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/brycebias/Development/Libraries/reaper_extension_sdk/WDL/swell,
+				);
+				OBJROOT = build;
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-DSWELL_PROVIDED_BY_APP";
+				PRODUCT_MODULE_NAME = reaper_csurf;
+				PRODUCT_NAME = reaper_csurf_fpxt32;
+				SYMROOT = build;
+				"WARNING_CFLAGS[arch=*]" = "-Wno-unused-variable";
+			};
+			name = Debug;
+		};
+		107ACC3F1C38ED9400270544 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				EXECUTABLE_PREFIX = "";
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/brycebias/Development/Libraries/reaper_extension_sdk/WDL/swell,
+				);
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-DSWELL_PROVIDED_BY_APP";
+				PRODUCT_MODULE_NAME = reaper_csurf;
+				PRODUCT_NAME = reaper_csurf_fpxt32;
 				"WARNING_CFLAGS[arch=*]" = "-Wno-unused-variable";
 			};
 			name = Release;
@@ -326,6 +477,15 @@
 			buildConfigurations = (
 				1067CD3D1C101C7600EC3683 /* Debug */,
 				1067CD3E1C101C7600EC3683 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		107ACC3D1C38ED9400270544 /* Build configuration list for PBXNativeTarget "reaper_csurf_fpxt32" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				107ACC3E1C38ED9400270544 /* Debug */,
+				107ACC3F1C38ED9400270544 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

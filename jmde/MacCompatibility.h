@@ -10,8 +10,8 @@
 
 #ifdef __APPLE__
 #ifdef DEBUG
-#include <asl.h>
-#define OutputDebugString(x) asl_log(nullptr, nullptr, ASL_LEVEL_NOTICE, "%s\n", x)
+#include <iostream>
+#define OutputDebugString(x) std::cout << x << std::endl
 #else
 #define OutputDebugString(x)
 #endif

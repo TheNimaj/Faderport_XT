@@ -6,12 +6,18 @@
  */
 
 #include "csurf_faderport.h"
+#include "settings.h"
 
 #include "../reaper_plugin_functions.h"
  
 #include "../MacCompatibility.h"
 #include <stdio.h> // ini support (karbo 11.8.2011)
 #include <sstream>
+
+#define _LETS_DRAW 1
+#ifdef _LETS_DRAW
+#include "FaderportDraw.h"//Utterly useless. Just cool
+#endif
 
 using namespace std;
 
@@ -65,14 +71,15 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 		m_midiout->Send(0xb0,0x00,0x06,-1);
 		m_midiout->Send(0xb0,0x20,0x27,-1);
 		
-		int x;
-		for (x = 0; x < 0x30; x ++) // lights out
+		for(int x = 0; x < FPL_COUNT; x ++) // lights out
 			m_midiout->Send(0xa0,x,0x00,-1);
-		
-		//m_midiout->Send(0xa0,0xf,m_flipmode?1:0);// fucko
 		
 		m_midiout->Send(0x91,0x00,0x64,-1); // send these every so often?
 		
+        
+#ifdef _LETS_DRAW
+        if(g_enable_intro) Display(g_intro_string, m_midiout, 200, 100);
+#endif
 	}
 	
 }
@@ -300,7 +307,6 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 			
 		case FPB_BANK:
 		{
-			m_faderport_bank = !m_faderport_bank;
 			if(g_fader_controls_fx)
 			{
 				if(m_faderport_shift) m_faderport_fxmode = !m_faderport_fxmode;
@@ -310,7 +316,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				{
                     if(!m_fxautomation.HasValidEnvelope())
                     {
-                        Notify(0x13);
+                        Notify(FPL_BANK);
                         //Abort fx mode
                         m_faderport_fxmode = false;
                         break;
@@ -325,7 +331,9 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 					AdjustFader(volint);
 				}
 			}
-			if (m_midiout) m_midiout->Send(0xa0,0x13,m_faderport_bank,-1);
+            
+            m_faderport_bank = !m_faderport_bank;
+			if (m_midiout) m_midiout->Send(0xa0,FPL_BANK,m_faderport_bank,-1);
 			break;
 		}
 			
@@ -780,8 +788,12 @@ void CSurf_FaderPort::ReadINIfile()
     GetPrivateProfileString("FPCSURF","ACTION_PAN_LEFT_SHIFT","0",resultString,512,INIFileName);
     g_action_pan_left_shift = resultString;
     
+    GetPrivateProfileString("FPCSURF","INTRO_STRING","FPXT",resultString,512,INIFileName);
+    g_intro_string = resultString;
+    
     GetPrivateProfileString("FPCSURF","ACTION_PAN_RIGHT_SHIFT","0",resultString,512,INIFileName);
-    g_action_pan_right_shift = resultString;
+    g_enable_intro = atoi(resultString) == 1 ? true : false;
+    
     
 	delete[] INIFileName;
 	delete[] resultString;
