@@ -148,13 +148,13 @@ void CSurf_FaderPort::ProcessFader(FaderPortAction* action)
 
 void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 {
+    
 	if (action->id==0) //Not actually sure what this means, but it was there from the beginning
 	{
 		m_pan_lasttouch=timeGetTime();
         
         MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
        
-        
 		double adj = 0.00;
 		if (action->state==0x7E) //prev. 3f
              ++m_pan_left_turns;
@@ -183,9 +183,9 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 		if (m_faderport_fxmode)
 		{
 			if(m_pan_dir == PD_LEFT)
-				m_fxautomation.SelectPrevParam();
+				m_fxautomation.SelectPrevParam(nullptr);
 			else if (m_pan_dir == PD_RIGHT)
-				m_fxautomation.SelectNextParam();
+				m_fxautomation.SelectNextParam(nullptr);
 			
 			m_fx_waiting = true;
 		}
@@ -466,7 +466,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 		case FPB_OUTPUT:
 		{
 			
-			if(g_action_output == "0")//Does it matter if we can scroll with pan?
+			if(g_action_output == "0")
 			{
 				m_flipmode=!m_flipmode;
 				if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
@@ -479,20 +479,17 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				if(g_action_output == "1") // kw: special case for Master track selection via output button (need to refactor redundant code).
 				{
 					
-                    MediaTrack *tr = CSurf_TrackFromID(0, false);
+                    MediaTrack *tr = GetMasterTrack(0);
 					if ((m_faderport_shift))
 					{
 						RunCommand(g_action_output_shift);
 					}
 					else
 					{
+                        
+                        // deselect all tracks
                         for(int i=0;i<CSurf_NumTracks(g_csurf_mcpmode);i++)
-                        {
-                            // deselect any currently selected tracks
-                            tr=CSurf_TrackFromID(i+1,g_csurf_mcpmode);
-                            CSurf_OnSelectedChange(tr, false);
-                        }
-
+                           SetTrackSelected( CSurf_TrackFromID(i+1,g_csurf_mcpmode), false);
 						// get master and select it
 						CSurf_OnSelectedChange(tr, true);
 						CSurf_OnTrackSelection(tr);
@@ -791,7 +788,7 @@ void CSurf_FaderPort::ReadINIfile()
     GetPrivateProfileString("FPCSURF","INTRO_STRING","FPXT",resultString,512,INIFileName);
     g_intro_string = resultString;
     
-    GetPrivateProfileString("FPCSURF","ACTION_PAN_RIGHT_SHIFT","0",resultString,512,INIFileName);
+    GetPrivateProfileString("FPCSURF","ENABLE_INTRO","0",resultString,512,INIFileName);
     g_enable_intro = atoi(resultString) == 1 ? true : false;
     
     
@@ -1123,30 +1120,29 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 		case CSURF_EXT_SETFOCUSEDFX:
 		{
 			stringstream ss;
-			if( !parm1 && !parm2 && !parm3)
-			{
-				break;
-			}
-			else
-			{
-				MediaTrack* tr = (MediaTrack*) parm1;
-				int fxid = *(int*)parm3;
-                double val = m_fxautomation.SetSelectedTrackFX(tr, fxid);
-                if(val > -1 && m_faderport_fxmode) AdjustFader(paramToint14(val));
-				
-			}
+			if( !parm1 && !parm2 && !parm3) break;
+            if( !m_faderport_fxmode ) break;
+            
+            MediaTrack* tr = (MediaTrack*) parm1;
+            int fxid = *(int*)parm3;
+            double val = -1.f;
+            bool set = false;
+            if(!m_fxautomation.IsSelected(tr, fxid, -1) && m_fxautomation.SetSelectedTrackFX(tr, fxid, &val))
+                AdjustFader(paramToint14(val));
+        
 			break;
 		}
 		case CSURF_EXT_SETFXPARAM:
 		{
+            if(!m_faderport_fxmode) break;
+            
 			MediaTrack* tr = (MediaTrack*) parm1;
 			int fxpid = *(int*)parm2;
 			double val = *(double*) parm3;
 			int fx = (fxpid >> 16);
 			int param = (fxpid & 0xFF);
-            //Double check of IsSelected keeps fader from lagging
-            if(g_select_touched_param && !m_fxautomation.IsSelected(tr, fx, param)) m_fxautomation.SetSelectedParam(param);
-            if(m_faderport_fxmode && m_fxautomation.IsSelected(tr, fx, param)) AdjustFader(paramToint14(val));
+            
+            if(m_fxautomation.IsSelected(tr, fx, param)) AdjustFader(paramToint14(val));
            
 			break;
 		}
@@ -1161,7 +1157,26 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 			}
 			break;
 		}
-			
+        case CSURF_EXT_SETLASTTOUCHEDFX:
+        {
+            if( !parm1 && !parm2 && !parm3) break;
+            if( !m_faderport_fxmode ) break;
+            
+            MediaTrack* tr = (MediaTrack*) parm1;
+            int fxid = *(int*)parm3;
+            
+            int track,fx,param;
+            GetLastTouchedFX(&track, &fx, &param);
+            
+            if(g_select_touched_param && !m_fxautomation.IsSelected(tr, -1, param))
+                m_fxautomation.SetSelectedParam(param, nullptr);
+            
+            double val = -1.f;
+            bool set = false;
+
+            break;
+        }
+            
 		case CSURF_EXT_RESET:
 		case CSURF_EXT_SETINPUTMONITOR:
 		case CSURF_EXT_SETMETRONOME:
@@ -1170,7 +1185,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 		case CSURF_EXT_SETSENDVOLUME:
 		case CSURF_EXT_SETSENDPAN:
 		case CSURF_EXT_SETFXENABLED:
-		case CSURF_EXT_SETLASTTOUCHEDFX:
+        
 		case CSURF_EXT_SETMIXERSCROLL:
 		case CSURF_EXT_SETBPMANDPLAYRATE:
 		case CSURF_EXT_SETPAN_EX:

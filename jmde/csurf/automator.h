@@ -40,16 +40,16 @@ public:
     
     /**
         Sets currently selected Track, FX, and Param (0).
-        Returns normalized value of fx param
+        Returns if FX was set
      */
-    double SetSelectedTrackFX(MediaTrack* tr, int fx);
-    double SetSelectedParam(int param);
+    bool SetSelectedTrackFX(MediaTrack* tr, int fx, double* paramVal);
+    bool SetSelectedParam(int param, double* paramVal);
     
     void SelectNextFX();
     void SelectPrevFX();
     
-    double SelectNextParam();
-    double SelectPrevParam();
+    bool SelectNextParam(double* paramVal);
+    bool SelectPrevParam(double* paramVal);
     
     bool HasValidEnvelope() const;
     bool GetTouchState() const { return m_TouchState; }
@@ -67,6 +67,7 @@ public:
     int GetCurrentFX() const { return m_FX; }
     
     bool IsSelected(MediaTrack* tr, int fx, int param) const;
+    
 };
 
 #endif /* defined(__reaper_csurf__automator__) */

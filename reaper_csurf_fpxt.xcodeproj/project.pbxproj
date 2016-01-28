@@ -9,24 +9,24 @@
 /* Begin PBXBuildFile section */
 		104592EB1C356F9100B6D2C4 /* reaper_csurf_fpxt.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */; };
 		104592EF1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini in CopyFiles */ = {isa = PBXBuildFile; fileRef = 104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */; };
-		104592F21C361AA800B6D2C4 /* FaderportDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */; };
-		104592F31C361AA800B6D2C4 /* FaderportDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 104592F11C361AA800B6D2C4 /* FaderportDraw.h */; };
 		1067CD691C10219A00EC3683 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1067CD681C10219A00EC3683 /* Cocoa.framework */; };
 		107ACC291C38ED9400270544 /* csurf_faderport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */; };
 		107ACC2A1C38ED9400270544 /* swell-modstub.mm in Sources */ = {isa = PBXBuildFile; fileRef = 10B428481C1F3C0900441EBE /* swell-modstub.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		107ACC2B1C38ED9400270544 /* automator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428291C1F3B6F00441EBE /* automator.cpp */; };
-		107ACC2C1C38ED9400270544 /* FaderportDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */; };
 		107ACC2D1C38ED9400270544 /* csurf_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428311C1F3B6F00441EBE /* csurf_main.cpp */; };
 		107ACC2F1C38ED9400270544 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1067CD681C10219A00EC3683 /* Cocoa.framework */; };
 		107ACC311C38ED9400270544 /* csurf.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428341C1F3B6F00441EBE /* csurf.h */; };
 		107ACC321C38ED9400270544 /* csurf_faderport.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428301C1F3B6F00441EBE /* csurf_faderport.h */; };
 		107ACC331C38ED9400270544 /* automator.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B4282A1C1F3B6F00441EBE /* automator.h */; };
-		107ACC351C38ED9400270544 /* FaderportDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 104592F11C361AA800B6D2C4 /* FaderportDraw.h */; };
 		107ACC361C38ED9400270544 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B428381C1F3B6F00441EBE /* resource.h */; };
 		107ACC3A1C38ED9400270544 /* README.rtf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 10B4284A1C20CEC100441EBE /* README.rtf */; };
 		107ACC3C1C38ED9400270544 /* reaper_csurf_fpxt.ini in CopyFiles */ = {isa = PBXBuildFile; fileRef = 104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */; };
 		107ACC411C38F25600270544 /* reaper_csurf_fpxt32.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */; };
 		107ACC421C38F25F00270544 /* reaper_csurf_fpxt32.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */; };
+		10A12E1B1C3A071F004CF674 /* FaderportDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10A12E191C3A071F004CF674 /* FaderportDraw.cpp */; };
+		10A12E1C1C3A071F004CF674 /* FaderportDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10A12E191C3A071F004CF674 /* FaderportDraw.cpp */; };
+		10A12E1D1C3A071F004CF674 /* FaderportDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 10A12E1A1C3A071F004CF674 /* FaderportDraw.h */; };
+		10A12E1E1C3A071F004CF674 /* FaderportDraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 10A12E1A1C3A071F004CF674 /* FaderportDraw.h */; };
 		10B428391C1F3B6F00441EBE /* automator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B428291C1F3B6F00441EBE /* automator.cpp */; };
 		10B4283A1C1F3B6F00441EBE /* automator.h in Headers */ = {isa = PBXBuildFile; fileRef = 10B4282A1C1F3B6F00441EBE /* automator.h */; };
 		10B4283F1C1F3B6F00441EBE /* csurf_faderport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */; };
@@ -88,12 +88,12 @@
 
 /* Begin PBXFileReference section */
 		104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */ = {isa = PBXFileReference; lastKnownFileType = text; name = reaper_csurf_fpxt.ini; path = "../../../Library/Application Support/REAPER/reaper_csurf_fpxt.ini"; sourceTree = "<group>"; };
-		104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FaderportDraw.cpp; sourceTree = "<group>"; };
-		104592F11C361AA800B6D2C4 /* FaderportDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaderportDraw.h; sourceTree = "<group>"; };
 		104592F71C36217800B6D2C4 /* settings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = settings.h; path = jmde/csurf/settings.h; sourceTree = "<group>"; };
 		1067CD381C101C7600EC3683 /* reaper_csurf_fpxt.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_csurf_fpxt.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		1067CD681C10219A00EC3683 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		107ACC401C38ED9400270544 /* reaper_csurf_fpxt32.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_csurf_fpxt32.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		10A12E191C3A071F004CF674 /* FaderportDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FaderportDraw.cpp; path = jmde/FaderportDraw.cpp; sourceTree = "<group>"; };
+		10A12E1A1C3A071F004CF674 /* FaderportDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FaderportDraw.h; path = jmde/FaderportDraw.h; sourceTree = "<group>"; };
 		10B428291C1F3B6F00441EBE /* automator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = automator.cpp; path = jmde/csurf/automator.cpp; sourceTree = "<group>"; };
 		10B4282A1C1F3B6F00441EBE /* automator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = automator.h; path = jmde/csurf/automator.h; sourceTree = "<group>"; };
 		10B4282F1C1F3B6F00441EBE /* csurf_faderport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = csurf_faderport.cpp; path = jmde/csurf/csurf_faderport.cpp; sourceTree = "<group>"; };
@@ -130,9 +130,9 @@
 		1067CD2F1C101C7600EC3683 = {
 			isa = PBXGroup;
 			children = (
-				104592F01C361AA800B6D2C4 /* FaderportDraw.cpp */,
+				10A12E191C3A071F004CF674 /* FaderportDraw.cpp */,
+				10A12E1A1C3A071F004CF674 /* FaderportDraw.h */,
 				104592F71C36217800B6D2C4 /* settings.h */,
-				104592F11C361AA800B6D2C4 /* FaderportDraw.h */,
 				104592EE1C357BFE00B6D2C4 /* reaper_csurf_fpxt.ini */,
 				10B428291C1F3B6F00441EBE /* automator.cpp */,
 				10B4282A1C1F3B6F00441EBE /* automator.h */,
@@ -169,7 +169,7 @@
 				10B428441C1F3B6F00441EBE /* csurf.h in Headers */,
 				10B428401C1F3B6F00441EBE /* csurf_faderport.h in Headers */,
 				10B4283A1C1F3B6F00441EBE /* automator.h in Headers */,
-				104592F31C361AA800B6D2C4 /* FaderportDraw.h in Headers */,
+				10A12E1D1C3A071F004CF674 /* FaderportDraw.h in Headers */,
 				10B428461C1F3B6F00441EBE /* resource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,7 +181,7 @@
 				107ACC311C38ED9400270544 /* csurf.h in Headers */,
 				107ACC321C38ED9400270544 /* csurf_faderport.h in Headers */,
 				107ACC331C38ED9400270544 /* automator.h in Headers */,
-				107ACC351C38ED9400270544 /* FaderportDraw.h in Headers */,
+				10A12E1E1C3A071F004CF674 /* FaderportDraw.h in Headers */,
 				107ACC361C38ED9400270544 /* resource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,7 +267,7 @@
 				10B4283F1C1F3B6F00441EBE /* csurf_faderport.cpp in Sources */,
 				10B428491C1F3C0900441EBE /* swell-modstub.mm in Sources */,
 				10B428391C1F3B6F00441EBE /* automator.cpp in Sources */,
-				104592F21C361AA800B6D2C4 /* FaderportDraw.cpp in Sources */,
+				10A12E1B1C3A071F004CF674 /* FaderportDraw.cpp in Sources */,
 				10B428411C1F3B6F00441EBE /* csurf_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -279,7 +279,7 @@
 				107ACC291C38ED9400270544 /* csurf_faderport.cpp in Sources */,
 				107ACC2A1C38ED9400270544 /* swell-modstub.mm in Sources */,
 				107ACC2B1C38ED9400270544 /* automator.cpp in Sources */,
-				107ACC2C1C38ED9400270544 /* FaderportDraw.cpp in Sources */,
+				10A12E1C1C3A071F004CF674 /* FaderportDraw.cpp in Sources */,
 				107ACC2D1C38ED9400270544 /* csurf_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

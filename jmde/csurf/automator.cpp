@@ -16,7 +16,6 @@ using namespace std;
 
 bool Envelope_Automator::Poll(MediaTrack* tr)
 {
-    //if(m_ParentTrack == tr) { m_Valid = false; return false; }
     m_ParentTrack = tr;
     m_FXCount = TrackFX_GetCount(m_ParentTrack);
     m_Valid = m_FXCount != 0;
@@ -30,7 +29,7 @@ bool Envelope_Automator::Poll(MediaTrack* tr)
     return m_Valid;
 }
 
-double Envelope_Automator::SetSelectedTrackFX(MediaTrack* tr, int fx)
+bool Envelope_Automator::SetSelectedTrackFX(MediaTrack* tr, int fx, double* paramVal)
 {
     m_ParentTrack = tr;
     m_FX = fx;
@@ -45,22 +44,24 @@ double Envelope_Automator::SetSelectedTrackFX(MediaTrack* tr, int fx)
         //Display the name of the param
         string paramName = GetCurrentParamName();
         TrackCtl_SetToolTip((fxName + ": " + paramName).c_str(), 0, 0, true);
-        return TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+        if(paramVal) *paramVal = TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+        return true;
     }
     
-    return -1;
+    return false;
 }
 
-double Envelope_Automator::SetSelectedParam(int param)
+bool Envelope_Automator::SetSelectedParam(int param, double* paramVal)
 {
-    if(!m_Valid) return -1.0f;
-    if(param >= m_ParamCount) return -1.0f;
+    if(!m_Valid || (m_ParamCount == 0)) return false;
+    if(param >= m_ParamCount) return false;
     m_Param = param;
     
     string name = GetCurrentParamName();
     TrackCtl_SetToolTip(name.c_str(), 0, 0, true);
     
-    return TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+    if(paramVal) *paramVal = TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+    return true;
 }
 
 void Envelope_Automator::SelectNextFX()
@@ -87,9 +88,9 @@ void Envelope_Automator::SelectPrevFX()
     TrackCtl_SetToolTip(name.c_str(), 0, 0, true);
 }
 
-double Envelope_Automator::SelectNextParam()
+bool Envelope_Automator::SelectNextParam(double* paramVal)
 {
-    if(!m_Valid) return 0.0f;
+    if(!m_Valid) return false;
     if(++m_Param >= m_ParamCount) m_Param = 0;
     
     stringstream ss;
@@ -100,12 +101,13 @@ double Envelope_Automator::SelectNextParam()
     string name = GetCurrentParamName();
     TrackCtl_SetToolTip(name.c_str(), 0, 0, true);
     
-    return TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+    if(paramVal) *paramVal = TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+    return true;
 }
 
-double Envelope_Automator::SelectPrevParam()
+bool Envelope_Automator::SelectPrevParam(double* paramVal)
 {
-    if(!m_Valid) return 0.0f;
+    if(!m_Valid) return false;
     if(--m_Param < 0) m_Param = m_ParamCount-1;
     
     stringstream ss;
@@ -116,7 +118,8 @@ double Envelope_Automator::SelectPrevParam()
     string name = GetCurrentParamName();
     TrackCtl_SetToolTip(name.c_str(), 0, 0, true);
     
-    return TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+    if(paramVal) *paramVal = TrackFX_GetParamNormalized(m_ParentTrack, m_FX, m_Param);
+    return true;
 }
 
 bool Envelope_Automator::HasValidEnvelope() const { return m_Valid; }
@@ -140,7 +143,6 @@ double Envelope_Automator::EndTouch(bool touchMode)
     {
         if(touchMode)
         {
-            //TrackFX_SetParamNormalized(m_ParentTrack, m_FX, m_Param, m_LastVal);
             TrackFX_EndParamEdit(m_ParentTrack, m_FX, m_Param);
         }
         
@@ -189,6 +191,10 @@ double Envelope_Automator::GetParamNormalized() const
 
 bool Envelope_Automator::IsSelected(MediaTrack* tr, int fx, int param) const
 {
-    if(m_Valid) return m_ParentTrack == tr && m_FX == fx && m_Param == param;
-    return false;
+    if(!m_Valid) return false;
+    
+    return m_ParentTrack == tr &&
+    ((fx != -1) ? m_FX == fx  : true) &&
+    ((param != -1) ? m_Param == param : true);   
 }
+
