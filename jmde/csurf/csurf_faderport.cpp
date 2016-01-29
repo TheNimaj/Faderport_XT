@@ -87,10 +87,10 @@ CSurf_FaderPort::~CSurf_FaderPort()
 {
 	if (m_midiout)
 	{
-		int x;
-		for (x = 0; x < 0x30; x ++) // lights out
-			m_midiout->Send(0xa0,x,0x00,-1);
-        
+		//lights out
+		for (unsigned char x = 0; x < FPL_COUNT; x++) {
+			m_midiout->Send(0xa0, x, 0, 0); Sleep(5);
+		}
         m_midiout->Send(0xb0,0x00,0x0,-1);
         m_midiout->Send(0xb0,0x20,0x0,-1);
 		Sleep(5);
