@@ -1171,9 +1171,6 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
             if(g_select_touched_param && !m_fxautomation.IsSelected(tr, -1, param))
                 m_fxautomation.SetSelectedParam(param, nullptr);
             
-            double val = -1.f;
-            bool set = false;
-
             break;
         }
             
