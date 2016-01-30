@@ -188,6 +188,7 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 				m_fxautomation.SelectNextParam(nullptr);
 			
 			m_fx_waiting = true;
+            return;
 		}
         
         int current_action = m_faderport_shift ? g_action_pan_shift : g_action_pan;
