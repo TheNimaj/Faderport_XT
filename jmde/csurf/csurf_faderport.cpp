@@ -1150,6 +1150,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 		case CSURF_EXT_SETFXCHANGE:
 		{
 			MediaTrack* tr = (MediaTrack*) parm1;
+            if(g_fader_controls_fx) m_fxautomation.Poll(tr);
 			if(m_faderport_fxmode)
 			{
 				//todo: Update the internal state pof the automation controller
