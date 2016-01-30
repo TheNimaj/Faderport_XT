@@ -1094,6 +1094,7 @@ void CSurf_FaderPort::OnTrackSelection(MediaTrack *trackid)
 		TrackList_UpdateAllExternalSurfaces();
 	}
 	
+    if(newpos!=0) if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);//Turn off Output light if track selected isn't master
 	if(g_fader_controls_fx)//Support for automating fx params (nimaj 12.5.2015)
 	{
 		if(trackid)
@@ -1115,6 +1116,11 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 	{
 		case CSURF_EXT_SETLASTTOUCHEDTRACK:
 		{
+            MediaTrack* tr = (MediaTrack*)parm1;
+            if(!tr) break;
+            
+            //Turn output light off
+            if(CSurf_TrackToID(tr, false) != 0)if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
 			break;
 		}
 		
