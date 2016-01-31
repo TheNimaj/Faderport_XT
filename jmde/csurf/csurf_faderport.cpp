@@ -488,11 +488,7 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 					else
 					{
                         
-                        // deselect all tracks
-                        for(int i=0;i<CSurf_NumTracks(g_csurf_mcpmode);i++)
-                           SetTrackSelected( CSurf_TrackFromID(i+1,g_csurf_mcpmode), false);
-						// get master and select it
-						CSurf_OnSelectedChange(tr, true);
+                        SetOnlyTrackSelected(tr);
 						CSurf_OnTrackSelection(tr);
 					}
 				}
@@ -1057,7 +1053,7 @@ bool CSurf_FaderPort::GetTouchState(MediaTrack *trackid, int isPan)
 			return false;
 		}
         
-        if (m_faderport_fxmode) return m_fxautomation.GetTouchState();
+        if (m_faderport_fxmode) return false;
 		
 		return !!m_fader_touchstate;
 	}
@@ -1094,7 +1090,7 @@ void CSurf_FaderPort::OnTrackSelection(MediaTrack *trackid)
 		TrackList_UpdateAllExternalSurfaces();
 	}
 	
-    if(newpos!=0) if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);//Turn off Output light if track selected isn't master
+    //if(newpos!=0) if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);//Turn off Output light if track selected isn't master
 	if(g_fader_controls_fx)//Support for automating fx params (nimaj 12.5.2015)
 	{
 		if(trackid)
@@ -1120,7 +1116,11 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
             if(!tr) break;
             
             //Turn output light off
-            if(CSurf_TrackToID(tr, false) != 0)if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
+            if(CSurf_TrackToID(tr, false) != 0)
+            {
+                if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
+                CSurf_OnTrackSelection(tr);
+            }
 			break;
 		}
 		
@@ -1133,7 +1133,6 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
             MediaTrack* tr = (MediaTrack*) parm1;
             int fxid = *(int*)parm3;
             double val = -1.f;
-            bool set = false;
             if(!m_fxautomation.IsSelected(tr, fxid, -1) && m_fxautomation.SetSelectedTrackFX(tr, fxid, &val))
                 AdjustFader(paramToint14(val));
         
@@ -1197,6 +1196,11 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 		case CSURF_EXT_SETRECVVOLUME:
 		case CSURF_EXT_SETRECVPAN:
 		case CSURF_EXT_SETFXOPEN:
+        {
+            stringstream ss;
+            ss << "Unhandled EXT Call: " << call << "( " << parm1 << ", " << parm2 << ", " << parm3 << " )";
+            OutputDebugString(ss.str().c_str());
+        }
 			break;
 
 		default:

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jmde/csurf/csurf_faderport.cpp"
-            timestampString = "475807444.044419"
+            timestampString = "475974410.872497"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "909"
-            endingLineNumber = "909"
+            startingLineNumber = "905"
+            endingLineNumber = "905"
             landmarkName = "CSurf_FaderPort::Run()"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jmde/csurf/csurf_faderport.cpp"
-            timestampString = "475807444.044419"
+            timestampString = "475975601.696046"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1101"
-            endingLineNumber = "1101"
+            startingLineNumber = "1097"
+            endingLineNumber = "1097"
             landmarkName = "CSurf_FaderPort::OnTrackSelection(MediaTrack *trackid)"
             landmarkType = "5">
          </BreakpointContent>
@@ -218,12 +218,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "jmde/csurf/csurf_faderport.cpp"
-            timestampString = "475807444.044419"
+            timestampString = "475974410.872497"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "496"
-            endingLineNumber = "496"
+            startingLineNumber = "492"
+            endingLineNumber = "492"
             landmarkName = "CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "jmde/csurf/automator.cpp"
+            timestampString = "475855464.689206"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "Envelope_Automator::SetParamNormalized(double val)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "jmde/csurf/automator.cpp"
+            timestampString = "475855619.700501"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "Envelope_Automator::IsSelected(MediaTrack* tr, int fx, int param)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
