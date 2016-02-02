@@ -782,6 +782,9 @@ void CSurf_FaderPort::ReadINIfile()
     GetPrivateProfileString("FPCSURF","ACTION_PAN_LEFT_SHIFT","0",resultString,512,INIFileName);
     g_action_pan_left_shift = resultString;
     
+    GetPrivateProfileString("FPCSURF","ACTION_PAN_RIGHT_SHIFT","0",resultString,512,INIFileName);
+    g_action_pan_right_shift = resultString;
+    
     GetPrivateProfileString("FPCSURF","INTRO_STRING","FPXT",resultString,512,INIFileName);
     g_intro_string = resultString;
     
