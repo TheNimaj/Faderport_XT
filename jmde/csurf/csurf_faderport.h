@@ -20,7 +20,9 @@
 
 #include <Windows.h> 
 #include <string>
+#include <unordered_map>
 
+#include "DeviceButton.h"
 #include "automator.h"
 
 using namespace std;
@@ -35,72 +37,13 @@ static bool g_csurf_mcpmode=false; // we may wish to allow an action to set this
 // INI support (karbo 11.8.2011 )
 #define BUFSIZE MAX_PATH
 
-
-
 enum FaderPortDevice
 {
     FPD_FADER = 0xb0,
     FPD_PAN_KNOB = 0xe0,
     FPD_BUTTONS = 0xa0
 };
-enum FaderPortButton
-{
-    FPB_MUTE = 18,
-    FPB_SOLO = 17,
-    FPB_REC_ARM = 16,
-    FPB_CH_PREV = 19,
-    FPB_BANK = 20,
-    FPB_CH_NEXT = 21,
-    FPB_OUTPUT = 22,
-    FPB_ATM_READ = 10,
-    FPB_ATM_WRITE = 9,
-    FPB_ATM_TOUCH = 8,
-    FPB_ATM_OFF = 23,
-    FPB_MIX = 11,
-    FPB_PROJ = 12,
-    FPB_TRNS = 13,
-    FPB_UNDO = 14,
-    FPB_SHIFT = 2,
-    FPB_PUNCH = 1,
-    FPB_USER = 0,
-    FPB_LOOP = 15,
-    FPB_REW = 3,
-    FPB_FWD = 4,
-    FPB_STOP = 5,
-    FPB_PLAY = 6,
-    FPB_REC = 7,
-    FPB_FADER_TOUCH = 127,
-    FPB_FOOTSWITCH = 126
-};
 
-enum FaderPortLights
-{
-    FPL_REC = 0x00,
-    FPL_PLAY,
-    FPL_STOP,
-    FPL_FWD,
-    FPL_RWD,
-    FPL_SHIFT,
-    FPL_PUNCH,
-    FPL_USER,
-    FPL_LOOP,
-    FPL_UNDO,
-    FPL_TRNS,
-    FPL_PROJ,
-    FPL_MIX,
-    FPL_READ,
-    FPL_WRITE,
-    FPL_TOUCH,
-    FPL_OFF,
-    FPL_OUTPUT,
-    FPL_CH_NEXT,
-    FPL_BANK,
-    FPL_CH_PREV,
-    FPL_MUTE,
-    FPL_SOLO,
-    FPL_REC_ARM,
-    FPL_COUNT
-};
 
 enum FP_RFlags
 {
@@ -131,48 +74,6 @@ struct FaderPortAction
     int state;
 };
 
-static int paramToint14(double param)
-{
-    return param / 16.0f * 16383.0;
-}
-
-static double int14ToParam(unsigned char msb, unsigned char lsb)
-{
-    int val = msb * 128 + lsb;
-    return val / 16383.0;
-}
-
-static double int14ToVol(unsigned char msb, unsigned char lsb)
-{
-    int val=lsb | (msb<<7);
-    double pos=((double)val*1000.0)/16383.0;
-    pos=SLIDER2DB(pos);
-    return DB2VAL(pos);
-}
-static double int14ToPan(unsigned char msb, unsigned char lsb)
-{
-    int val=lsb | (msb<<7);
-    return 1.0 - (val/(16383.0*0.5));
-}
-
-static int volToInt14(double vol)
-{
-    double d=(DB2SLIDER(VAL2DB(vol))*16383.0/1000.0);
-    if (d<0.0)d=0.0;
-    else if (d>16383.0)d=16383.0;
-    
-    return (int)(d+0.5);
-}
-static  int panToInt14(double pan)
-{
-    double d=((1.0-pan)*16383.0*0.5);
-    if (d<0.0)d=0.0;
-    else if (d>16383.0)d=16383.0;
-    
-    return (int)(d+0.5);
-}
-
-
 
 class CSurf_FaderPort : public IReaperControlSurface
 {
@@ -180,13 +81,17 @@ class CSurf_FaderPort : public IReaperControlSurface
     midi_Output *m_midiout;
     midi_Input *m_midiin;
     
+    
     //modifiers
     bool m_faderport_shift;
     bool m_faderport_bank;
+    bool m_faderport_fxmode;
     bool m_faderport_fwd;
     bool m_faderport_rew;
-    bool m_faderport_fxmode;
     bool m_touch_latch;
+    bool m_faderport_pause;
+    
+    std::unordered_map<uint32_t, DeviceButton> m_ButtonLookup;
 
 	//Stores flags for shift, mute, and rec (arm)
 	unsigned m_faderport_reload;
@@ -217,10 +122,6 @@ class CSurf_FaderPort : public IReaperControlSurface
     
 protected:
     
-    //Action ID string support (nimaj 12.4.2015)
-    void RunCommand(const string& cmd);
-    void AdjustFader(int val);
-    
     void ProcessFader(FaderPortAction* action);
     void ProcessPan(FaderPortAction* action);
     void ProcessButtonUp(FaderPortAction* action);
@@ -229,10 +130,50 @@ protected:
     void ReadINIfile();
     void AdjustBankOffset(int amt, bool dosel);
     
-    void Notify(unsigned char button);
+    void CloseNoReset();
+    
+    void Run();
+    
+    void SetTrackListChange(){ SetAutoMode(0); }
+    
+    void SetSurfaceVolume(MediaTrack *trackid, double volume);
+    void SetSurfacePan(MediaTrack *trackid, double pan);
+    void SetSurfaceMute(MediaTrack *trackid, bool mute);
+    void SetSurfaceSelected(MediaTrack *trackid, bool selected);
+    void SetSurfaceSolo(MediaTrack *trackid, bool solo);
+    void SetSurfaceRecArm(MediaTrack *trackid, bool recarm);
+    void SetPlayState(bool play, bool pause, bool rec);
+    void SetRepeatState(bool rep);
+    
+    int Extended(int call, void *parm1, void *parm2, void *parm3);
+    
+    void SetTrackTitle(MediaTrack *trackid, const char *title) { }
+    
+    bool GetTouchState(MediaTrack *trackid, int isPan);
+    void SetAutoMode(int mode);
+    void ResetCachedVolPanStates();
+    void OnTrackSelection(MediaTrack *trackid);
+    bool IsKeyDown(int key);
+    
 public:
     CSurf_FaderPort(int indev, int outdev, int *errStats);
-    ~CSurf_FaderPort();
+   ~CSurf_FaderPort();
+    
+    
+    void ToggleFXMode();
+    void SetFXMode(bool set);
+    bool GetFXMode() const;
+    
+    int GetBankOffset() const { return m_bank_offset; }
+    
+    void SetLight(FaderPortLights light, bool state);
+    void AdjustFader(int val);
+    void Notify(unsigned char button);
+    
+    Envelope_Automator& GetFXDevice() { return m_fxautomation; }
+    
+    static void RunCommand(const string& cmd);
+    
     
     const char *GetTypeString() { return "FADERPORTXT"; }
     const char *GetDescString()
@@ -250,29 +191,6 @@ public:
         
     }
     
-    void CloseNoReset();
-    
-    void Run();
-    
-    void SetTrackListChange(){ SetAutoMode(0); }
-    
-    void SetSurfaceVolume(MediaTrack *trackid, double volume);
-    void SetSurfacePan(MediaTrack *trackid, double pan);
-    void SetSurfaceMute(MediaTrack *trackid, bool mute);
-    void SetSurfaceSelected(MediaTrack *trackid, bool selected);
-    void SetSurfaceSolo(MediaTrack *trackid, bool solo);
-    void SetSurfaceRecArm(MediaTrack *trackid, bool recarm);
-    void SetPlayState(bool play, bool pause, bool rec);
-    void SetRepeatState(bool rep);
-    void SetTrackTitle(MediaTrack *trackid, const char *title) { }
-    
-    bool GetTouchState(MediaTrack *trackid, int isPan);
-    void SetAutoMode(int mode);
-    void ResetCachedVolPanStates();
-    void OnTrackSelection(MediaTrack *trackid);
-    bool IsKeyDown(int key) { return false; }
-    
-    int Extended(int call, void *parm1, void *parm2, void *parm3);
 };
 
 

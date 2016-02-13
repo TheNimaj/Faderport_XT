@@ -6,7 +6,7 @@
 //
 
 #include "FaderportDraw.h"
-#include "csurf/csurf_faderport.h"
+#include "csurf_faderport.h"
 
 #include <algorithm>
 using namespace std;

@@ -9,7 +9,7 @@
 #include "automator.h"
 #include "../reaper_plugin_functions.h"
 
-#include "../MacCompatibility.h"
+#include "MacCompatibility.h"
 #include <sstream>
 
 using namespace std;

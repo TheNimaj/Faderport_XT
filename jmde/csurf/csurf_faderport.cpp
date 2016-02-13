@@ -10,16 +10,49 @@
 
 #include "../reaper_plugin_functions.h"
  
-#include "../MacCompatibility.h"
+#include "MacCompatibility.h"
+#include "Helpers.h"
 #include <stdio.h> // ini support (karbo 11.8.2011)
 #include <sstream>
 
 #define _LETS_DRAW 1
 #ifdef _LETS_DRAW
-#include "../FaderportDraw.h"//Utterly useless. Just cool
+#include "FaderportDraw.h"//Utterly useless. Just cool
 #endif
 
 using namespace std;
+
+
+DeviceButton FPButtonList[FPButtonCount] =
+{
+    { FPB_MUTE, FPL_MUTE, "MUTE" },
+    { FPB_SOLO, FPL_SOLO, "SOLO" },
+    { FPB_REC_ARM, FPL_REC_ARM, "REC_ARM" },
+    { FPB_CH_PREV, FPL_CH_PREV, "CH_PREV" },
+    { FPB_BANK, FPL_BANK, "BANK" },
+    { FPB_CH_NEXT, FPL_CH_NEXT, "CH_NEXT" },
+    { FPB_OUTPUT, FPL_OUTPUT, "OUTPUT" },
+    { FPB_ATM_READ, FPL_READ, "READ" },
+    { FPB_ATM_WRITE, FPL_WRITE, "WRITE" },
+    { FPB_ATM_TOUCH, FPL_TOUCH, "TOUCH" },
+    { FPB_ATM_OFF, (FaderPortLights)-1, "OFF" },
+    { FPB_MIX, FPL_MIX, "MIX" },
+    { FPB_PROJ, FPL_PROJ, "PROJECT" },
+    { FPB_TRNS, FPL_TRNS, "TRANS" },
+    { FPB_UNDO, FPL_UNDO, "UNDO" , std::to_string(IDC_EDIT_UNDO), std::to_string(IDC_EDIT_REDO)},
+    { FPB_SHIFT, FPL_SHIFT, "SHIFT" },
+    { FPB_PUNCH, FPL_PUNCH, "PUNCH" , std::to_string(ID_MARKER_PREV), std::to_string(ID_LOOP_SETSTART)},
+    { FPB_USER, FPL_USER, "USER" , std::to_string(ID_MARKER_NEXT), std::to_string(ID_LOOP_SETEND)},
+    { FPB_LOOP, FPL_LOOP, "LOOP" , std::to_string(IDC_REPEAT), std::to_string(ID_INSERT_MARKER)},
+    { FPB_REW, FPL_RWD, "REW" },
+    { FPB_FWD, FPL_FWD, "FWD" },
+    { FPB_STOP, FPL_STOP, "STOP" },
+    { FPB_PLAY, FPL_PLAY, "PLAY" },
+    { FPB_REC, FPL_REC, "REC" },
+    { FPB_FADER_TOUCH, (FaderPortLights)-1, "FADER"},
+    { FPB_FOOTSWITCH, (FaderPortLights)-1, "FOOTSWITCH" }
+};
+
 
 
 CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
@@ -83,6 +116,7 @@ CSurf_FaderPort::CSurf_FaderPort(int indev, int outdev, int *errStats)
 	}
 	
 }
+
 CSurf_FaderPort::~CSurf_FaderPort()
 {
 	if (m_midiout)
@@ -100,6 +134,10 @@ CSurf_FaderPort::~CSurf_FaderPort()
 	delete m_midiin;
 }
 
+void CSurf_FaderPort::ToggleFXMode() { m_faderport_fxmode = !m_faderport_fxmode; }
+void CSurf_FaderPort::SetFXMode(bool set) { m_faderport_fxmode = set; }
+bool CSurf_FaderPort::GetFXMode() const { return m_faderport_fxmode; }
+
 void CSurf_FaderPort::RunCommand(const string& cmd) { Main_OnCommand(NamedCommandLookup(cmd.c_str()),-1); }
 void CSurf_FaderPort::AdjustFader(int val)
 {
@@ -107,6 +145,12 @@ void CSurf_FaderPort::AdjustFader(int val)
     m_fader_val = val;
 	m_midiout->Send(0xb0,0x00,val>>7,-1);
 	m_midiout->Send(0xb0,0x20,val&127,-1);
+}
+
+void CSurf_FaderPort::SetLight(FaderPortLights light, bool state)
+{
+    if(!m_midiout) return;
+    m_midiout->Send(0xa0, light, state, -1);
 }
 
 void CSurf_FaderPort::Notify(unsigned char button)
@@ -226,6 +270,7 @@ void CSurf_FaderPort::ProcessPan(FaderPortAction* action)
 
 void CSurf_FaderPort::ProcessButtonUp(FaderPortAction* action)
 {
+    auto& button = m_ButtonLookup[action->id];
 	switch(action->id)
 	{
 		case FPB_FADER_TOUCH:
@@ -267,29 +312,25 @@ void CSurf_FaderPort::ProcessButtonUp(FaderPortAction* action)
 		case FPB_FWD:
 		{
 			m_faderport_fwd = false;
-			if (m_midiout) m_midiout->Send(0xa0,3,action->state,-1);
+            SetLight(button.lightId, false);
 			break;
 		}
 		case FPB_REW:
 		{
 			m_faderport_rew = false;
-			if (m_midiout) m_midiout->Send(0xa0,4,action->state,-1);
+            SetLight(button.lightId, false);
 			break;
 		}
-		case FPB_CH_NEXT:
-		{
-			if (m_midiout) m_midiout->Send(0xa0,0x12,action->state,-1);
-			break;
-		}
-		case FPB_CH_PREV:
-		{
-			if (m_midiout) m_midiout->Send(0xa0,0x14,action->state,-1);
-			break;
-		}
+            
+        case FPB_CH_NEXT:
+        case FPB_CH_PREV:
+            SetLight(button.lightId, false);
+            break;
 	}
 }
 void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 {
+    auto& button = m_ButtonLookup[action->id];
 	switch (action->id)
 	{
 		case FPB_FADER_TOUCH:
@@ -308,13 +349,13 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 			
 		case FPB_BANK:
 		{
-			if(g_fader_controls_fx)
-			{
-				if(m_faderport_shift) m_faderport_fxmode = !m_faderport_fxmode;
-				else m_faderport_fxmode = false;
-				
-				if(m_faderport_fxmode)
-				{
+            if(g_fader_controls_fx)
+            {
+                if(m_faderport_shift) ToggleFXMode();
+                else m_faderport_fxmode = false;
+                
+                if(m_faderport_fxmode)
+                {
                     if(!m_fxautomation.HasValidEnvelope())
                     {
                         Notify(FPL_BANK);
@@ -322,212 +363,315 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
                         m_faderport_fxmode = false;
                         break;
                     }
-					int val = paramToint14(m_fxautomation.GetParamNormalized());
-					AdjustFader(val);
-				}else
-				{
-					MediaTrack* tr = CSurf_TrackFromID(m_bank_offset, g_csurf_mcpmode);
-					double vol = GetMediaTrackInfo_Value(tr, "D_VOL");
-					int volint=volToInt14(vol) / 16;
-					AdjustFader(volint);
-				}
-			}
+                    int val = paramToint14(m_fxautomation.GetParamNormalized());
+                    AdjustFader(val);
+                }else
+                {
+                    MediaTrack* tr = CSurf_TrackFromID(m_bank_offset, g_csurf_mcpmode);
+                    double vol = GetMediaTrackInfo_Value(tr, "D_VOL");
+                    int volint=volToInt14(vol) / 16;
+                    AdjustFader(volint);
+                }
+            }
             
-            m_faderport_bank = !m_faderport_bank;
-			if (m_midiout) m_midiout->Send(0xa0,FPL_BANK,m_faderport_bank,-1);
+            if(!m_faderport_fxmode)
+            {
+                if ((m_faderport_shift))
+                {
+                    if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                    else m_faderport_bank = !m_faderport_bank;
+                }
+                else
+                {
+                    if(!button.action.empty()) RunCommand(button.action);
+                    else m_faderport_bank = !m_faderport_bank;
+                }
+            }
+            
+            SetLight(button.lightId, m_faderport_bank);
 			break;
 		}
 			
 		case FPB_FWD:
 		{
-			if ((m_faderport_shift)) CSurf_GoEnd();
-			else m_faderport_fwd = true;
-			if (m_midiout) m_midiout->Send(0xa0,3,action->state,-1);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else CSurf_GoEnd();
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else m_faderport_fwd = true;
+            }
+            SetLight(button.lightId, true);
 			break;
 		}
 			
 		case FPB_REW:
 		{
-			if ((m_faderport_shift)) CSurf_GoStart();
-			else m_faderport_rew = true;
-			if (m_midiout) m_midiout->Send(0xa0,4,action->state,-1);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else CSurf_GoStart();
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else m_faderport_rew = true;
+            }
+            SetLight(button.lightId, true);
 			break;
 		}
 			
 		case FPB_REC_ARM:
 		{
-			if (m_faderport_shift)
-				ClearAllRecArmed();
-			else
-			{
-				MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-				if (tr) SetSurfaceRecArm(tr,CSurf_OnRecArmChange(tr,-1));
-			}
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else ClearAllRecArmed();
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+                    if (tr) SetSurfaceRecArm(tr,CSurf_OnRecArmChange(tr,-1));
+                }
+            }
+            
 			break;
 		}
 			
 		case FPB_ATM_OFF:
 		{
-			MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-			if (tr)
-			{
-				SetTrackAutomationMode(tr,0);
-				CSurf_SetAutoMode(-1,NULL);
-			}
+            MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,0);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,0);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            
+           
 			break;
 		}
 			
 		case FPB_ATM_READ:
 		{
-			MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-			if (tr)
-			{
-				SetTrackAutomationMode(tr,1);
-				CSurf_SetAutoMode(-1,NULL);
-			}
-			break;
+            MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,1);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,1);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            break;
 		}
 			
 		case FPB_ATM_WRITE:
 		{
-			MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-			if (tr)
-			{
-				SetTrackAutomationMode(tr,3);
-				CSurf_SetAutoMode(-1,NULL);
-			}
+            MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,3);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,3);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            
 			break;
 		}
 			
 		case FPB_ATM_TOUCH:
 		{
-			MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-			
-			if (tr)
-			{
-				SetTrackAutomationMode(tr,2);
-				CSurf_SetAutoMode(-1,NULL);
-			}
+            MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,2);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    if (tr)
+                    {
+                        SetTrackAutomationMode(tr,2);
+                        CSurf_SetAutoMode(-1,NULL);
+                    }
+                }
+            }
+            
 			break;
 		}
-			
 			
 			
 		case FPB_STOP:
 		{
 			m_faderport_reload |= FPB_RFLAG2;
-			CSurf_OnStop();
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else CSurf_OnStop();
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else CSurf_OnStop();
+            }
 			break;
 		}
 			
-		case FPB_PUNCH:
-		{
-			if ((m_faderport_shift))
-				RunCommand(g_action_punch_shift);
-			else
-				RunCommand(g_action_punch);
-			break;
-		}
-			
-		case FPB_USER:
-		{
-			if ((m_faderport_shift)) RunCommand(g_action_user_shift);
-			else RunCommand(g_action_user);
-			break;
-		}
-			
-		case FPB_LOOP:
-		{
-			if ((m_faderport_shift))
-				RunCommand(g_action_loop_shift);
-			else
-				RunCommand(g_action_loop);
-			break;
-		}
 			
 		case FPB_PLAY:
 		{
 			m_faderport_reload |= FPB_RFLAG3;
-			CSurf_OnPlay();
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else
+                {
+                    bool isPlaying = GetPlayState() & 5;
+                    if(!isPlaying) CSurf_OnPlay();
+                    else CSurf_OnPause();
+
+                }
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    bool isPlaying = GetPlayState() & 5;
+                    if(!isPlaying) CSurf_OnPlay();
+                    else CSurf_OnPause();
+                }
+                
+            }
+
 			break;
 		}
 			
 		case FPB_REC:
 		{
-			CSurf_OnRecord();
-			break;
-		}
-			
-		case FPB_UNDO:
-		{
-			RunCommand((m_faderport_shift)? g_action_undo_shift : g_action_undo);
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else CSurf_OnRecord();
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else CSurf_OnRecord();
+            }
 			break;
 		}
 			
 		case FPB_OUTPUT:
 		{
-			
-			if(g_action_output == "0")
-			{
-				m_flipmode=!m_flipmode;
-				if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
-				CSurf_ResetAllCachedVolPanStates();
-				TrackList_UpdateAllExternalSurfaces();
-			}else
-			{
-				if (m_midiout) m_midiout->Send(0xa0, 0x11,1,-1); // light on
-				
-				if(g_action_output == "1") // kw: special case for Master track selection via output button (need to refactor redundant code).
-				{
-					
-                    MediaTrack *tr = GetMasterTrack(0);
-					if ((m_faderport_shift))
-					{
-						RunCommand(g_action_output_shift);
-					}
-					else
-					{
-                        
-                        SetOnlyTrackSelected(tr);
-						CSurf_OnTrackSelection(tr);
-					}
-				}
-				else if(g_action_output == "2")
-				{
-					MediaTrack *tr;
-					tr=CSurf_TrackFromID(0, false);
-					
-					// if shift is used, run shift action
-					if ((m_faderport_shift))
-					{
-						RunCommand(g_action_output_shift);
-					}
-					else
-					{
-						// get master and select it but don't focus
-						CSurf_OnTrackSelection(tr);
-					}
-				}
-				else
-				{
-					// Run actions instead selecting master output
-					if ((m_faderport_shift))
-						RunCommand(g_action_output_shift);
-					else
-						RunCommand(g_action_output);
-				}
-			}
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else
+                {
+                    MediaTrack* tr = GetMasterTrack(nullptr);
+                    SetOnlyTrackSelected(tr);
+                    CSurf_OnTrackSelection(tr);
+                }
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    MediaTrack* tr = GetMasterTrack(nullptr);
+                    SetOnlyTrackSelected(tr);
+                    CSurf_OnTrackSelection(tr);
+                }
+            }
 			break;
 		}
 			
 		case FPB_SOLO:
 		{
-			if (m_faderport_shift) SoloAllTracks(false);
-			else
-			{
-				MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-				if (tr) SetSurfaceSolo(tr,CSurf_OnSoloChange(tr,-1));
-			}
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else SoloAllTracks(false);
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+                    if (tr) SetSurfaceSolo(tr,CSurf_OnSoloChange(tr,-1));
+                }
+            }
+
 			break;
 		}
 			
@@ -541,11 +685,27 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				
 			}else
 			{
-				AdjustBankOffset((m_faderport_bank)?-8:-1,true);
-				TrackList_UpdateAllExternalSurfaces();
+                if ((m_faderport_shift))
+                {
+                    if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                    else
+                    {
+                        AdjustBankOffset((m_faderport_bank)?-8:-1,true);
+                        TrackList_UpdateAllExternalSurfaces();
+                    }
+                }
+                else
+                {
+                    if(!button.action.empty()) RunCommand(button.action);
+                    else
+                    {
+                        AdjustBankOffset((m_faderport_bank)?-8:-1,true);
+                        TrackList_UpdateAllExternalSurfaces();
+                    }
+                }
+				
 			}
-			
-			if (m_midiout) m_midiout->Send(0xa0,0x14,action->state,-1);
+			SetLight(button.lightId, true);
 			break;
 		}
 			
@@ -558,76 +718,55 @@ void CSurf_FaderPort::ProcessButtonDown(FaderPortAction* action)
 				AdjustFader(val);
 			}else
 			{
-				AdjustBankOffset((m_faderport_bank)?8:1,true);
-				TrackList_UpdateAllExternalSurfaces();
+                
+                if ((m_faderport_shift))
+                {
+                    if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                    else
+                    {
+                        AdjustBankOffset((m_faderport_bank)?8:1,true);
+                        TrackList_UpdateAllExternalSurfaces();
+                    }
+                }
+                else
+                {
+                    if(!button.action.empty()) RunCommand(button.action);
+                    else
+                    {
+                        AdjustBankOffset((m_faderport_bank)?8:1,true);
+                        TrackList_UpdateAllExternalSurfaces();
+                    }
+                }
+
 			}
-			if (m_midiout) m_midiout->Send(0xa0,0x12,action->state,-1);
+            SetLight(button.lightId, true);
 			break;
 		}
 			
 		case FPB_MUTE:
 		{
-			if (m_faderport_shift) MuteAllTracks(false);
-			else
-			{
-				MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
-				if (tr) SetSurfaceMute(tr,CSurf_OnMuteChange(tr,-1));
-			}
+            
+            if ((m_faderport_shift))
+            {
+                if(!button.action_shift.empty()) RunCommand(button.action_shift);
+                else MuteAllTracks(false);
+            }
+            else
+            {
+                if(!button.action.empty()) RunCommand(button.action);
+                else
+                {
+                    MediaTrack *tr=CSurf_TrackFromID(m_bank_offset,g_csurf_mcpmode);
+                    if (tr) SetSurfaceMute(tr,CSurf_OnMuteChange(tr,-1));
+                }
+            }
+
 			break;
 		}
-			
-		case FPB_MIX:
-		{
-			if(g_override_automation_read)
-			{
-				int a=(action->id-0xb)+8;
-				if (m_faderport_shift) a+=3;
-				MIDI_event_t evt={0,3,{0xbf,static_cast<unsigned char>(a),0}};//clang hates implicit casts --nimaj
-				kbd_OnMidiEvent(&evt,-1);
-				break;
-			}
-			
-			if(m_faderport_shift)  RunCommand(g_action_mix_shift);
-			else RunCommand(g_action_mix);
-			break;
-		}
-			
-		case FPB_PROJ:
-		{
-			if(g_override_automation_read)
-			{
-				int a=(action->id-0xb)+8;
-				if (m_faderport_shift) a+=3;
-				MIDI_event_t evt={0,3,{0xbf,static_cast<unsigned char>(a),0}};//clang hates implicit casts --nimaj
-				kbd_OnMidiEvent(&evt,-1);
-				break;
-			}
-			if (m_faderport_shift) RunCommand(g_action_project_shift);
-			else RunCommand(g_action_project);
-			break;
-		}
-			
-		case FPB_TRNS:
-		{
-			if(g_override_automation_read)
-			{
-				int a=(action->id-0xb)+8;
-				if (m_faderport_shift) a+=3;
-				MIDI_event_t evt={0,3,{0xbf,static_cast<unsigned char>(a),0}};//clang hates implicit casts --nimaj
-				kbd_OnMidiEvent(&evt,-1);
-				break;
-			}
-			if (m_faderport_shift) RunCommand(g_action_trans_shift);
-			else RunCommand(g_action_trans);
-			break;
-		}
-			
-		case FPB_FOOTSWITCH:
-		{
-			if (m_faderport_shift) RunCommand(g_action_footswitch_shift);
-			else  RunCommand(g_action_footswitch);
-			break;
-		}
+			  
+        default:
+             RunCommand(m_faderport_shift ? button.action_shift : button.action);
+            break;
 	}
 }
 
@@ -643,15 +782,15 @@ void CSurf_FaderPort::OnMIDIEvent(MIDI_event_t *evt)
 
 void CSurf_FaderPort::ReadINIfile()
 {
-	char *INIFileName=new char[1024];
     
-	/*
-	 In default case this would be "/Users/username/Library/Application Support/REAPER"
-	 I do it this way because it could cause permissions issues trying to copy it to the app package
-	 */
-	sprintf(INIFileName,"%s/reaper_csurf_fpxt.ini",GetResourcePath());
-	OutputDebugString(INIFileName);
-	char *resultString=new char[512];
+    /*
+     In default case this would be "/Users/username/Library/Application Support/REAPER"
+     I do it this way because it could cause permissions issues trying to copy it to the app package
+     */
+    
+	char INIFileName[1024];
+	sprintf(INIFileName,"%s/reaper_csurf_fpxt.ini",GetResourcePath());OutputDebugString(INIFileName);
+	char resultString[512];
 	
 	// shift_latch: default=true
 	GetPrivateProfileString("FPCSURF","SHIFT_LATCH","1",resultString,512,INIFileName);
@@ -664,71 +803,6 @@ void CSurf_FaderPort::ReadINIfile()
 	// auto_scroll: default = true
 	GetPrivateProfileString("FPCSURF","AUTO_SCROLL","1",resultString,512,INIFileName);
 	g_auto_scroll = atoi(resultString) == 1 ? true : false;
-	
-	// punch: default = ??
-	GetPrivateProfileString("FPCSURF","ACTION_PUNCH","40222",resultString,512,INIFileName);
-	g_action_punch = resultString;
-	
-	// punch_shift: default = ??
-	GetPrivateProfileString("FPCSURF","ACTION_PUNCH_SHIFT","40172",resultString,512,INIFileName);
-	g_action_punch_shift= resultString;
-	
-	// user: default = ??
-	GetPrivateProfileString("FPCSURF","ACTION_USER","40223",resultString,512,INIFileName);
-	g_action_user= resultString;
-	
-	// user_shift: default = ??
-	GetPrivateProfileString("FPCSURF","ACTION_USER_SHIFT","40173",resultString,512,INIFileName);
-	g_action_user_shift= resultString;
-	
-	// footswitch: default = play/pause
-	GetPrivateProfileString("FPCSURF","ACTION_FOOTSWITCH","40073",resultString,512,INIFileName);
-	g_action_footswitch=(resultString);
-	
-	// footswitch_shift: default = play/pause
-	GetPrivateProfileString("FPCSURF","ACTION_FOOTSWITCH_SHIFT","1013",resultString,512,INIFileName);
-	g_action_footswitch_shift=(resultString);
-	
-	// mix: default = show/hide mixer
-	GetPrivateProfileString("FPCSURF","ACTION_MIX","40078",resultString,512,INIFileName);
-	g_action_mix=(resultString);
-	
-	// mix_shift: default = show/hide mixer
-	GetPrivateProfileString("FPCSURF","ACTION_MIX_SHIFT","40078",resultString,512,INIFileName);
-	g_action_mix_shift=(resultString);
-	
-	// project: default = -->
-	GetPrivateProfileString("FPCSURF","ACTION_PROJECT","40861",resultString,512,INIFileName);
-	g_action_project=(resultString);
-	
-	// project_shift: default = <--
-	GetPrivateProfileString("FPCSURF","ACTION_PROJECT_SHIFT","40862",resultString,512,INIFileName);
-	g_action_project_shift=(resultString);
-	
-	// trans: default = show/hide transport
-	GetPrivateProfileString("FPCSURF","ACTION_TRANS","40259",resultString,512,INIFileName);
-	g_action_trans=(resultString);
-	
-	// project shift: ditto
-	GetPrivateProfileString("FPCSURF","ACTION_TRANS_SHIFT","40259",resultString,512,INIFileName);
-	g_action_trans_shift=(resultString);
-	
-	// output
-	GetPrivateProfileString("FPCSURF","ACTION_OUTPUT","0",resultString,512,INIFileName);
-	g_action_output=(resultString);
-	
-	// output shift
-	GetPrivateProfileString("FPCSURF","ACTION_OUTPUT_SHIFT","40917",resultString,512,INIFileName);
-	g_action_output_shift=(resultString);
-	
-	// loop: default ??
-	GetPrivateProfileString("FPCSURF","ACTION_LOOP","1068",resultString,512,INIFileName);
-	g_action_loop=(resultString);
-	
-	// loop_shift: default ??
-	GetPrivateProfileString("FPCSURF","ACTION_LOOP_SHIFT","40157",resultString,512,INIFileName);
-	g_action_loop_shift=(resultString);
-	
 	
 	//ignore mix/proj/trns buttons: default = false
 	GetPrivateProfileString("FPCSURF","MTP_OVERRIDE","0",resultString,512,INIFileName);
@@ -791,9 +865,23 @@ void CSurf_FaderPort::ReadINIfile()
     GetPrivateProfileString("FPCSURF","ENABLE_INTRO","0",resultString,512,INIFileName);
     g_enable_intro = atoi(resultString) == 1 ? true : false;
     
+    //Read all buttons
+    for( unsigned i = 0; i < FPButtonCount; ++i)
+    {
+        char result[512], sresult[512];
+        auto& dev = FPButtonList[i];
+        GetPrivateProfileString("FPCSURF",("ACTION_" + dev.buttonName).c_str(), dev.action.c_str(),result,512,INIFileName);
+        GetPrivateProfileString("FPCSURF",("ACTION_" + dev.buttonName + "_SHIFT").c_str(),dev.action_shift.c_str(), sresult,512,INIFileName);
+       
+        if(strlen(result)>0) dev.action = result;
+        else dev.action.clear();
+        
+        if(strlen(sresult)>0) dev.action_shift = sresult;
+        else dev.action_shift.clear();
+        
+        m_ButtonLookup[dev.buttonId] = dev;
+    }
     
-	delete[] INIFileName;
-	delete[] resultString;
 	
 	// debug output
 	char buf[200];
@@ -914,7 +1002,7 @@ void CSurf_FaderPort::Run()
             }
 			m_faderport_reload = 0;
 		}
-		
+        
 		if (m_faderport_rew || m_faderport_fwd)
 		{
 			DWORD now=timeGetTime();
@@ -952,9 +1040,20 @@ void CSurf_FaderPort::Run()
 				then = timeGetTime();
 				static bool blink = false;
 				blink = !blink;
-				if (m_midiout) m_midiout->Send(0xa0,0x13,blink,-1);
+				if (m_midiout) m_midiout->Send(0xa0,FPL_BANK,blink,-1);
 			}
 		}
+        if(m_faderport_pause)
+        {
+            //Cause Bank to blink if we're in fxmode
+            if (now  >= then + 500)
+            {
+                then = timeGetTime();
+                static bool blink = false;
+                blink = !blink;
+                if (m_midiout) m_midiout->Send(0xa0,FPL_PLAY,blink,-1);
+            }
+        }
 	}
 }
 
@@ -1002,17 +1101,14 @@ void CSurf_FaderPort::SetSurfaceMute(MediaTrack *trackid, bool mute)
 void CSurf_FaderPort::SetSurfaceSelected(MediaTrack *trackid, bool selected)
 {
 	// kw: turn output light on/off
-	if(g_action_output=="1" || g_action_output=="0")
-	{
-		if(m_bank_offset==0)
-		{
-			if (m_midiout) m_midiout->Send(0xa0, 0x11,1,-1);
-		}
-		else
-		{
-			if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);
-		}
-	}
+    if(m_bank_offset==0)
+    {
+        if (m_midiout) m_midiout->Send(0xa0, 0x11,1,-1);
+    }
+    else
+    {
+        if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);
+    }
 }
 
 void CSurf_FaderPort::SetSurfaceSolo(MediaTrack *trackid, bool solo)
@@ -1033,7 +1129,8 @@ void CSurf_FaderPort::SetPlayState(bool play, bool pause, bool rec)
 	{
 		m_midiout->Send(0xa0, 0,rec?1:0,-1);
 		m_midiout->Send(0xa0, 1,play?1:0,-1);
-		m_midiout->Send(0xa0, 2,(!play&&!pause)?1:0,-1);
+        m_midiout->Send(0xa0, 2,(!play&&!pause)?1:0,-1);
+        m_faderport_pause = pause;
 	}
 }
 void CSurf_FaderPort::SetRepeatState(bool rep)
@@ -1092,8 +1189,7 @@ void CSurf_FaderPort::OnTrackSelection(MediaTrack *trackid)
 		AdjustBankOffset(newpos-m_bank_offset,false);
 		TrackList_UpdateAllExternalSurfaces();
 	}
-	
-    //if(newpos!=0) if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);//Turn off Output light if track selected isn't master
+	//if(newpos!=0) if (m_midiout) m_midiout->Send(0xa0, 0x11,0,-1);//Turn off Output light if track selected isn't master
 	if(g_fader_controls_fx)//Support for automating fx params (nimaj 12.5.2015)
 	{
 		if(trackid)
@@ -1107,6 +1203,11 @@ void CSurf_FaderPort::OnTrackSelection(MediaTrack *trackid)
 			}
 		}
 	}
+}
+
+bool CSurf_FaderPort::IsKeyDown(int key)
+{
+    return false;
 }
 
 int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
@@ -1124,6 +1225,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
                 if (m_midiout) m_midiout->Send(0xa0, 0x11,m_flipmode?1:0,-1);
                 CSurf_OnTrackSelection(tr);
             }
+            
 			break;
 		}
 		
@@ -1139,6 +1241,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
             if(!m_fxautomation.IsSelected(tr, fxid, -1) && m_fxautomation.SetSelectedTrackFX(tr, fxid, &val))
                 AdjustFader(paramToint14(val));
         
+           
 			break;
 		}
 		case CSURF_EXT_SETFXPARAM:
@@ -1169,6 +1272,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 		}
         case CSURF_EXT_SETLASTTOUCHEDFX:
         {
+             OutputDebugString("CSURF_EXT_SETLASTTOUCHEDFX");
             if( !parm1 && !parm2 && !parm3) break;
             if( !m_faderport_fxmode ) break;
             
@@ -1180,6 +1284,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
             
             if(g_select_touched_param && !m_fxautomation.IsSelected(tr, -1, param))
                 m_fxautomation.SetSelectedParam(param, nullptr);
+            
             
             break;
         }
