@@ -1272,7 +1272,7 @@ int CSurf_FaderPort::Extended(int call, void *parm1, void *parm2, void *parm3)
 		}
         case CSURF_EXT_SETLASTTOUCHEDFX:
         {
-             OutputDebugString("CSURF_EXT_SETLASTTOUCHEDFX");
+            // OutputDebugString("CSURF_EXT_SETLASTTOUCHEDFX");
             if( !parm1 && !parm2 && !parm3) break;
             if( !m_faderport_fxmode ) break;
             

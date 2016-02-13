@@ -110,14 +110,14 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\Build</OutDir>
-    <IntDir>..\..\Debug</IntDir>
+    <OutDir>..\..\Build\</OutDir>
+    <IntDir>..\..\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_fpxt</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\Build</OutDir>
-    <IntDir>..\..\Debug</IntDir>
+    <OutDir>..\..\Build\</OutDir>
+    <IntDir>..\..\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_fpxt</TargetName>
   </PropertyGroup>
@@ -221,7 +221,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_WINDOWS;_USRDLL;REAPER_CSURF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\reaper_csurf.pch</PrecompiledHeaderOutputFile>
@@ -264,10 +264,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_WINDOWS;_USRDLL;REAPER_CSURF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AssemblerListingLocation>..\..\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>..\..\Debug\reaper_csurf.pch</PrecompiledHeaderOutputFile>
-      <ObjectFileName>..\..\Debug\</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Midl>
@@ -291,7 +288,6 @@
       <SubSystem>Console</SubSystem>
       <ImportLibrary>.\Debug\reaper_csurf.lib</ImportLibrary>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ProgramDatabaseFile>..\..\Debug\$(TargetName).pdb</ProgramDatabaseFile>
       <ProfileGuidedDatabase>..\..\Debug\$(TargetName).pgd</ProfileGuidedDatabase>
       <OutputFile>$(OutDir)$(TargetName)64$(TargetExt)</OutputFile>
     </Link>
@@ -383,10 +379,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\FaderportDraw.cpp" />
     <ClCompile Include="automator.cpp" />
     <ClCompile Include="csurf_faderport.cpp" />
     <ClCompile Include="csurf_main.cpp" />
+    <ClCompile Include="DeviceButton.cpp" />
+    <ClCompile Include="FaderportDraw.cpp" />
+    <ClCompile Include="Helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FaderportDraw.h" />

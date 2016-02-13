@@ -25,10 +25,16 @@
       <Filter>Source Files\csurfs</Filter>
     </ClCompile>
     <ClCompile Include="automator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\csurfs</Filter>
     </ClCompile>
-    <ClCompile Include="..\FaderportDraw.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DeviceButton.cpp">
+      <Filter>Source Files\csurfs</Filter>
+    </ClCompile>
+    <ClCompile Include="FaderportDraw.cpp">
+      <Filter>Source Files\csurfs</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files\csurfs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
